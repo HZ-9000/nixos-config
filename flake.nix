@@ -14,6 +14,10 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
+    # snapd
+    nix-snapd.url = "github:nix-community/nix-snapd";
+    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -47,15 +51,13 @@
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs: let
     # Overlays is the list of overlays we want to apply from flake inputs.
     overlays = [
-      inputs.jujutsu.overlays.default
-      inputs.zig.overlays.default
     ];
 
     mkSystem = import ./lib/mksystem.nix {
       inherit overlays nixpkgs inputs;
     };
   in {
-    nixosConfigurations.vm-aarch64-prl = mkSystem "vm-aarch64-prl" rec {
+    nixosConfigurations.vm-aarch64-prl = mkSystem "vm-aarch64-prl" {
       system = "aarch64-linux";
       user   = "hz-9000";
     };
