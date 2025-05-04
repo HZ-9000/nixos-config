@@ -62,10 +62,10 @@
       user   = "hz-9000";
     };
 
-    nixosConfigurations.wsl = mkSystem "wsl" {
-      system = "x86_64-linux";
-      user   = "hz-9000";
-      wsl    = true;
-    };
+    # nixosConfigurations.wsl = mkSystem "wsl" {
+    #   system = "x86_64-linux";
+    #   user   = "hz-9000";
+    #   wsl    = true;
+    # };
   };
 }
