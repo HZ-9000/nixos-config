@@ -32,7 +32,7 @@
 
   # modules for each supported system
   nixosSystems = {
-    x86_64-linux = import ./vm-aarch64-prl (args // {system = "vm-aarch64-prl";});
+    vm-aarch64-prl = import ./vm-aarch64-prl (args // {system = "vm-aarch64-prl";});
   };
   allSystems = nixosSystems;
   allSystemNames = builtins.attrNames allSystems;
