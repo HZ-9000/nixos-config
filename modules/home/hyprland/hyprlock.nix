@@ -101,7 +101,7 @@
           fade_on_empty = false;
           placeholder_text = ''<i><span foreground="##fbf1c7">Enter Password</span></i>'';
           hide_input = false;
-          position = "0, ${if host == "laptop" then "50" else "200"}";
+          position = "0, 50";
           halign = "center";
           valign = "bottom";
         }
