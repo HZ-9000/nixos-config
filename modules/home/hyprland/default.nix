@@ -3,7 +3,7 @@
   imports = [
     ./hyprland.nix
     ./config.nix
-    ./hyplock.nix
+    ./hyprlock.nix
     inputs.hyprland.homeManagerModules.default
   ];
 }
