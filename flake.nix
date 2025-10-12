@@ -31,7 +31,8 @@
         systems.follows = "hyprland/systems";
       };
     };
-
+    
+    vicinae.url = "github:vicinaehq/vicinae";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
   };
 
@@ -51,9 +52,7 @@
         nixos = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-	  nixos-hardware.nixosModules.framework-amd-ai-300-series
-          # Import your existing configuration.nix
-	  ./configuration.nix
+	      nixos-hardware.nixosModules.framework-amd-ai-300-series
           ./hosts/stormlight
         ];
 	specialArgs = {

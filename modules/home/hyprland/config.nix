@@ -18,7 +18,7 @@ in
         "wl-paste --watch cliphist store &"
         "waybar &"
         #"swaync &"
-        #"vicinae server &"
+        "vicinae server &"
         "hyprctl setcursor Bibata-Modern-Ice 24 &"
         "swww-daemon &"
 
@@ -28,6 +28,20 @@ in
         "[workspace 1 silent] ${browser}"
         "[workspace 2 silent] ${terminal}"
       ];
+
+      input = {
+        kb_layout = "us,fr";
+        kb_options = "grp:alt_caps_toggle";
+        numlock_by_default = true;
+        repeat_delay = 300;
+        follow_mouse = 0;
+        float_switch_override_focus = 0;
+        mouse_refocus = 0;
+        sensitivity = 0;
+        touchpad = {
+          natural_scroll = true;
+        };
+      }; 
 
       monitor = [ "=,preferred,auto,auto" ];
 
