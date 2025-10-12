@@ -5,5 +5,6 @@
     ./zsh.nix                         # shell
     ./browser.nix
     ./hyprland
+    ./waybar
   ];
 }
