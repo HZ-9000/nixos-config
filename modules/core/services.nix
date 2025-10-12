@@ -11,7 +11,7 @@
     dbus.enable = true;
     fstrim.enable = true;
 
-    fwupd.enable = true
+    fwupd.enable = true;
     # needed for GNOME services outside of GNOME Desktop
     dbus.packages = with pkgs; [
       gcr
