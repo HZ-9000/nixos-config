@@ -6,23 +6,29 @@
   };
 
   outputs = 
-    inputs@{ 
-      self, 
-      nixpkgs,
-      nixos-hardware,
-      ... 
-  }: 
-  {
-    # Replace 'nixos' with your actual system's hostname
-    nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux"; # Or "aarch64-linux" for ARM
+    inputs@{ self, nixpkgs, nixos-hardware, ... }:
+    let
+      username = "delta";
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+	config.allowUnfree = true;
+      };
+      lib = nixpkgs.lib;
+    in
+    {
+      nixosConfigurations = {
+        nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
         modules = [
 	  nixos-hardware.nixosModules.framework-amd-ai-300-series
           # Import your existing configuration.nix
 	  ./configuration.nix
-          ./hosts/stormlight/hardware-configuration.nix
+          ./hosts/stormlight
         ];
+	specialArgs = {
+          inherit self inputs username;
+	};
       };
     };
   };
