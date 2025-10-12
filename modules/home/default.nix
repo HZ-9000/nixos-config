@@ -2,6 +2,6 @@
 {
   imports = [
     ./nvim.nix                        # neovim editor
-    ./zsh                             # shell
+    ./zsh.nix                         # shell
   ];
-
+}
