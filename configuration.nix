@@ -7,8 +7,6 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      #<nixos-hardware/framework/13-inch/amd-ai-300-series>
-     # ./hardware-configuration.nix
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
