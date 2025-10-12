@@ -1,7 +1,6 @@
 {
   inputs,
   pkgs,
-  host,
   ...
 }:
 {
@@ -39,7 +38,7 @@
           color = "rgba(102, 92, 84, 0.33)";
           rounding = 10;
           border_color = "rgba(255, 255, 255, 0)";
-          position = "0, ${if host == "laptop" then "120" else "270"}";
+          position = "0, 120";
           halign = "center";
           valign = "bottom";
         }
@@ -54,7 +53,7 @@
           font_size = 115;
           font_family = "Maple Mono Bold";
           shadow_passes = 3;
-          position = "0, ${if host == "laptop" then "-25" else "-150"}";
+          position = "0, -25";
           halign = "center";
           valign = "top";
         }
@@ -66,7 +65,7 @@
           font_size = 18;
           font_family = "Maple Mono";
           shadow_passes = 3;
-          position = "0, ${if host == "laptop" then "-225" else "-350"}";
+          position = "0, -225";
           halign = "center";
           valign = "top";
         }
@@ -77,7 +76,7 @@
           color = "rgba(235, 219, 178, 1)";
           font_size = 15;
           font_family = "Maple Mono Bold";
-          position = "0, ${if host == "laptop" then "131" else "281"}";
+          position = "0, 131";
           halign = "center";
           valign = "bottom";
         }
