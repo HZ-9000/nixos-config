@@ -94,11 +94,6 @@
   # networking.firewall.enable = false;
   services.fwupd.enable = true;
 
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-  };
-
   programs.git = {
     enable = true;
   };  
