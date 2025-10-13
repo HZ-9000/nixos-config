@@ -6,6 +6,7 @@
     ./browser.nix
     ./hyprland
     ./waybar
+    ./ssh.nix
     ./vicinae/vicinae.nix
   ];
 }
