@@ -7,6 +7,7 @@
     ./hyprland
     ./waybar
     ./ssh.nix
+    ./gtk.nix
     ./vicinae/vicinae.nix
   ];
 }
