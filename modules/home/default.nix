@@ -8,6 +8,8 @@
     ./waybar
     ./ssh.nix
     ./gtk.nix
+    ./nemo.nix
+    ./xdg-mimes.nix
     ./vicinae/vicinae.nix
   ];
 }

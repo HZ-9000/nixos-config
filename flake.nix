@@ -56,6 +56,7 @@
           ./hosts/stormlight
         ];
 	specialArgs = {
+	  host = "laptop";
           inherit self inputs username;
 	};
       };
