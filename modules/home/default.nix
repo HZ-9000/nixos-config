@@ -9,6 +9,7 @@
     ./ssh.nix
     ./gtk.nix
     ./nemo.nix
+    ./rofi/rofi.nix
     ./xdg-mimes.nix
     ./vicinae/vicinae.nix
   ];
