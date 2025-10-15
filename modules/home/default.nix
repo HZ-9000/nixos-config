@@ -12,5 +12,6 @@
     ./rofi/rofi.nix
     ./xdg-mimes.nix
     ./vicinae/vicinae.nix
+    ./waypaper.nix
   ];
 }
