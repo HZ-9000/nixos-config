@@ -2,24 +2,28 @@
 {
   home.packages = with pkgs; [
     ## Lsp
-    nixd # nix
+    #nixd # nix
+
+    ## Editors 
+    zed-editor
+    code-cursor
 
     ## formating
-    shfmt
-    treefmt
-    nixfmt-rfc-style
+    #shfmt
+    #treefmt
+    #nixfmt-rfc-style
 
     ## C / C++
-    gcc
-    gdb
-    gef
+    #gcc
+    #gdb
+    #gef
     cmake
-    gnumake
-    valgrind
-    llvmPackages_20.clang-tools
+    #gnumake
+    #valgrind
+    #llvmPackages_20.clang-tools
 
     ## Python
-    python3
-    python312Packages.ipython
+    #python3
+    #python312Packages.ipython
   ];
 }
