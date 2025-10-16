@@ -11,15 +11,11 @@
     #video-trimmer
     #vlc
 
-    ## Office
-    #libreoffice
-    #gnome-calculator
-
     ## Utility
-    #dconf-editor
+    dconf-editor
     #gnome-disk-utility
-    #mission-center # GUI resources monitor
-    #zenity
+    mission-center # GUI resources monitor
+    zenity
 
     ## Level editor
     #ldtk

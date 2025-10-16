@@ -2,7 +2,7 @@
 {
   imports = [
     ./nvim.nix                        # neovim editor
-    ./zsh.nix                         # shell
+    ./zsh                             # shell
     ./browser.nix
     ./hyprland
     ./packages

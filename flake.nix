@@ -31,35 +31,46 @@
         systems.follows = "hyprland/systems";
       };
     };
-    
+
     vicinae.url = "github:vicinaehq/vicinae";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
   };
 
-  outputs = 
+  outputs =
     inputs@{ self, nixpkgs, nixos-hardware, ... }:
     let
       username = "delta";
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-	config.allowUnfree = true;
+        config.allowUnfree = true;
       };
       lib = nixpkgs.lib;
     in
     {
       nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [
-	      nixos-hardware.nixosModules.framework-amd-ai-300-series
-          ./hosts/stormlight
-        ];
-	specialArgs = {
-	  host = "laptop";
-          inherit self inputs username;
-	};
-      };
+        stormlight = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+     	      nixos-hardware.nixosModules.framework-amd-ai-300-series
+            ./hosts/stormlight
+          ];
+          specialArgs = {
+            host = "laptop";
+            inherit self inputs username;
+          };
+        };
+
+        storm = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./hosts/storm
+          ];
+          specialArgs = {
+            host = "desktop";
+            inherit self inputs username;
+          };
+        };
     };
   };
 }
