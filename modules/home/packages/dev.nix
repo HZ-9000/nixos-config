@@ -14,11 +14,11 @@
     #nixfmt-rfc-style
 
     ## C / C++
-    #gcc
-    #gdb
-    #gef
+    gcc
+    gdb
+    gef
     cmake
-    #gnumake
+    gnumake
     #valgrind
     #llvmPackages_20.clang-tools
 
