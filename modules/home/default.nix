@@ -7,7 +7,6 @@
     ./hyprland
     ./packages
     ./waybar
-    ./ssh.nix
     ./gtk.nix
     ./nemo.nix
     ./rofi/rofi.nix
