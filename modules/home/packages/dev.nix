@@ -2,9 +2,9 @@
 {
   home.packages = with pkgs; [
     ## Lsp
-    #nixd # nix
+    nixd # nix
 
-    ## Editors 
+    ## Editors
     zed-editor
     code-cursor
 
@@ -16,9 +16,9 @@
     ## C / C++
     gcc
     gdb
-    gef
+    #gef
     cmake
-    gnumake
+    #gnumake
     #valgrind
     #llvmPackages_20.clang-tools
 
