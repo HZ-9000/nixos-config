@@ -42,7 +42,7 @@
   };
 
   outputs =
-    inputs@{ self, nixpkgs, nixos-hardware, ... }:
+    inputs@{ self, nixpkgs, nixos-hardware, catppuccin, ... }:
     let
       username = "delta";
       system = "x86_64-linux";
@@ -59,6 +59,7 @@
           modules = [
      	      nixos-hardware.nixosModules.framework-amd-ai-300-series
             ./hosts/stormlight
+            catppuccin.homeModules.catppuccin
           ];
           specialArgs = {
             host = "laptop";

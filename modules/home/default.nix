@@ -8,7 +8,7 @@
     ./packages
     ./waybar
     ./gtk.nix
-    ./theme.nix
+    #./theme.nix
     ./nemo.nix
     ./rofi/rofi.nix
     ./xdg-mimes.nix

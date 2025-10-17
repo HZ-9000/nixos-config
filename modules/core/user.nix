@@ -12,8 +12,9 @@
     useGlobalPkgs = true;
     extraSpecialArgs = { inherit inputs username host; };
     users.${username} = {
-      imports = [ 
-        ./../home 
+      imports = [
+        ./../home
+        inputs.catppuccin.homeModules.catppuccin
       ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
