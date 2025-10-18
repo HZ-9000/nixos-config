@@ -1,9 +1,8 @@
-{ pkgs, config, catppuccin, ... }:
+{ pkgs, config, ... }:
 {
   imports = [
     ./hardware-configuration.nix
     ../../modules/core
-    catppuccin.homeModules.catppuccin
   ];
 
   environment.systemPackages = with pkgs; [

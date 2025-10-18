@@ -14,7 +14,6 @@
     users.${username} = {
       imports = [
         ./../home
-        inputs.catppuccin.homeModules.catppuccin
       ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";

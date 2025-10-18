@@ -32,10 +32,7 @@
       };
     };
 
-    catppuccin = {
-      url = "github:catppuccin/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    catppuccin.url = "github:catppuccin/nix";
 
     vicinae.url = "github:vicinaehq/vicinae";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
@@ -59,7 +56,7 @@
           modules = [
      	      nixos-hardware.nixosModules.framework-amd-ai-300-series
             ./hosts/stormlight
-            catppuccin.homeModules.catppuccin
+             catppuccin.nixosModules.catppuccin
           ];
           specialArgs = {
             host = "laptop";
