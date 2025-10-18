@@ -1,6 +1,6 @@
 { ... }:
 {
-  programs.waybar = {
+  programs.polybar = {
     enable = true;
   };
 }
