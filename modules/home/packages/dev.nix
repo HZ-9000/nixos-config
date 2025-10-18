@@ -5,7 +5,6 @@
     nixd # nix
 
     ## Editors
-    zed-editor
     code-cursor
 
     ## formating
@@ -26,4 +25,8 @@
     #python3
     #python312Packages.ipython
   ];
+
+  programs.zed-editor = {
+    enable = true;
+  };
 }

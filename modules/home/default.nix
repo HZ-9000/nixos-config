@@ -5,6 +5,7 @@
     ./zsh                             # shell
     ./browser.nix
     ./hyprland
+    ./ghostty.nix
     ./packages
     ./waybar
     ./gtk.nix

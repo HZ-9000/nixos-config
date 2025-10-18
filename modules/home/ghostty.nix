@@ -1,6 +1,6 @@
 { ... }:
 {
-  programs.rofi = {
+  programs.ghostty = {
     enable = true;
   };
 }
