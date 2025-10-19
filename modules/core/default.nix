@@ -11,6 +11,5 @@
     ./services.nix
     ./xserver.nix
     ./wayland.nix
-    ./git.nix
   ];
 }

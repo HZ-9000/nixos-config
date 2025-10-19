@@ -29,6 +29,7 @@
   environment.systemPackages = with pkgs; [
     wget
     git
+    gh
   ];
 
   time.timeZone = "America/Los_Angeles";

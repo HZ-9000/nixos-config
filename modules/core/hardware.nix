@@ -7,8 +7,6 @@ in
     graphics = {
       enable = true;
       package = hyprland-pkgs.mesa;
-      extraPackages = with pkgs; [
-      ];
     };
   };
   hardware.enableRedistributableFirmware = true;
