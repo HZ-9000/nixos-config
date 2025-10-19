@@ -17,8 +17,7 @@ in
         #"wl-clip-persist --clipboard both &"
         #"wl-paste --watch cliphist store &"
         "waybar &"
-        #"swaync &"
-        "vicinae server &"
+        "swaync &"
         "hyprctl setcursor Bibata-Modern-Ice 24 &"
         "swww-daemon &"
 
