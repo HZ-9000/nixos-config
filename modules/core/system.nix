@@ -30,6 +30,7 @@
     wget
     git
     gh
+    lua
   ];
 
   time.timeZone = "America/Los_Angeles";
