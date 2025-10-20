@@ -11,5 +11,6 @@
     ./services.nix
     ./xserver.nix
     ./wayland.nix
+    ./program.nix
   ];
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.zsh = {
     enable = true;
@@ -7,7 +7,7 @@
     syntaxHighlighting.enable = true;
   };
 
-  programs.nushell = {
+  programs.starship = {
     enable = true;
   };
 

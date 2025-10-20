@@ -13,7 +13,7 @@ in
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
         "nm-applet &"
-        #"poweralertd &"
+        "poweralertd &"
         #"wl-clip-persist --clipboard both &"
         #"wl-paste --watch cliphist store &"
         "waybar &"
@@ -24,12 +24,10 @@ in
         "hyprlock"
 
         "${terminal} --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
-        "[workspace 1 silent] ${browser}"
-        "[workspace 2 silent] ${terminal}"
       ];
 
       input = {
-        kb_layout = "us,fr";
+        kb_layout = "us";
         kb_options = "grp:alt_caps_toggle";
         numlock_by_default = true;
         repeat_delay = 300;

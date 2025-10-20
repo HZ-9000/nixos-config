@@ -1,7 +1,7 @@
 { ... }:
 let
   custom = {
-    font = "Maple Mono";
+    font = "JetBrainsMono Nerd Font";
     font_size = "18px";
     font_weight = "bold";
     text_color = "#cdd6f4";

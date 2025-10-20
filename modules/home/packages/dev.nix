@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     ## Lsp
     nixd # nix
-
+    nil
     ## Editors
     code-cursor
 
