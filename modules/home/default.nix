@@ -1,8 +1,9 @@
 { ... }:
 {
   imports = [
-    ./nvim.nix                        # neovim editor
-    ./zsh                             # shell
+    ./btop.nix
+    ./nvim.nix # neovim editor
+    ./zsh # shell
     ./browser.nix
     ./hyprland
     ./ghostty.nix
@@ -11,9 +12,9 @@
     ./gtk.nix
     ./theme.nix
     ./nemo.nix
+    ./swaync/swaync.nix
     ./rofi/rofi.nix
     ./xdg-mimes.nix
-    ./vicinae/vicinae.nix
     ./waypaper.nix
   ];
 }

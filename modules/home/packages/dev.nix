@@ -3,27 +3,27 @@
   home.packages = with pkgs; [
     ## Lsp
     nixd # nix
-    nil
+    #nil
     ## Editors
     code-cursor
 
     ## formating
-    #shfmt
-    #treefmt
-    #nixfmt-rfc-style
+    shfmt
+    treefmt
+    nixfmt-rfc-style
 
     ## C / C++
     gcc
     gdb
     #gef
     cmake
-    #gnumake
-    #valgrind
+    gnumake
+    valgrind
     #llvmPackages_20.clang-tools
 
     ## Python
-    #python3
-    #python312Packages.ipython
+    python3
+    python312Packages.ipython
   ];
 
   programs.zed-editor = {

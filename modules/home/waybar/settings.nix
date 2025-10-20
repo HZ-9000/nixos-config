@@ -92,12 +92,6 @@ in
       interval = 2;
       on-click-right = "hyprctl dispatch exec '[float; center; size 950 650] kitty --override font_size=14 --title float_kitty btop'";
     };
-    disk = {
-      # path = "/";
-      format = "<span foreground='${orange}'>󰋊 </span>{percentage_used}%";
-      interval = 60;
-      on-click-right = "hyprctl dispatch exec '[float; center; size 950 650] kitty --override font_size=14 --title float_kitty btop'";
-    };
     network = {
       format-wifi = "<span foreground='${magenta}'> </span> {signalStrength}%";
       format-ethernet = "<span foreground='${magenta}'>󰀂 </span>";

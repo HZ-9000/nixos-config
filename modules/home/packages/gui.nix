@@ -2,23 +2,14 @@
 {
   home.packages = with pkgs; [
     ## Multimedia
-    #audacity
-    #gimp
-    #media-downloader
-    #obs-studio
-    #pavucontrol
-    #soundwireserver
-    #video-trimmer
-    #vlc
+    audacity
+    gimp
+    obs-studio
 
     ## Utility
     dconf-editor
-    #gnome-disk-utility
+    gnome-disk-utility
     mission-center # GUI resources monitor
     zenity
-
-    ## Level editor
-    #ldtk
-    #tiled
   ];
 }
