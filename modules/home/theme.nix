@@ -1,4 +1,4 @@
-{ inputs,... }:
+{ inputs, ... }:
 {
   # https://github.com/catppuccin/nix
   imports = [
@@ -11,6 +11,9 @@
     # one of "latte", "frappe", "macchiato", "mocha"
     flavor = "mocha";
     # one of "blue", "flamingo", "green", "lavender", "maroon", "mauve", "peach", "pink", "red", "rosewater", "sapphire", "sky", "teal", "yellow"
-    accent = "pink";
+    accent = "green";
+    starship = {
+      enable = false;
+    };
   };
 }

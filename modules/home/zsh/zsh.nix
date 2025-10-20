@@ -11,6 +11,8 @@
     enable = true;
   };
 
+  xdg.configFile."starship.toml".source = ./starship.toml;
+
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;
