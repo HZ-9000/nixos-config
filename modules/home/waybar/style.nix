@@ -23,19 +23,16 @@ in
 {
   programs.waybar.style = with custom; ''
     * {
-      border: none;
-      border-radius: 0px;
-      padding: 0;
-      margin: 0;
       font-family: ${font};
       font-weight: ${font_weight};
-      opacity: ${opacity};
       font-size: ${font_size};
+      color: ${text_color};
     }
 
     window#waybar {
-      background: ${background_1};
-      border-top: 1px solid ${border_color};
+      background-color: rgba(0, 0, 0, 0);
+      border: none;
+      box-shadow: none;
     }
 
     tooltip {

@@ -1,4 +1,4 @@
-{ host, ... }:
+{ ... }:
 let
   custom = {
     font = "JetBrainsMono";
@@ -23,25 +23,20 @@ in
   programs.waybar.settings.mainBar = with custom; {
     position = "top";
     layer = "top";
-    height = 28;
-    margin-top = 0;
-    margin-bottom = 0;
-    margin-left = 0;
-    margin-right = 0;
+    height = 50;
+    spacing = 0;
+
     modules-left = [
       "custom/launcher"
-      "hyprland/workspaces"
-      "tray"
-    ];
-    modules-center = [ "clock" ];
-    modules-right = [
       "cpu"
       "memory"
-      (if (host == "desktop") then "disk" else "")
-      "pulseaudio"
+    ];
+    modules-center = [ "hyprland/workspaces" ];
+    modules-right = [
       "network"
       "battery"
-      "hyprland/language"
+      "pulseaudio"
+      "clock"
       "custom/notification"
       "custom/power-menu"
     ];
@@ -61,24 +56,6 @@ in
       disable-scroll = true;
       format = "{icon}";
       on-click = "activate";
-      format-icons = {
-        "1" = "1";
-        "2" = "2";
-        "3" = "3";
-        "4" = "4";
-        "5" = "5";
-        "6" = "6";
-        "7" = "7";
-        "8" = "8";
-        "9" = "9";
-        "10" = "10";
-        sort-by-number = true;
-      };
-      persistent-workspaces = {
-        "1" = [ ];
-        "2" = [ ];
-        "3" = [ ];
-      };
     };
     cpu = {
       format = "<span foreground='${green}'> </span> {usage}%";
@@ -98,10 +75,6 @@ in
       tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
       format-linked = "{ifname} (No IP)";
       format-disconnected = "<span foreground='${magenta}'>󰖪 </span>";
-    };
-    tray = {
-      icon-size = 20;
-      spacing = 8;
     };
     pulseaudio = {
       format = "{icon} {volume}%";
@@ -133,14 +106,6 @@ in
       tooltip = true;
       tooltip-format = "{time}";
     };
-    "hyprland/language" = {
-      tooltip = true;
-      tooltip-format = "Keyboard layout";
-      format = "<span foreground='#FABD2F'> </span> {}";
-      format-fr = "FR";
-      format-en = "US";
-      on-click = "hyprctl switchxkblayout at-translated-set-2-keyboard next";
-    };
     "custom/launcher" = {
       format = "";
       on-click = "random-wallpaper";
@@ -171,7 +136,6 @@ in
     };
     "custom/power-menu" = {
       tooltip = true;
-      tooltip-format = "Power menu";
       format = "<span foreground='${red}'> </span>";
       on-click = "power-menu";
     };
