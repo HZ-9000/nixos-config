@@ -1,4 +1,4 @@
-{ ... }:
+{ host, ... }:
 let
   custom = {
     font = "JetBrainsMono";
@@ -23,20 +23,21 @@ in
   programs.waybar.settings.mainBar = with custom; {
     position = "top";
     layer = "top";
-    height = 50;
-    spacing = 0;
-
+    height = 28;
+    margin-top = 0;
+    margin-bottom = 0;
+    margin-left = 0;
+    margin-right = 0;
     modules-left = [
       "custom/launcher"
-      "cpu"
-      "memory"
+      "hyprland/workspaces"
+      "tray"
     ];
-    modules-center = [ "hyprland/workspaces" ];
+    modules-center = [ "clock" ];
     modules-right = [
+      "pulseaudio"
       "network"
       "battery"
-      "pulseaudio"
-      "clock"
       "custom/notification"
       "custom/power-menu"
     ];
@@ -56,18 +57,24 @@ in
       disable-scroll = true;
       format = "{icon}";
       on-click = "activate";
-    };
-    cpu = {
-      format = "<span foreground='${green}'> </span> {usage}%";
-      format-alt = "<span foreground='${green}'> </span> {avg_frequency} GHz";
-      interval = 2;
-      on-click-right = "hyprctl dispatch exec '[float; center; size 950 650] kitty --override font_size=14 --title float_kitty btop'";
-    };
-    memory = {
-      format = "<span foreground='${cyan}'>󰟜 </span>{}%";
-      format-alt = "<span foreground='${cyan}'>󰟜 </span>{used} GiB"; # 
-      interval = 2;
-      on-click-right = "hyprctl dispatch exec '[float; center; size 950 650] kitty --override font_size=14 --title float_kitty btop'";
+      format-icons = {
+        "1" = "1";
+        "2" = "2";
+        "3" = "3";
+        "4" = "4";
+        "5" = "5";
+        "6" = "6";
+        "7" = "7";
+        "8" = "8";
+        "9" = "9";
+        "10" = "10";
+        sort-by-number = true;
+      };
+      persistent-workspaces = {
+        "1" = [ ];
+        "2" = [ ];
+        "3" = [ ];
+      };
     };
     network = {
       format-wifi = "<span foreground='${magenta}'> </span> {signalStrength}%";
@@ -75,6 +82,10 @@ in
       tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
       format-linked = "{ifname} (No IP)";
       format-disconnected = "<span foreground='${magenta}'>󰖪 </span>";
+    };
+    tray = {
+      icon-size = 20;
+      spacing = 8;
     };
     pulseaudio = {
       format = "{icon} {volume}%";
@@ -136,6 +147,7 @@ in
     };
     "custom/power-menu" = {
       tooltip = true;
+      tooltip-format = "Power menu";
       format = "<span foreground='${red}'> </span>";
       on-click = "power-menu";
     };

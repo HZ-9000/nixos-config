@@ -23,16 +23,19 @@ in
 {
   programs.waybar.style = with custom; ''
     * {
+      border: none;
+      border-radius: 0px;
+      padding: 0;
+      margin: 0;
       font-family: ${font};
       font-weight: ${font_weight};
+      opacity: ${opacity};
       font-size: ${font_size};
-      color: ${text_color};
     }
 
     window#waybar {
-      background-color: rgba(0, 0, 0, 0);
-      border: none;
-      box-shadow: none;
+      background: ${background_1};
+      border-top: 1px solid ${border_color};
     }
 
     tooltip {
@@ -77,14 +80,14 @@ in
       padding: 1px;
     }
 
-    #pulseaudio, #network, #cpu, #memory, #disk, #battery, #language, #custom-notification, #custom-power-menu {
+    #pulseaudio, #network, #battery, #custom-notification, #custom-power-menu {
       padding-left: 5px;
       padding-right: 5px;
       margin-right: 10px;
       color: ${text_color};
     }
 
-    #pulseaudio, #language, #custom-notification {
+    #pulseaudio, #custom-notification {
       margin-left: 15px;
     }
 
