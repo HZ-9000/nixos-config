@@ -31,6 +31,7 @@
     git
     gh
     lua
+    brightnessctl
   ];
 
   time.timeZone = "America/Los_Angeles";
