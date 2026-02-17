@@ -51,6 +51,17 @@
     in
     {
       nixosConfigurations = {
+        parallels = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./hosts/parallels
+          ];
+          specialArgs = {
+            host = "parallels";
+            inherit self inputs username;
+          };
+        };
+
         stormlight = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
