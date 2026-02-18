@@ -13,7 +13,7 @@
     extraSpecialArgs = { inherit inputs username host; };
     users.${username} = {
       imports = [
-        ./../home
+        # ./../home
       ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
@@ -31,6 +31,7 @@
       "wheel"
     ];
     shell = pkgs.zsh;
+    initialPassword = "root";
   };
   nix.settings.allowed-users = [ "${username}" ];
 }

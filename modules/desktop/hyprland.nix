@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 {
   # Enable Hyprland at system level
@@ -32,11 +32,12 @@
     cliphist
     grim
     hypridle
-    hyprlock
+    # hyprlock
     hyprpicker
     hyprsunset
     hyprutils
     hyprwayland-scanner
+    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
     kitty
     slurp
     swaynotificationcenter

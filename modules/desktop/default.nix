@@ -2,9 +2,15 @@
 {
   imports = [
     ./hyprland.nix
-    ./config.nix
-    ./hyprlock.nix
-    ./variables.nix
+    ./display-manager.nix
+    ./system.nix
+    ./pipewire.nix
+    ./network.nix
+    ./services.nix
+    ./user.nix
+    # ./hyprlock.nix
     ./bluetooth.nix
+    ./bootloader.nix
+    ./nh.nix
   ];
 }
