@@ -32,7 +32,7 @@
     cliphist
     grim
     hypridle
-    # hyprlock
+    hyprlock
     hyprpicker
     hyprsunset
     hyprutils

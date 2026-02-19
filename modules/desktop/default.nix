@@ -12,5 +12,6 @@
     ./bluetooth.nix
     ./bootloader.nix
     ./nh.nix
+    ./zsh.nix
   ];
 }
