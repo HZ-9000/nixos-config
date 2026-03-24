@@ -2,6 +2,5 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/desktop
-    ../../modules/home-manager
   ];
 }

@@ -8,20 +8,20 @@
 }:
 
 {
-  imports = [
-    inputs.stylix.homeModules.stylix
-    ./dotfiles.nix
-  ];
+  home-manager.users.${username} = {
+    imports = [
+      ./dotfiles.nix
+    ];
 
-  home.username = username;
-  home.homeDirectory = "/home/${username}";
-  home.stateVersion = "25.05";
+    home.username = username;
+    home.homeDirectory = "/home/${username}";
+    home.stateVersion = "25.05";
 
-  # Let home-manager manage itself
-  programs.home-manager.enable = true;
+    programs.home-manager.enable = true;
 
-  programs.nix-index = {
-    enable = true;
-    enableBashIntegration = true;
+    programs.nix-index = {
+      enable = true;
+      enableBashIntegration = true;
+    };
   };
 }
