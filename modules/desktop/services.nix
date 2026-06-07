@@ -22,5 +22,9 @@
       # don’t shutdown when power button is short-pressed
       HandlePowerKey = "ignore";
     };
+
+    openssh.enable = true;
+    openssh.settings.PasswordAuthentication = true;
+    openssh.settings.PermitRootLogin = "yes";
   };
 }

@@ -44,20 +44,21 @@
   };
 
   outputs =
-    inputs@{ self, nixpkgs, nixos-hardware, catppuccin, ... }:
+    inputs@{
+      self,
+      nixpkgs,
+      nixos-hardware,
+      catppuccin,
+      ...
+    }:
     let
       username = "delta";
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-      lib = nixpkgs.lib;
     in
     {
       nixosConfigurations = {
         parallels = nixpkgs.lib.nixosSystem {
-          inherit system;
+          system = "aarch64-linux";
           modules = [
             ./hosts/parallels
           ];
@@ -70,9 +71,9 @@
         stormlight = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-     	      nixos-hardware.nixosModules.framework-amd-ai-300-series
+            nixos-hardware.nixosModules.framework-amd-ai-300-series
             ./hosts/stormlight
-             catppuccin.nixosModules.catppuccin
+            catppuccin.nixosModules.catppuccin
           ];
           specialArgs = {
             host = "laptop";
@@ -90,6 +91,6 @@
             inherit self inputs username;
           };
         };
+      };
     };
-  };
 }

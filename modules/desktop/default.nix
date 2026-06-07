@@ -1,10 +1,11 @@
-{ inputs, ... }:
+{ ... }:
 {
   imports = [
     ./hyprland.nix
     ./display-manager.nix
     ./system.nix
     ./pipewire.nix
+    ./program.nix
     ./network.nix
     ./services.nix
     ./user.nix
