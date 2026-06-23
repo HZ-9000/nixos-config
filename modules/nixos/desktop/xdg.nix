@@ -6,11 +6,10 @@
     settings =
       let
         my_terminal_desktop = [
-          # NOTE: We have add these packages at user level
-          "Alacritty.desktop"
+          "com.mitchellh.ghostty.desktop"
           "kitty.desktop"
           "foot.desktop"
-          "com.mitchellh.ghostty.desktop"
+          "Alacritty.desktop"
         ];
       in
       {
@@ -18,7 +17,6 @@
           "com.raggesilver.BlackBox.desktop"
           "org.gnome.Terminal.desktop"
         ];
-        niri = my_terminal_desktop;
         default = my_terminal_desktop;
       };
   };
@@ -30,30 +28,6 @@
     icons.enable = lib.mkDefault true;
   };
 
-  xdg.portal = {
-    enable = true;
-
-    config = {
-      common = {
-        # Use xdg-desktop-portal-gtk for every portal interface...
-        default = [
-          "gtk"
-          "gnome"
-        ];
-      };
-    };
-
-    # Sets environment variable NIXOS_XDG_OPEN_USE_PORTAL to 1
-    # This will make xdg-open use the portal to open programs,
-    # which resolves bugs involving programs opening inside FHS envs or with unexpected env vars set from wrappers.
-    # xdg-open is used by almost all programs to open a unknown file/uri
-    # alacritty as an example, it use xdg-open as default, but you can also custom this behavior
-    xdgOpenUsePortal = true;
-
-    # ls /run/current-system/sw/share/xdg-desktop-portal/portals/
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk # for provides file picker / OpenURI
-      xdg-desktop-portal-gnome # for screensharing
-    ];
-  };
+  # xdg.portal is configured in hyprland.nix — do not add it here to avoid
+  # duplicate portal packages and conflicting config values.
 }

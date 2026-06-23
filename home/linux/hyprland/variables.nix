@@ -1,7 +1,9 @@
 { ... }:
 {
   home.sessionVariables = {
-    NIXOS_OZONE_WL = 1;
+    # MOZ_ENABLE_WAYLAND and NIXOS_OZONE_WL are set system-wide in
+    # modules/nixos/desktop/hyprland.nix — no need to repeat them here.
+
     __GL_GSYNC_ALLOWED = 0;
     __GL_VRR_ALLOWED = 0;
     SSH_AUTH_SOCK = "/run/user/1000/ssh-agent";
@@ -15,7 +17,6 @@
     QT_QPA_PLATFORM = "wayland";
     QT_QPA_PLATFORMTHEME = "qt5ct";
     QT_STYLE_OVERRIDE = "kvantum";
-    MOZ_ENABLE_WAYLAND = 1;
     WLR_BACKEND = "vulkan";
     WLR_RENDERER = "vulkan";
     WLR_NO_HARDWARE_CURSORS = 1;

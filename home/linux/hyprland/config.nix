@@ -1,30 +1,28 @@
-{ ... }:
+{ lib, ... }:
 let
   browser = "zen-beta";
   terminal = "ghostty";
+  inherit (lib.generators) mkLuaInline;
+
+  mkBind = key: dispatcher: {
+    _args = [ key (mkLuaInline dispatcher) ];
+  };
+
+  mkBindWithOpts = key: dispatcher: opts: {
+    _args = [ key (mkLuaInline dispatcher) opts ];
+  };
+
+  modKey = key: mkLuaInline ''mainMod .. " + ${key}"'';
+  modBind = key: dispatcher: mkBind (modKey key) dispatcher;
+  modBindWithOpts = key: dispatcher: opts: mkBindWithOpts (modKey key) dispatcher opts;
 in
 {
-  wayland.windowManager.hyprland = {
-    settings = {
-      # autostart
-      exec-once = [
-        # "hash dbus-update-activation-environment 2>/dev/null"
-        "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+  wayland.windowManager.hyprland.settings = {
+    mainMod = { _var = "SUPER"; };
+    browser = { _var = browser; };
+    terminal = { _var = terminal; };
 
-        "nm-applet &"
-        "poweralertd &"
-        #"wl-clip-persist --clipboard both &"
-        #"wl-paste --watch cliphist store &"
-        "waybar &"
-        "swaync &"
-        "hyprctl setcursor Bibata-Modern-Ice 24 &"
-        "swww-daemon &"
-        "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh &"
-
-        "${terminal} --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
-      ];
-
+    config = {
       input = {
         kb_layout = "us";
         kb_options = "grp:alt_caps_toggle";
@@ -40,14 +38,12 @@ in
       };
 
       general = {
-        "$mainMod" = "SUPER";
         layout = "dwindle";
         gaps_in = 6;
         gaps_out = 12;
         border_size = 2;
         "col.active_border" = "rgb(98971A) rgb(CC241D) 45deg";
         "col.inactive_border" = "0x00000000";
-        # border_part_of_window = false;
         no_border_on_floating = false;
       };
 
@@ -79,10 +75,6 @@ in
 
       decoration = {
         rounding = 0;
-        # active_opacity = 0.90;
-        # inactive_opacity = 0.90;
-        # fullscreen_opacity = 1.0;
-
         blur = {
           enabled = true;
           size = 3;
@@ -94,10 +86,8 @@ in
           new_optimizations = true;
           xray = true;
         };
-
         shadow = {
           enabled = true;
-
           ignore_window = true;
           offset = "0 2";
           range = 20;
@@ -106,288 +96,383 @@ in
         };
       };
 
-      animations = {
-        enabled = true;
-
-        bezier = [
-          "fluent_decel, 0, 0.2, 0.4, 1"
-          "easeOutCirc, 0, 0.55, 0.45, 1"
-          "easeOutCubic, 0.33, 1, 0.68, 1"
-          "fade_curve, 0, 0.55, 0.45, 1"
-        ];
-
-        animation = [
-          # name, enable, speed, curve, style
-
-          # Windows
-          "windowsIn,   0, 4, easeOutCubic,  popin 20%" # window open
-          "windowsOut,  0, 4, fluent_decel,  popin 80%" # window close.
-          "windowsMove, 1, 2, fluent_decel, slide" # everything in between, moving, dragging, resizing.
-
-          # Fade
-          "fadeIn,      1, 3,   fade_curve" # fade in (open) -> layers and windows
-          "fadeOut,     1, 3,   fade_curve" # fade out (close) -> layers and windows
-          "fadeSwitch,  0, 1,   easeOutCirc" # fade on changing activewindow and its opacity
-          "fadeShadow,  1, 10,  easeOutCirc" # fade on changing activewindow for shadows
-          "fadeDim,     1, 4,   fluent_decel" # the easing of the dimming of inactive windows
-          # "border,      1, 2.7, easeOutCirc"  # for animating the border's color switch speed
-          # "borderangle, 1, 30,  fluent_decel, once" # for animating the border's gradient angle - styles: once (default), loop
-          "workspaces,  1, 4,   easeOutCubic, fade" # styles: slide, slidevert, fade, slidefade, slidefadevert
-        ];
-      };
+      animations.enabled = true;
 
       binds = {
         movefocus_cycles_fullscreen = true;
       };
 
-      bind = [
-        # show keybinds list
-        "$mainMod, F1, exec, show-keybinds"
-
-        # keybindings
-        "$mainMod, Return, exec, ${terminal} --gtk-single-instance=true"
-        "ALT, Return, exec, [float; size 1111 700] ${terminal}"
-        "$mainMod SHIFT, Return, exec, [fullscreen] ${terminal}"
-        "$mainMod, B, exec, [workspace 1 silent] ${browser}"
-        "$mainMod, Q, killactive,"
-        "$mainMod, F, fullscreen, 0"
-        "$mainMod SHIFT, F, fullscreen, 1"
-        "$mainMod, Space, exec, toggle-float"
-        "$mainMod, D, exec, rofi -show drun"
-        "$mainMod SHIFT, D, exec, webcord --enable-features=UseOzonePlatform --ozone-platform=wayland"
-        "$mainMod SHIFT, S, exec, hyprctl dispatch exec '[workspace 5 silent] SoundWireServer'"
-        # "$mainMod, Escape, exec, swaylock"
-        # "ALT, Escape, exec, hyprlock"
-        "$mainMod SHIFT, Escape, exec, power-menu"
-        "$mainMod, P, pseudo,"
-        "$mainMod, X, togglesplit,"
-        "$mainMod, T, exec, toggle-oppacity"
-        "$mainMod, E, exec, nemo"
-        "ALT, E, exec, hyprctl dispatch exec '[float; size 1111 700] nemo'"
-        "$mainMod SHIFT, B, exec, toggle-waybar"
-        "$mainMod, C ,exec, hyprpicker -a"
-        "$mainMod, W,exec, wallpaper-picker"
-        "$mainMod SHIFT, W,exec, hyprctl dispatch exec '[float; size 925 615] waypaper'"
-        "$mainMod, N, exec, swaync-client -t -sw"
-        "CTRL SHIFT, Escape, exec, hyprctl dispatch exec '[workspace 9] missioncenter'"
-        "$mainMod, equal, exec, woomer"
-        # "$mainMod SHIFT, W, exec, vm-start"
-
-        # screenshot
-        ",Print, exec, screenshot --copy"
-        "$mainMod, Print, exec, screenshot --save"
-        "$mainMod SHIFT, Print, exec, screenshot --swappy"
-
-        # switch focus
-        "$mainMod, left,  movefocus, l"
-        "$mainMod, right, movefocus, r"
-        "$mainMod, up,    movefocus, u"
-        "$mainMod, down,  movefocus, d"
-        "$mainMod, h, movefocus, l"
-        "$mainMod, j, movefocus, d"
-        "$mainMod, k, movefocus, u"
-        "$mainMod, l, movefocus, r"
-
-        "$mainMod, left,  alterzorder, top"
-        "$mainMod, right, alterzorder, top"
-        "$mainMod, up,    alterzorder, top"
-        "$mainMod, down,  alterzorder, top"
-        "$mainMod, h, alterzorder, top"
-        "$mainMod, j, alterzorder, top"
-        "$mainMod, k, alterzorder, top"
-        "$mainMod, l, alterzorder, top"
-
-        "CTRL ALT, up, exec, hyprctl dispatch focuswindow floating"
-        "CTRL ALT, down, exec, hyprctl dispatch focuswindow tiled"
-
-        # switch workspace
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
-
-        # same as above, but switch to the workspace
-        "$mainMod SHIFT, 1, movetoworkspacesilent, 1" # movetoworkspacesilent
-        "$mainMod SHIFT, 2, movetoworkspacesilent, 2"
-        "$mainMod SHIFT, 3, movetoworkspacesilent, 3"
-        "$mainMod SHIFT, 4, movetoworkspacesilent, 4"
-        "$mainMod SHIFT, 5, movetoworkspacesilent, 5"
-        "$mainMod SHIFT, 6, movetoworkspacesilent, 6"
-        "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
-        "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
-        "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
-        "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
-        "$mainMod CTRL, c, movetoworkspace, empty"
-
-        # window control
-        "$mainMod SHIFT, left, movewindow, l"
-        "$mainMod SHIFT, right, movewindow, r"
-        "$mainMod SHIFT, up, movewindow, u"
-        "$mainMod SHIFT, down, movewindow, d"
-        "$mainMod SHIFT, h, movewindow, l"
-        "$mainMod SHIFT, j, movewindow, d"
-        "$mainMod SHIFT, k, movewindow, u"
-        "$mainMod SHIFT, l, movewindow, r"
-
-        "$mainMod CTRL, left, resizeactive, -80 0"
-        "$mainMod CTRL, right, resizeactive, 80 0"
-        "$mainMod CTRL, up, resizeactive, 0 -80"
-        "$mainMod CTRL, down, resizeactive, 0 80"
-        "$mainMod CTRL, h, resizeactive, -80 0"
-        "$mainMod CTRL, j, resizeactive, 0 80"
-        "$mainMod CTRL, k, resizeactive, 0 -80"
-        "$mainMod CTRL, l, resizeactive, 80 0"
-
-        "$mainMod ALT, left, moveactive,  -80 0"
-        "$mainMod ALT, right, moveactive, 80 0"
-        "$mainMod ALT, up, moveactive, 0 -80"
-        "$mainMod ALT, down, moveactive, 0 80"
-        "$mainMod ALT, h, moveactive,  -80 0"
-        "$mainMod ALT, j, moveactive, 0 80"
-        "$mainMod ALT, k, moveactive, 0 -80"
-        "$mainMod ALT, l, moveactive, 80 0"
-
-        # media and volume controls
-        # ",XF86AudioMute,exec, pamixer -t"
-        ",XF86AudioPlay,exec, playerctl play-pause"
-        ",XF86AudioNext,exec, playerctl next"
-        ",XF86AudioPrev,exec, playerctl previous"
-        ",XF86AudioStop,exec, playerctl stop"
-
-        "$mainMod, mouse_down, workspace, e-1"
-        "$mainMod, mouse_up, workspace, e+1"
-
-        # clipboard manager
-        "$mainMod, V, exec, vicinae vicinae://extensions/vicinae/clipboard/history"
-      ];
-
-      # # binds active in lockscreen
-      # bindl = [
-      #   # laptop brigthness
-      #   ",XF86MonBrightnessUp, exec, brightnessctl set 5%+"
-      #   ",XF86MonBrightnessDown, exec, brightnessctl set 5%-"
-      #   "$mainMod, XF86MonBrightnessUp, exec, brightnessctl set 100%+"
-      #   "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
-      # ];
-
-      # # binds that repeat when held
-      # binde = [
-      #   ",XF86AudioRaiseVolume,exec, pamixer -i 2"
-      #   ",XF86AudioLowerVolume,exec, pamixer -d 2"
-      # ];
-
-      # mouse binding
-      bindm = [
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
-
-      # windowrule
-      windowrule = [
-        "float,class:^(Viewnior)$"
-        "float,class:^(imv)$"
-        "float,class:^(mpv)$"
-        "tile,class:^(Aseprite)$"
-        "pin,class:^(rofi)$"
-        "pin,class:^(waypaper)$"
-        # "idleinhibit focus,mpv"
-        # "float,udiskie"
-        "float,title:^(Transmission)$"
-        "float,title:^(Volume Control)$"
-        "float,title:^(Firefox — Sharing Indicator)$"
-        "move 0 0,title:^(Firefox — Sharing Indicator)$"
-        "size 700 450,title:^(Volume Control)$"
-        "move 40 55%,title:^(Volume Control)$"
-
-        "float, title:^(Picture-in-Picture)$"
-        "opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$"
-        "pin, title:^(Picture-in-Picture)$"
-        "opacity 1.0 override 1.0 override, title:^(.*imv.*)$"
-        "opacity 1.0 override 1.0 override, title:^(.*mpv.*)$"
-        "opacity 1.0 override 1.0 override, class:(Aseprite)"
-        "opacity 1.0 override 1.0 override, class:(Unity)"
-        "opacity 1.0 override 1.0 override, class:(zen)"
-        "opacity 1.0 override 1.0 override, class:(evince)"
-        "workspace 1, class:^(${browser})$"
-        "workspace 3, class:^(evince)$"
-        "workspace 4, class:^(Gimp-2.10)$"
-        "workspace 4, class:^(Aseprite)$"
-        "workspace 5, class:^(Audacious)$"
-        "workspace 5, class:^(Spotify)$"
-        "workspace 8, class:^(com.obsproject.Studio)$"
-        "workspace 10, class:^(discord)$"
-        "workspace 10, class:^(WebCord)$"
-        "idleinhibit focus, class:^(mpv)$"
-        "idleinhibit fullscreen, class:^(firefox)$"
-        "float,class:^(org.gnome.Calculator)$"
-        "float,class:^(waypaper)$"
-        "float,class:^(zenity)$"
-        "size 850 500,class:^(zenity)$"
-        "size 725 330,class:^(SoundWireServer)$"
-        "float,class:^(org.gnome.FileRoller)$"
-        "float,class:^(org.pulseaudio.pavucontrol)$"
-        "float,class:^(SoundWireServer)$"
-        "float,class:^(.sameboy-wrapped)$"
-        "float,class:^(file_progress)$"
-        "float,class:^(confirm)$"
-        "float,class:^(dialog)$"
-        "float,class:^(download)$"
-        "float,class:^(notification)$"
-        "float,class:^(error)$"
-        "float,class:^(confirmreset)$"
-        "float,title:^(Open File)$"
-        "float,title:^(File Upload)$"
-        "float,title:^(branchdialog)$"
-        "float,title:^(Confirm to replace files)$"
-        "float,title:^(File Operation Progress)$"
-
-        "opacity 0.0 override,class:^(xwaylandvideobridge)$"
-        "noanim,class:^(xwaylandvideobridge)$"
-        "noinitialfocus,class:^(xwaylandvideobridge)$"
-        "maxsize 1 1,class:^(xwaylandvideobridge)$"
-        "noblur,class:^(xwaylandvideobridge)$"
-
-        # No gaps when only
-        "bordersize 0, floating:0, onworkspace:w[t1]"
-        "rounding 0, floating:0, onworkspace:w[t1]"
-        "bordersize 0, floating:0, onworkspace:w[tg1]"
-        "rounding 0, floating:0, onworkspace:w[tg1]"
-        "bordersize 0, floating:0, onworkspace:f[1]"
-        "rounding 0, floating:0, onworkspace:f[1]"
-
-        # "maxsize 1111 700, floating: 1"
-        # "center, floating: 1"
-
-        # Remove context menu transparency in chromium based apps
-        "opaque,class:^()$,title:^()$"
-        "noshadow,class:^()$,title:^()$"
-        "noblur,class:^()$,title:^()$"
-      ];
-
-      layerrule = [
-        "dimaround, vicinae"
-        "dimaround, rofi"
-        "dimaround, swaync-control-center"
-      ];
-
-      # No gaps when only
-      workspace = [
-        "w[t1], gapsout:0, gapsin:0"
-        "w[tg1], gapsout:0, gapsin:0"
-        "f[1], gapsout:0, gapsin:0"
-      ];
-
-      monitor = [ "=,preferred,auto,auto" ];
-
       xwayland = {
         force_zero_scaling = true;
       };
     };
+
+    curve = [
+      {
+        _args = [
+          "fluent_decel"
+          {
+            type = "bezier";
+            points = [
+              [ 0 0.2 ]
+              [ 0.4 1 ]
+            ];
+          }
+        ];
+      }
+      {
+        _args = [
+          "easeOutCirc"
+          {
+            type = "bezier";
+            points = [
+              [ 0 0.55 ]
+              [ 0.45 1 ]
+            ];
+          }
+        ];
+      }
+      {
+        _args = [
+          "easeOutCubic"
+          {
+            type = "bezier";
+            points = [
+              [ 0.33 1 ]
+              [ 0.68 1 ]
+            ];
+          }
+        ];
+      }
+      {
+        _args = [
+          "fade_curve"
+          {
+            type = "bezier";
+            points = [
+              [ 0 0.55 ]
+              [ 0.45 1 ]
+            ];
+          }
+        ];
+      }
+    ];
+
+    animation = [
+      {
+        leaf = "windowsIn";
+        enabled = false;
+        speed = 4;
+        bezier = "easeOutCubic";
+        style = "popin 20%";
+      }
+      {
+        leaf = "windowsOut";
+        enabled = false;
+        speed = 4;
+        bezier = "fluent_decel";
+        style = "popin 80%";
+      }
+      {
+        leaf = "windowsMove";
+        enabled = true;
+        speed = 2;
+        bezier = "fluent_decel";
+        style = "slide";
+      }
+      {
+        leaf = "fadeIn";
+        enabled = true;
+        speed = 3;
+        bezier = "fade_curve";
+      }
+      {
+        leaf = "fadeOut";
+        enabled = true;
+        speed = 3;
+        bezier = "fade_curve";
+      }
+      {
+        leaf = "fadeSwitch";
+        enabled = false;
+        speed = 1;
+        bezier = "easeOutCirc";
+      }
+      {
+        leaf = "fadeShadow";
+        enabled = true;
+        speed = 10;
+        bezier = "easeOutCirc";
+      }
+      {
+        leaf = "fadeDim";
+        enabled = true;
+        speed = 4;
+        bezier = "fluent_decel";
+      }
+      {
+        leaf = "workspaces";
+        enabled = true;
+        speed = 4;
+        bezier = "easeOutCubic";
+        style = "fade";
+      }
+    ];
+
+    exec_cmd = [
+      "nm-applet"
+      "poweralertd"
+      "waybar"
+      "swaync"
+      "hyprctl setcursor Bibata-Modern-Ice 24"
+      "swww-daemon"
+      "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
+      "${terminal} --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
+    ];
+
+    bind = [
+      (modBind "F1" ''hl.dsp.exec_cmd("show-keybinds")'')
+      (modBind "Return" ''hl.dsp.exec_cmd(terminal .. " --gtk-single-instance=true")'')
+      (mkBind "ALT + Return" ''hl.dsp.exec_cmd(terminal, { float = true, size = { x = 1111, y = 700 } })'')
+      (modBind "SHIFT + Return" ''hl.dsp.exec_cmd(terminal, { fullscreen = true })'')
+      (modBind "B" ''hl.dsp.exec_cmd(browser, { workspace = "1 silent" })'')
+      (modBind "Q" ''hl.dsp.window.close()'')
+      (modBind "F" ''hl.dsp.window.fullscreen()'')
+      (modBind "SHIFT + F" ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
+      (modBind "Space" ''hl.dsp.exec_cmd("toggle-float")'')
+      (modBind "D" ''hl.dsp.exec_cmd("rofi -show drun")'')
+      (modBind "SHIFT + D" ''hl.dsp.exec_cmd("webcord --enable-features=UseOzonePlatform --ozone-platform=wayland")'')
+      (modBind "SHIFT + S" ''hl.dsp.exec_cmd("SoundWireServer", { workspace = "5 silent" })'')
+      (modBind "SHIFT + Escape" ''hl.dsp.exec_cmd("power-menu")'')
+      (modBind "P" ''hl.dsp.window.pseudo()'')
+      (modBind "X" ''hl.dsp.layout("togglesplit")'')
+      (modBind "T" ''hl.dsp.exec_cmd("toggle-oppacity")'')
+      (modBind "E" ''hl.dsp.exec_cmd("nemo")'')
+      (mkBind "ALT + E" ''hl.dsp.exec_cmd("nemo", { float = true, size = { x = 1111, y = 700 } })'')
+      (modBind "SHIFT + B" ''hl.dsp.exec_cmd("toggle-waybar")'')
+      (modBind "C" ''hl.dsp.exec_cmd("hyprpicker -a")'')
+      (modBind "W" ''hl.dsp.exec_cmd("wallpaper-picker")'')
+      (modBind "SHIFT + W" ''hl.dsp.exec_cmd("waypaper", { float = true, size = { x = 925, y = 615 } })'')
+      (modBind "N" ''hl.dsp.exec_cmd("swaync-client -t -sw")'')
+      (mkBind "CTRL + SHIFT + Escape" ''hl.dsp.exec_cmd("missioncenter", { workspace = "9" })'')
+      (modBind "equal" ''hl.dsp.exec_cmd("woomer")'')
+      (mkBind "Print" ''hl.dsp.exec_cmd("screenshot --copy")'')
+      (modBind "Print" ''hl.dsp.exec_cmd("screenshot --save")'')
+      (modBind "SHIFT + Print" ''hl.dsp.exec_cmd("screenshot --swappy")'')
+      (modBind "left" ''hl.dsp.focus({ direction = "left" })'')
+      (modBind "right" ''hl.dsp.focus({ direction = "right" })'')
+      (modBind "up" ''hl.dsp.focus({ direction = "up" })'')
+      (modBind "down" ''hl.dsp.focus({ direction = "down" })'')
+      (modBind "h" ''hl.dsp.focus({ direction = "left" })'')
+      (modBind "j" ''hl.dsp.focus({ direction = "down" })'')
+      (modBind "k" ''hl.dsp.focus({ direction = "up" })'')
+      (modBind "l" ''hl.dsp.focus({ direction = "right" })'')
+      (modBind "left" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "right" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "up" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "down" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "h" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "j" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "k" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (modBind "l" ''hl.dsp.window.alter_zorder({ mode = "top" })'')
+      (mkBind "CTRL + ALT + up" ''hl.dsp.focus({ window = "floating" })'')
+      (mkBind "CTRL + ALT + down" ''hl.dsp.focus({ window = "tiled" })'')
+      (modBind "1" ''hl.dsp.focus({ workspace = "1" })'')
+      (modBind "2" ''hl.dsp.focus({ workspace = "2" })'')
+      (modBind "3" ''hl.dsp.focus({ workspace = "3" })'')
+      (modBind "4" ''hl.dsp.focus({ workspace = "4" })'')
+      (modBind "5" ''hl.dsp.focus({ workspace = "5" })'')
+      (modBind "6" ''hl.dsp.focus({ workspace = "6" })'')
+      (modBind "7" ''hl.dsp.focus({ workspace = "7" })'')
+      (modBind "8" ''hl.dsp.focus({ workspace = "8" })'')
+      (modBind "9" ''hl.dsp.focus({ workspace = "9" })'')
+      (modBind "0" ''hl.dsp.focus({ workspace = "10" })'')
+      (modBind "SHIFT + 1" ''hl.dsp.window.move({ workspace = "1", follow = false })'')
+      (modBind "SHIFT + 2" ''hl.dsp.window.move({ workspace = "2", follow = false })'')
+      (modBind "SHIFT + 3" ''hl.dsp.window.move({ workspace = "3", follow = false })'')
+      (modBind "SHIFT + 4" ''hl.dsp.window.move({ workspace = "4", follow = false })'')
+      (modBind "SHIFT + 5" ''hl.dsp.window.move({ workspace = "5", follow = false })'')
+      (modBind "SHIFT + 6" ''hl.dsp.window.move({ workspace = "6", follow = false })'')
+      (modBind "SHIFT + 7" ''hl.dsp.window.move({ workspace = "7", follow = false })'')
+      (modBind "SHIFT + 8" ''hl.dsp.window.move({ workspace = "8", follow = false })'')
+      (modBind "SHIFT + 9" ''hl.dsp.window.move({ workspace = "9", follow = false })'')
+      (modBind "SHIFT + 0" ''hl.dsp.window.move({ workspace = "10", follow = false })'')
+      (modBind "CTRL + c" ''hl.dsp.window.move({ workspace = "empty" })'')
+      (modBind "SHIFT + left" ''hl.dsp.window.move({ direction = "left" })'')
+      (modBind "SHIFT + right" ''hl.dsp.window.move({ direction = "right" })'')
+      (modBind "SHIFT + up" ''hl.dsp.window.move({ direction = "up" })'')
+      (modBind "SHIFT + down" ''hl.dsp.window.move({ direction = "down" })'')
+      (modBind "SHIFT + h" ''hl.dsp.window.move({ direction = "left" })'')
+      (modBind "SHIFT + j" ''hl.dsp.window.move({ direction = "down" })'')
+      (modBind "SHIFT + k" ''hl.dsp.window.move({ direction = "up" })'')
+      (modBind "SHIFT + l" ''hl.dsp.window.move({ direction = "right" })'')
+      (modBind "CTRL + left" ''hl.dsp.window.resize({ x = -80, y = 0, relative = true })'')
+      (modBind "CTRL + right" ''hl.dsp.window.resize({ x = 80, y = 0, relative = true })'')
+      (modBind "CTRL + up" ''hl.dsp.window.resize({ x = 0, y = -80, relative = true })'')
+      (modBind "CTRL + down" ''hl.dsp.window.resize({ x = 0, y = 80, relative = true })'')
+      (modBind "CTRL + h" ''hl.dsp.window.resize({ x = -80, y = 0, relative = true })'')
+      (modBind "CTRL + j" ''hl.dsp.window.resize({ x = 0, y = 80, relative = true })'')
+      (modBind "CTRL + k" ''hl.dsp.window.resize({ x = 0, y = -80, relative = true })'')
+      (modBind "CTRL + l" ''hl.dsp.window.resize({ x = 80, y = 0, relative = true })'')
+      (modBind "ALT + left" ''hl.dsp.window.move({ x = -80, y = 0, relative = true })'')
+      (modBind "ALT + right" ''hl.dsp.window.move({ x = 80, y = 0, relative = true })'')
+      (modBind "ALT + up" ''hl.dsp.window.move({ x = 0, y = -80, relative = true })'')
+      (modBind "ALT + down" ''hl.dsp.window.move({ x = 0, y = 80, relative = true })'')
+      (modBind "ALT + h" ''hl.dsp.window.move({ x = -80, y = 0, relative = true })'')
+      (modBind "ALT + j" ''hl.dsp.window.move({ x = 0, y = 80, relative = true })'')
+      (modBind "ALT + k" ''hl.dsp.window.move({ x = 0, y = -80, relative = true })'')
+      (modBind "ALT + l" ''hl.dsp.window.move({ x = 80, y = 0, relative = true })'')
+      (mkBind "XF86AudioPlay" ''hl.dsp.exec_cmd("playerctl play-pause")'')
+      (mkBind "XF86AudioNext" ''hl.dsp.exec_cmd("playerctl next")'')
+      (mkBind "XF86AudioPrev" ''hl.dsp.exec_cmd("playerctl previous")'')
+      (mkBind "XF86AudioStop" ''hl.dsp.exec_cmd("playerctl stop")'')
+      (modBind "mouse_down" ''hl.dsp.focus({ workspace = "e-1" })'')
+      (modBind "mouse_up" ''hl.dsp.focus({ workspace = "e+1" })'')
+      (modBind "V" ''hl.dsp.exec_cmd("vicinae vicinae://extensions/vicinae/clipboard/history")'')
+      (modBindWithOpts "mouse:272" ''hl.dsp.window.drag()'' { mouse = true; })
+      (modBindWithOpts "mouse:273" ''hl.dsp.window.resize()'' { mouse = true; })
+    ];
+
+    window_rule = [
+      { match.class = "^(Viewnior)$"; float = true; }
+      { match.class = "^(imv)$"; float = true; }
+      { match.class = "^(mpv)$"; float = true; }
+      { match.class = "^(Aseprite)$"; tile = true; }
+      { match.class = "^(rofi)$"; pin = true; }
+      { match.class = "^(waypaper)$"; pin = true; }
+      { match.title = "^(Transmission)$"; float = true; }
+      { match.title = "^(Volume Control)$"; float = true; }
+      { match.title = "^(Firefox — Sharing Indicator)$"; float = true; }
+      {
+        match.title = "^(Firefox — Sharing Indicator)$";
+        move = {
+          x = 0;
+          y = 0;
+        };
+      }
+      {
+        match.title = "^(Volume Control)$";
+        size = {
+          x = 700;
+          y = 450;
+        };
+      }
+      { match.title = "^(Volume Control)$"; move = "40 55%"; }
+      { match.title = "^(Picture-in-Picture)$"; float = true; }
+      { match.title = "^(Picture-in-Picture)$"; opacity = "1.0 override 1.0 override"; }
+      { match.title = "^(Picture-in-Picture)$"; pin = true; }
+      { match.title = "^(.*imv.*)$"; opacity = "1.0 override 1.0 override"; }
+      { match.title = "^(.*mpv.*)$"; opacity = "1.0 override 1.0 override"; }
+      { match.class = "(Aseprite)"; opacity = "1.0 override 1.0 override"; }
+      { match.class = "(Unity)"; opacity = "1.0 override 1.0 override"; }
+      { match.class = "(zen)"; opacity = "1.0 override 1.0 override"; }
+      { match.class = "(evince)"; opacity = "1.0 override 1.0 override"; }
+      { match.class = "^(${browser})$"; workspace = "1"; }
+      { match.class = "^(evince)$"; workspace = "3"; }
+      { match.class = "^(Gimp-2.10)$"; workspace = "4"; }
+      { match.class = "^(Aseprite)$"; workspace = "4"; }
+      { match.class = "^(Audacious)$"; workspace = "5"; }
+      { match.class = "^(Spotify)$"; workspace = "5"; }
+      { match.class = "^(com.obsproject.Studio)$"; workspace = "8"; }
+      { match.class = "^(discord)$"; workspace = "10"; }
+      { match.class = "^(WebCord)$"; workspace = "10"; }
+      { match.class = "^(mpv)$"; idle_inhibit = "focus"; }
+      { match.class = "^(firefox)$"; idle_inhibit = "fullscreen"; }
+      { match.class = "^(org.gnome.Calculator)$"; float = true; }
+      { match.class = "^(waypaper)$"; float = true; }
+      { match.class = "^(zenity)$"; float = true; }
+      {
+        match.class = "^(zenity)$";
+        size = {
+          x = 850;
+          y = 500;
+        };
+      }
+      {
+        match.class = "^(SoundWireServer)$";
+        size = {
+          x = 725;
+          y = 330;
+        };
+      }
+      { match.class = "^(org.gnome.FileRoller)$"; float = true; }
+      { match.class = "^(org.pulseaudio.pavucontrol)$"; float = true; }
+      { match.class = "^(SoundWireServer)$"; float = true; }
+      { match.class = "^(.sameboy-wrapped)$"; float = true; }
+      { match.class = "^(file_progress)$"; float = true; }
+      { match.class = "^(confirm)$"; float = true; }
+      { match.class = "^(dialog)$"; float = true; }
+      { match.class = "^(download)$"; float = true; }
+      { match.class = "^(notification)$"; float = true; }
+      { match.class = "^(error)$"; float = true; }
+      { match.class = "^(confirmreset)$"; float = true; }
+      { match.title = "^(Open File)$"; float = true; }
+      { match.title = "^(File Upload)$"; float = true; }
+      { match.title = "^(branchdialog)$"; float = true; }
+      { match.title = "^(Confirm to replace files)$"; float = true; }
+      { match.title = "^(File Operation Progress)$"; float = true; }
+      { match.class = "^(xwaylandvideobridge)$"; opacity = "0.0 override"; }
+      { match.class = "^(xwaylandvideobridge)$"; no_anim = true; }
+      { match.class = "^(xwaylandvideobridge)$"; no_initial_focus = true; }
+      {
+        match.class = "^(xwaylandvideobridge)$";
+        max_size = {
+          x = 1;
+          y = 1;
+        };
+      }
+      { match.class = "^(xwaylandvideobridge)$"; no_blur = true; }
+      { match.float = false; match.workspace = "w[t1]"; border_size = 0; }
+      { match.float = false; match.workspace = "w[t1]"; rounding = 0; }
+      { match.float = false; match.workspace = "w[tg1]"; border_size = 0; }
+      { match.float = false; match.workspace = "w[tg1]"; rounding = 0; }
+      { match.float = false; match.workspace = "f[1]"; border_size = 0; }
+      { match.float = false; match.workspace = "f[1]"; rounding = 0; }
+      {
+        match = {
+          class = "^()$";
+          title = "^()$";
+        };
+        opaque = true;
+      }
+      {
+        match = {
+          class = "^()$";
+          title = "^()$";
+        };
+        no_shadow = true;
+      }
+      {
+        match = {
+          class = "^()$";
+          title = "^()$";
+        };
+        no_blur = true;
+      }
+    ];
+
+    layer_rule = [
+      { match.namespace = "vicinae"; dim_around = true; }
+      { match.namespace = "rofi"; dim_around = true; }
+      { match.namespace = "swaync-control-center"; dim_around = true; }
+    ];
+
+    workspace_rule = [
+      {
+        workspace = "w[t1]";
+        gapsout = 0;
+        gapsin = 0;
+      }
+      {
+        workspace = "w[tg1]";
+        gapsout = 0;
+        gapsin = 0;
+      }
+      {
+        workspace = "f[1]";
+        gapsout = 0;
+        gapsin = 0;
+      }
+    ];
   };
 }

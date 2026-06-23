@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
   # https://github.com/catppuccin/nix
   imports = [
@@ -6,14 +6,18 @@
   ];
 
   catppuccin = {
-    # The default `enable` value for all available programs.
+    # Default enable for all supported programs
     enable = true;
-    # one of "latte", "frappe", "macchiato", "mocha"
     flavor = "mocha";
-    # one of "blue", "flamingo", "green", "lavender", "maroon", "mauve", "peach", "pink", "red", "rosewater", "sapphire", "sky", "teal", "yellow"
     accent = "green";
-    starship = {
-      enable = false;
-    };
+
+    # Disabled per-program overrides
+    starship.enable = false; # custom starship.toml via dotfiles
+
+    # Hyprland has its own colour scheme in home/linux/hyprland/config.nix
+    # (Gruvbox green/red borders). Catppuccin's Hyprland integration writes
+    # ~/.config/hypr/themes/catppuccin.lua which conflicts with home-manager's
+    # own management of that directory.
+    hyprland.enable = lib.mkForce false;
   };
 }

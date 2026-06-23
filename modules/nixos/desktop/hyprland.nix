@@ -1,52 +1,44 @@
 { inputs, pkgs, ... }:
-
 {
-  # Enable Hyprland at system level
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
 
   xdg.portal = {
     enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
-    ];
+    xdgOpenUsePortal = true;
     config = {
-      common.default = "*";
+      common.default = [ "gtk" ];
       hyprland.default = [
         "hyprland"
         "gtk"
       ];
     };
+    # xdg-desktop-portal-hyprland is registered via programs.hyprland.portalPackage above
+    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   };
 
+  # System-wide Wayland env vars (string "1", not integer)
   environment.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
-    NIXOS_OZONE_WL = "1"; # Also helps Electron apps
+    NIXOS_OZONE_WL = "1";
   };
 
-  # Install Hyprland ecosystem packages
+  # Only system-level Hyprland ecosystem packages.
+  # User-session tools (grim, slurp, swww, cliphist, wl-clipboard, waybar,
+  # swaynotificationcenter, hyprpicker) are in home/linux — no duplication.
   environment.systemPackages = with pkgs; [
-    cliphist
-    grim
-    hypridle
-    hyprlock
-    hyprpicker
-    hyprsunset
     hyprutils
     hyprwayland-scanner
+    hypridle
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
-    kitty
-    slurp
-    swaynotificationcenter
-    swww
-    waybar
-    wl-clipboard
-    wl-kbptr
-    wlsunset
+    kitty # fallback terminal
     wofi
+    wlsunset
+    wl-kbptr
     wtype
     xclip
   ];

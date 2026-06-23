@@ -1,6 +1,7 @@
 { inputs, ... }:
 {
   imports = [
+    inputs.hyprland.homeManagerModules.default
     ./hyprland.nix
     ./config.nix
     ./hyprlock.nix
@@ -8,6 +9,5 @@
     ./btop.nix
     ./nvim.nix
     ./ghostty.nix
-    inputs.hyprland.homeManagerModules.default
   ];
 }

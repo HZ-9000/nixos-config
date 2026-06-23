@@ -2,29 +2,37 @@
 {
   services = {
     gvfs.enable = true;
+    tumbler.enable = true; # thumbnail generation for file managers
 
     gnome = {
       tinysparql.enable = true;
       gnome-keyring.enable = true;
     };
 
-    dbus.enable = true;
-    fstrim.enable = true;
+    dbus = {
+      enable = true;
+      packages = with pkgs; [
+        gcr
+        gnome-settings-daemon
+      ];
+    };
 
+    fstrim.enable = true;
     fwupd.enable = true;
-    # needed for GNOME services outside of GNOME Desktop
-    dbus.packages = with pkgs; [
-      gcr
-      gnome-settings-daemon
-    ];
 
     logind.settings.Login = {
-      # don’t shutdown when power button is short-pressed
       HandlePowerKey = "ignore";
     };
 
-    openssh.enable = true;
-    openssh.settings.PasswordAuthentication = true;
-    openssh.settings.PermitRootLogin = "yes";
+    # openssh is configured in modules/nixos/base/ssh.nix — do not duplicate here
+  };
+
+  # File manager
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
   };
 }

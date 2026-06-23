@@ -20,6 +20,7 @@
     enable = true;
     package = null;
     portalPackage = null;
+    configType = "lua";
 
     xwayland = {
       enable = true;
