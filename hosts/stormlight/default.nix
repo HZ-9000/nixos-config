@@ -1,7 +1,10 @@
-{ pkgs, config, ... }:
+{ ... }:
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/core
   ];
+
+  networking.hostName = "stormlight";
+
+  system.stateVersion = "26.05";
 }

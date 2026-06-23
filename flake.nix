@@ -1,4 +1,23 @@
 {
+  description = "NixOS configuration for storm, stormlight, and parallels";
+
+  outputs = inputs: import ./outputs inputs;
+
+  # The nixConfig here only affects the flake itself, not the system configuration.
+  # System-level substituters are configured in modules/base/nix.nix
+  nixConfig = {
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+      "https://hyprland.cachix.org"
+      "https://ghostty.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
+    ];
+  };
+
   inputs = {
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -42,55 +61,4 @@
     vicinae.url = "github:vicinaehq/vicinae";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
   };
-
-  outputs =
-    inputs@{
-      self,
-      nixpkgs,
-      nixos-hardware,
-      catppuccin,
-      ...
-    }:
-    let
-      username = "delta";
-      system = "x86_64-linux";
-    in
-    {
-      nixosConfigurations = {
-        parallels = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
-          modules = [
-            ./hosts/parallels
-          ];
-          specialArgs = {
-            host = "parallels";
-            inherit self inputs username;
-          };
-        };
-
-        stormlight = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            nixos-hardware.nixosModules.framework-amd-ai-300-series
-            ./hosts/stormlight
-            catppuccin.nixosModules.catppuccin
-          ];
-          specialArgs = {
-            host = "laptop";
-            inherit self inputs username;
-          };
-        };
-
-        storm = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            ./hosts/storm
-          ];
-          specialArgs = {
-            host = "desktop";
-            inherit self inputs username;
-          };
-        };
-      };
-    };
 }

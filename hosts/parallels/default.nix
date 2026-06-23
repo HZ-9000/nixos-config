@@ -2,6 +2,9 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/desktop
   ];
+
+  networking.hostName = "parallels";
+
+  system.stateVersion = "26.05";
 }

@@ -1,7 +1,7 @@
 # Connectivity info for Linux VM
-NIXADDR := "unset"
+NIXADDR := "10.211.55.7"
 NIXPORT := "22"
-NIXUSER := "delta"
+NIXUSER := "root"
 
 # The name of the nixosConfiguration in the flake
 NIXNAME := "parallels"
@@ -9,6 +9,15 @@ NIXNAME := "parallels"
 # SSH options that are used. These aren't meant to be overridden but are
 # reused a lot so we just store them up here.
 SSH_OPTIONS := "-o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+# List all the just commands
+default:
+    @just --list
+
+# Update all the flake inputs
+[group('nix')]
+up:
+    nix flake update --commit-lock-file --extra-experimental-features nix-command --extra-experimental-features flakes
 
 # This builds the given NixOS configuration and pushes the results to the
 # cache. This does not alter the current running system. This requires
@@ -65,8 +74,6 @@ copy:
     	--rsync-path="sudo rsync" \
     	{{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:/nix-config
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-    	sudo chown -R root:root /nix-config; \
-    	sudo chmod -R 755 /nix-config; \
     "
 
 # run the nixos-rebuild switch command. This does NOT copy files so you
