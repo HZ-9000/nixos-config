@@ -213,19 +213,20 @@ in
     ];
 
     exec_cmd = [
+      "hyprlock"
       "nm-applet"
       "poweralertd"
       "waybar"
       "swaync"
       "hyprctl setcursor Bibata-Modern-Ice 24"
       "awww-daemon"
+      "waypaper --restore"
       "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
-      "${terminal} --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
     ];
 
     bind = [
       (modBind "F1" ''hl.dsp.exec_cmd("show-keybinds")'')
-      (modBind "Return" ''hl.dsp.exec_cmd(terminal .. " --gtk-single-instance=true")'')
+      (modBind "Return" ''hl.dsp.exec_cmd(terminal)'')
       (mkBind "ALT + Return" ''hl.dsp.exec_cmd(terminal, { float = true, size = { x = 1111, y = 700 } })'')
       (modBind "SHIFT + Return" ''hl.dsp.exec_cmd(terminal, { fullscreen = true })'')
       (modBind "B" ''hl.dsp.exec_cmd(browser, { workspace = "1 silent" })'')
@@ -236,6 +237,7 @@ in
       (modBind "D" ''hl.dsp.exec_cmd("rofi -show drun")'')
       (modBind "SHIFT + D" ''hl.dsp.exec_cmd("webcord --enable-features=UseOzonePlatform --ozone-platform=wayland")'')
       (modBind "SHIFT + S" ''hl.dsp.exec_cmd("SoundWireServer", { workspace = "5 silent" })'')
+      (modBind "L" ''hl.dsp.exec_cmd("hyprlock")'')
       (modBind "SHIFT + Escape" ''hl.dsp.exec_cmd("power-menu")'')
       (modBind "P" ''hl.dsp.window.pseudo()'')
       (modBind "X" ''hl.dsp.layout("togglesplit")'')

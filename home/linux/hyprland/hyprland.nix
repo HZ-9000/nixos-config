@@ -30,7 +30,11 @@ in
       # hidpi = true;
     };
     # enableNvidiaPatches = false;
-    systemd.enable = true;
+    systemd = {
+      enable = true;
+      # hypridle runs as a systemd user service and needs PATH to find hyprlock.
+      variables = [ "--all" ];
+    };
   };
 
   # Hyprland is installed at system level (package = null), so home-manager does

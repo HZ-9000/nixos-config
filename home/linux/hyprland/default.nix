@@ -5,6 +5,7 @@
     ./hyprland.nix
     ./config.nix
     ./hyprlock.nix
+    ./hypridle.nix
     ./variables.nix
     ./btop.nix
     ./nvim.nix
