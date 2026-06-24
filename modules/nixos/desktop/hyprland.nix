@@ -28,7 +28,7 @@
   };
 
   # Only system-level Hyprland ecosystem packages.
-  # User-session tools (grim, slurp, swww, cliphist, wl-clipboard, waybar,
+  # User-session tools (grim, slurp, awww, cliphist, wl-clipboard, waybar,
   # swaynotificationcenter, hyprpicker) are in home/linux — no duplication.
   environment.systemPackages = with pkgs; [
     hyprutils
@@ -42,4 +42,6 @@
     wtype
     xclip
   ];
+
+  security.pam.services.hyprlock = { };
 }

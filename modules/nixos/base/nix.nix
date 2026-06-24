@@ -10,13 +10,6 @@
   # to install chrome, you need to enable unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # do garbage collection weekly to keep disk usage low
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-
   # Manual optimise storage: nix-store --optimise
   # https://nixos.org/manual/nix/stable/command-ref/conf-file.html#conf-auto-optimise-store
   nix.settings = {

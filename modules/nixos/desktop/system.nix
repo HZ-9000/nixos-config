@@ -11,4 +11,6 @@
     lua
     brightnessctl
   ];
+
+  security.pam.services.hyprlock = {};
 }

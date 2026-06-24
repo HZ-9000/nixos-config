@@ -42,9 +42,6 @@ in
         gaps_in = 6;
         gaps_out = 12;
         border_size = 2;
-        "col.active_border" = "rgb(98971A) rgb(CC241D) 45deg";
-        "col.inactive_border" = "0x00000000";
-        no_border_on_floating = false;
       };
 
       misc = {
@@ -55,7 +52,6 @@ in
         animate_manual_resizes = false;
         enable_swallow = true;
         focus_on_activate = true;
-        new_window_takes_over_fullscreen = 2;
         middle_click_paste = false;
       };
 
@@ -64,8 +60,6 @@ in
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
         use_active_for_splits = true;
-        pseudotile = "yes";
-        preserve_split = "yes";
       };
 
       master = {
@@ -88,7 +82,6 @@ in
         };
         shadow = {
           enabled = true;
-          ignore_window = true;
           offset = "0 2";
           range = 20;
           render_power = 3;
@@ -225,7 +218,7 @@ in
       "waybar"
       "swaync"
       "hyprctl setcursor Bibata-Modern-Ice 24"
-      "swww-daemon"
+      "awww-daemon"
       "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
       "${terminal} --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
     ];
@@ -343,20 +336,6 @@ in
       { match.title = "^(Transmission)$"; float = true; }
       { match.title = "^(Volume Control)$"; float = true; }
       { match.title = "^(Firefox — Sharing Indicator)$"; float = true; }
-      {
-        match.title = "^(Firefox — Sharing Indicator)$";
-        move = {
-          x = 0;
-          y = 0;
-        };
-      }
-      {
-        match.title = "^(Volume Control)$";
-        size = {
-          x = 700;
-          y = 450;
-        };
-      }
       { match.title = "^(Volume Control)$"; move = "40 55%"; }
       { match.title = "^(Picture-in-Picture)$"; float = true; }
       { match.title = "^(Picture-in-Picture)$"; opacity = "1.0 override 1.0 override"; }
@@ -381,20 +360,6 @@ in
       { match.class = "^(org.gnome.Calculator)$"; float = true; }
       { match.class = "^(waypaper)$"; float = true; }
       { match.class = "^(zenity)$"; float = true; }
-      {
-        match.class = "^(zenity)$";
-        size = {
-          x = 850;
-          y = 500;
-        };
-      }
-      {
-        match.class = "^(SoundWireServer)$";
-        size = {
-          x = 725;
-          y = 330;
-        };
-      }
       { match.class = "^(org.gnome.FileRoller)$"; float = true; }
       { match.class = "^(org.pulseaudio.pavucontrol)$"; float = true; }
       { match.class = "^(SoundWireServer)$"; float = true; }
@@ -414,13 +379,6 @@ in
       { match.class = "^(xwaylandvideobridge)$"; opacity = "0.0 override"; }
       { match.class = "^(xwaylandvideobridge)$"; no_anim = true; }
       { match.class = "^(xwaylandvideobridge)$"; no_initial_focus = true; }
-      {
-        match.class = "^(xwaylandvideobridge)$";
-        max_size = {
-          x = 1;
-          y = 1;
-        };
-      }
       { match.class = "^(xwaylandvideobridge)$"; no_blur = true; }
       { match.float = false; match.workspace = "w[t1]"; border_size = 0; }
       { match.float = false; match.workspace = "w[t1]"; rounding = 0; }
@@ -455,24 +413,6 @@ in
       { match.namespace = "vicinae"; dim_around = true; }
       { match.namespace = "rofi"; dim_around = true; }
       { match.namespace = "swaync-control-center"; dim_around = true; }
-    ];
-
-    workspace_rule = [
-      {
-        workspace = "w[t1]";
-        gapsout = 0;
-        gapsin = 0;
-      }
-      {
-        workspace = "w[tg1]";
-        gapsout = 0;
-        gapsin = 0;
-      }
-      {
-        workspace = "f[1]";
-        gapsout = 0;
-        gapsin = 0;
-      }
     ];
   };
 }

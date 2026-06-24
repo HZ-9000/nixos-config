@@ -5,9 +5,8 @@ let
 in
 {
   # Note: .config/hypr is intentionally NOT symlinked here.
-  # wayland.windowManager.hyprland.settings in home/linux/hyprland/config.nix
-  # already writes ~/.config/hypr/hyprland.conf via home-manager — having a
-  # directory symlink there too would conflict with it.
+  # home/linux/hyprland/config.nix generates ~/.config/hypr/hyprland.lua via
+  # home-manager (configType = "lua"). Do not add dotfiles/hypr/hyprland.lua.
   home.file = {
     ".config/starship.toml".source = mkOutOfStoreSymlink "${configDir}/starship/starship.toml";
   };
