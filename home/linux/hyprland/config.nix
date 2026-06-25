@@ -4,6 +4,22 @@ let
   terminal = "ghostty";
   inherit (lib.generators) mkLuaInline;
 
+  # Wrap a list of shell commands in hl.on("hyprland.start", ...) so they only
+  # fire once at session start, not on every config reload (exec-once semantics).
+  mkStartup = cmds:
+    let
+      body = lib.concatMapStringsSep "\n  " (cmd: ''hl.exec_cmd("${cmd}")'') cmds;
+    in {
+      _args = [
+        "hyprland.start"
+        (mkLuaInline ''
+          function()
+            ${body}
+          end
+        '')
+      ];
+    };
+
   mkBind = key: dispatcher: {
     _args = [ key (mkLuaInline dispatcher) ];
   };
@@ -212,21 +228,24 @@ in
       }
     ];
 
-    exec_cmd = [
-      "hyprlock"
-      "nm-applet"
-      "poweralertd"
-      "waybar"
-      "swaync"
-      "hyprctl setcursor Bibata-Modern-Ice 24"
-      "awww-daemon"
-      "waypaper --restore"
-      "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
+    on = [
+      (mkStartup [
+        "hyprlock"
+        "nm-applet"
+        "poweralertd"
+        "waybar"
+        "swaync"
+        "hyprctl setcursor Bibata-Modern-Ice 24"
+        "awww-daemon"
+        "waypaper --restore"
+        "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
+      ])
     ];
 
     bind = [
       (modBind "F1" ''hl.dsp.exec_cmd("show-keybinds")'')
       (modBind "Return" ''hl.dsp.exec_cmd(terminal)'')
+      (mkBind "CTRL + ALT + T" ''hl.dsp.exec_cmd("kitty")'')
       (mkBind "ALT + Return" ''hl.dsp.exec_cmd(terminal, { float = true, size = { x = 1111, y = 700 } })'')
       (modBind "SHIFT + Return" ''hl.dsp.exec_cmd(terminal, { fullscreen = true })'')
       (modBind "B" ''hl.dsp.exec_cmd(browser, { workspace = "1 silent" })'')

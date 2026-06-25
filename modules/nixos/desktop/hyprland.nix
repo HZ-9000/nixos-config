@@ -13,8 +13,8 @@
     config = {
       common.default = [ "gtk" ];
       hyprland.default = [
-        "hyprland"
         "gtk"
+        "hyprland"
       ];
     };
     # xdg-desktop-portal-hyprland is registered via programs.hyprland.portalPackage above
