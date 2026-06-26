@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration for storm, stormlight, and parallels";
+  description = "NixOS configuration for storm, stormlight, squall, and parallels";
 
   outputs = inputs: import ./outputs inputs;
 
