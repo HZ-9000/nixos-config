@@ -4,7 +4,7 @@
     ./hardware-configuration.nix
   ];
 
-  networking.hostName = "stormlight";
+  networking.hostName = "parallels";
 
   system.stateVersion = "26.05";
 }
