@@ -1,5 +1,7 @@
 { ... }:
 {
+  modules.desktop.fonts.enable = true;
+
   imports = [
     ./hyprland.nix
     # display-manager.nix removed — covered by modules/base/xserver.nix

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.zsh = {
     enable = true;
@@ -19,5 +19,9 @@
       ".." = "cd ..";
       "..." = "cd ../..";
     };
+  };
+
+  programs.starship = {
+    enable = true;
   };
 }

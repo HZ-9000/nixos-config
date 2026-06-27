@@ -25,34 +25,6 @@
           vibrancy_darkness = 0.0;
         }
       ];
-
-      input-field = [
-        {
-          size = "200, 50";
-          outline_thickness = 2;
-          inner_color = "rgba(0, 0, 0, 0.5)";
-          outer_color = "rgba(40, 40, 40, 1.0)";
-          check_color = "rgba(152, 151, 26, 0.8)";
-          fail_color = "rgba(204, 36, 29, 0.8)";
-          font_color = "rgba(235, 219, 178, 1.0)";
-          fade_on_empty = false;
-          rounding = 0;
-          position = "0, -20";
-          halign = "center";
-          valign = "center";
-        }
-      ];
-
-      label = [
-        {
-          text = " Enter password ";
-          color = "rgba(235, 219, 178, 1.0)";
-          font_size = 14;
-          position = "0, -80";
-          halign = "center";
-          valign = "center";
-        }
-      ];
     };
   };
 }

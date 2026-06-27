@@ -9,4 +9,6 @@
 
     package = inputs.hyprlock.packages.${pkgs.system}.hyprlock;
   };
+
+  security.pam.services.hyprlock = { };
 }
