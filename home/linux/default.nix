@@ -7,7 +7,6 @@
     ./nemo.nix
     ./xdg-mimes.nix
     ./waypaper.nix
-    ./dotfiles.nix
     ./hyprland
     ./packages
     ./waybar

@@ -29,7 +29,7 @@ nix fmt
 ├── home/
 │   ├── hosts/linux/       # Per-host home-manager entry points
 │   │   └── <hostname>.nix # imports home/linux/default.nix + host overrides
-│   └── linux/             # Shared user environment (Hyprland, packages, dotfiles)
+│   └── linux/             # Shared user environment (Hyprland, packages)
 ├── modules/
 │   ├── base/              # Shared modules used by both NixOS and home-manager
 │   └── nixos/
@@ -38,7 +38,6 @@ nix fmt
 │       └── desktop.nix    # Bundles base + desktop for full desktop hosts
 ├── lib/                   # Helpers (nixosSystem builder, path utilities)
 ├── vars/                  # Shared constants (username, email, …)
-├── dotfiles/              # Static config files linked via home-manager
 └── Justfile               # VM bootstrap/deploy recipes (parallels)
 ```
 
