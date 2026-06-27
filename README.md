@@ -56,4 +56,4 @@ nix fmt
 
 Configs and resources that informed this repository's structure:
 
-- [ryan4yin/nix-config](https://github.com/ryan4yin/nix-config) — NixOS desktops, macOS (nix-darwin), and homelab servers. A good reference for flake layout, per-host `outputs/` wiring, and home-manager integration. Not intended to be deployed as-is (hardware-specific and depends on private secrets).
+- [ryan4yin/nix-config](https://github.com/ryan4yin/nix-config)
