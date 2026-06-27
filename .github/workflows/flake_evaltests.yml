@@ -1,0 +1,35 @@
+name: Nix Flake Eval Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "Justfile"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "Justfile"
+
+jobs:
+  checks:
+    name: Check expressions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+        with:
+          install_url: https://nixos.org/nix/install
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            experimental-features = nix-command flakes
+
+      - name: Run Nix Flake Eval Tests
+        run: nix eval .#evalTests --accept-flake-config --show-trace --print-build-logs --verbose

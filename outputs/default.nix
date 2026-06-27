@@ -46,6 +46,9 @@ in
     map (it: it.nixosConfigurations or { }) nixosSystemValues
   );
 
+  # Eval tests for all NixOS systems. Each per-arch evalTests must be { } (pass).
+  evalTests = lib.lists.all (it: it.evalTests == { }) nixosSystemValues;
+
   # Formatter for nix files
   formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
 }
