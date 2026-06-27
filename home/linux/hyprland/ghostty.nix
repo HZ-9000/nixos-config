@@ -6,7 +6,7 @@
       font-family = [
         "JetBrainsMono Nerd Font"
       ];
-      background-opacity = 0.9;
+      background-opacity = 0.1;
     };
   };
 }
