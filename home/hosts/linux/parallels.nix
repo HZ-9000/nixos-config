@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   # Parallels VM — import base Linux config but skip Hyprland-specific stuff
   # that may not work well in a VM. Adjust as needed.

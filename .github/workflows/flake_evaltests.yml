@@ -8,6 +8,11 @@ on:
       - "**.md"
       - "Justfile"
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
     branches:
       - main
     paths-ignore:
