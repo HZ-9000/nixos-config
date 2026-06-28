@@ -1,7 +1,6 @@
 { ... }:
 {
-  # Parallels VM — import base Linux config but skip Hyprland-specific stuff
-  # that may not work well in a VM. Adjust as needed.
+  # Parallels VM — import base Linux config. Adjust as needed for VM limitations.
   imports = [ ../../linux/default.nix ];
 
   home.stateVersion = "26.05";

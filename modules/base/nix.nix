@@ -22,6 +22,7 @@
       "https://nix-gaming.cachix.org"
       "https://hyprland.cachix.org"
       "https://ghostty.cachix.org"
+      "https://vicinae.cachix.org"
     ];
 
     trusted-public-keys = [
@@ -29,10 +30,14 @@
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
+      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
     ];
     builders-use-substitutes = true;
   };
   nixpkgs = {
-    overlays = [ inputs.nur.overlays.default ];
+    overlays = [
+      inputs.nur.overlays.default
+      inputs.niri.overlays.niri
+    ];
   };
 }

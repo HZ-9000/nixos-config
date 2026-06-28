@@ -7,9 +7,10 @@
     ./nemo.nix
     ./theme.nix
     ./xdg-mimes.nix
-    ./hyprland
+    ./niri
     ./packages
     ./noctalia
+    ./vicinae
     ./zsh
   ];
 }

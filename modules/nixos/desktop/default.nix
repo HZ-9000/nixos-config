@@ -3,7 +3,8 @@
   modules.desktop.fonts.enable = true;
 
   imports = [
-    ./hyprland.nix
+    ./niri.nix
+    ./vicinae.nix
     ./system.nix
     ./pipewire.nix
     ./program.nix
