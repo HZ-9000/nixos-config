@@ -29,15 +29,12 @@
   };
 
   # Only system-level Hyprland ecosystem packages.
-  # User-session tools (grim, slurp, awww, cliphist, wl-clipboard, waybar,
-  # swaynotificationcenter, hyprpicker) are in home/linux — no duplication.
+  # User-session tools (grim, slurp, cliphist, wl-clipboard, noctalia,
+  # hyprpicker) are in home/linux — no duplication.
   environment.systemPackages = with pkgs; [
     hyprutils
     hyprwayland-scanner
-    hypridle
-    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
     kitty # fallback terminal
-    wofi
     wlsunset
     wl-kbptr
     wtype

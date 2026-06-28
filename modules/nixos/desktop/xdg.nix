@@ -27,7 +27,4 @@
     mime.enable = lib.mkDefault true;
     icons.enable = lib.mkDefault true;
   };
-
-  # xdg.portal is configured in hyprland.nix — do not add it here to avoid
-  # duplicate portal packages and conflicting config values.
 }

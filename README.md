@@ -1,12 +1,67 @@
 # nixos-config
 
-Personal NixOS flake with home-manager, built around a shared desktop stack (Hyprland) and per-host hardware configuration.
+Personal NixOS flake with home-manager, built around a shared desktop stack (Niri) and per-host hardware configuration.
 
 Format Nix files:
 
 ```bash
 nix fmt
 ```
+
+## Components
+
+| | NixOS (Wayland) |
+| --- | --- |
+| **Compositor** | [Niri][Niri] |
+| **App launcher** | [Vicinae][Vicinae] |
+| **Status bar / notifications / lock screen** | [noctalia-shell][noctalia-shell] |
+| **Terminal emulator** | [Ghostty][Ghostty] / [Kitty][Kitty] |
+| **Browser** | [Zen Browser][Zen] |
+| **Color scheme** | [catppuccin-nix][catppuccin-nix] |
+| **Network management** | [NetworkManager][NetworkManager] |
+| **Bluetooth** | Blueman |
+| **Audio** | PipeWire |
+| **System resource monitor** | [btop][btop] / Mission Center |
+| **File manager** | [Nemo][Nemo] / [Thunar][Thunar] |
+| **Shell** | [Nushell][Nushell] + [Starship][Starship] |
+| **Editors / IDE** | [Cursor][Cursor] / [Zed][Zed] / [Neovim][Neovim] / [Rider][Rider] |
+| **Game development** | [Godot][Godot] + [.NET SDK][dotnet] |
+| **Clipboard** | [Vicinae][Vicinae] + [cliphist][cliphist] + [wl-clipboard][wl-clipboard] |
+| **Screenshot / color picker** | grim + slurp / [wl-color-picker][wl-color-picker] / swappy |
+| **Screen recording** | [wf-recorder][wf-recorder] |
+| **Fonts** | [Nerd fonts][Nerd fonts] |
+| **Cursor theme** | Bibata Modern Ice |
+| **Desktop integration** | xdg-desktop-portal-gnome + xdg-desktop-portal-gtk |
+| **Nix tooling** | [nh][nh] / nix-output-monitor / nixd / nixfmt |
+| **Version control** | Git / [gh][gh] / [Lazygit][Lazygit] |
+
+[Niri]: https://github.com/YaLTeR/niri
+[noctalia-shell]: https://github.com/noctalia-dev/noctalia-shell
+[Ghostty]: https://ghostty.org/
+[Kitty]: https://github.com/kovidgoyal/kitty
+[Zen]: https://zen-browser.app/
+[catppuccin-nix]: https://github.com/catppuccin/nix
+[NetworkManager]: https://wiki.gnome.org/Projects/NetworkManager
+[btop]: https://github.com/aristocratos/btop
+[Nemo]: https://github.com/linuxmint/nemo
+[Thunar]: https://gitlab.xfce.org/xfce/thunar
+[Nushell]: https://www.nushell.sh/
+[Starship]: https://github.com/starship/starship
+[Cursor]: https://cursor.com/
+[Zed]: https://zed.dev/
+[Neovim]: https://github.com/neovim/neovim
+[Rider]: https://www.jetbrains.com/rider/
+[Godot]: https://godotengine.org/
+[dotnet]: https://dotnet.microsoft.com/
+[Vicinae]: https://github.com/vicinaehq/vicinae
+[cliphist]: https://github.com/sentriz/cliphist
+[wl-clipboard]: https://github.com/bugaevc/wl-clipboard
+[wl-color-picker]: https://github.com/duducm2/wl-color-picker
+[wf-recorder]: https://github.com/ammaraskar/wf-recorder
+[Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
+[nh]: https://github.com/viperML/nh
+[gh]: https://cli.github.com/
+[Lazygit]: https://github.com/jesseduffield/lazygit
 
 ## Repository layout
 
@@ -29,12 +84,16 @@ nix fmt
 ├── home/
 │   ├── hosts/linux/       # Per-host home-manager entry points
 │   │   └── <hostname>.nix # imports home/linux/default.nix + host overrides
-│   └── linux/             # Shared user environment (Hyprland, packages)
+│   └── linux/             # Shared user environment (Niri, Vicinae, packages)
+│       ├── niri/          # Compositor keybinds and session settings
+│       ├── vicinae/       # App launcher daemon and config
+│       ├── noctalia/      # Status bar, notifications, lock screen
+│       └── packages/      # User-level package sets
 ├── modules/
 │   ├── base/              # Shared modules used by both NixOS and home-manager
 │   └── nixos/
 │       ├── base/          # Core system settings (SSH, i18n, users, nix)
-│       └── desktop/       # Desktop stack (Hyprland, PipeWire, Bluetooth, …)
+│       └── desktop/       # Desktop stack (Niri, Vicinae, PipeWire, Bluetooth, …)
 │       └── desktop.nix    # Bundles base + desktop for full desktop hosts
 ├── lib/                   # Helpers (nixosSystem builder, path utilities)
 ├── vars/                  # Shared constants (username, email, …)
@@ -43,7 +102,7 @@ nix fmt
 
 ## How it fits together
 
-1. **`flake.nix`** declares inputs (nixpkgs, home-manager, Hyprland, Catppuccin, …) and delegates to `outputs/`.
+1. **`flake.nix`** declares inputs (nixpkgs, home-manager, Niri, Vicinae, Catppuccin, …) and delegates to `outputs/`.
 2. **`outputs/<arch>/src/<host>.nix`** defines a `nixosConfiguration` by combining:
    - `hosts/<hostname>/` — machine-specific hardware and settings
    - `modules/nixos/desktop.nix` — shared system + desktop modules

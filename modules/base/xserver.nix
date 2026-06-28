@@ -1,14 +1,9 @@
-{ myvars, ... }:
+{ ... }:
 {
   services = {
     xserver = {
       enable = true;
       xkb.layout = "us";
-    };
-
-    displayManager.autoLogin = {
-      enable = true;
-      user = myvars.username;
     };
 
     libinput = {

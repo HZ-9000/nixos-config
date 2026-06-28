@@ -1,0 +1,26 @@
+{ ... }:
+{
+  home.sessionVariables = {
+    # MOZ_ENABLE_WAYLAND and NIXOS_OZONE_WL are set system-wide in
+    # modules/nixos/desktop/niri.nix — no need to repeat them here.
+
+    __GL_GSYNC_ALLOWED = 0;
+    __GL_VRR_ALLOWED = 0;
+    SSH_AUTH_SOCK = "/run/user/1000/ssh-agent";
+    DISABLE_QT5_COMPAT = 0;
+    GDK_BACKEND = "wayland";
+    ANKI_WAYLAND = 1;
+    DIRENV_LOG_FORMAT = "";
+    QT_AUTO_SCREEN_SCALE_FACTOR = 1;
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
+    QT_QPA_PLATFORM = "wayland";
+    QT_QPA_PLATFORMTHEME = "qt5ct";
+    QT_STYLE_OVERRIDE = "kvantum";
+    XDG_CURRENT_DESKTOP = "niri";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_DESKTOP = "niri";
+    SDL_VIDEODRIVER = "wayland";
+    CLUTTER_BACKEND = "wayland";
+    GTK_THEME = "Colloid-Green-Dark-Gruvbox";
+  };
+}

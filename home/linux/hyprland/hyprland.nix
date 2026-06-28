@@ -4,7 +4,6 @@ let
 in
 {
   home.packages = with pkgs; [
-    awww
     inputs.hypr-contrib.packages.${pkgs.system}.grimblast
     inputs.hyprpicker.packages.${pkgs.system}.hyprpicker
     grim
@@ -32,7 +31,6 @@ in
     # enableNvidiaPatches = false;
     systemd = {
       enable = true;
-      # hypridle runs as a systemd user service and needs PATH to find hyprlock.
       variables = [ "--all" ];
     };
   };
