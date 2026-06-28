@@ -6,6 +6,7 @@
     #nil
     ## Editors
     code-cursor
+    jetbrains.rider
 
     ## formating
     shfmt

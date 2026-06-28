@@ -1,5 +1,5 @@
 # Connectivity info for Linux VM
-NIXADDR := "UNSET"
+NIXADDR := "10.211.55.7"
 NIXPORT := "22"
 NIXUSER := "root"
 

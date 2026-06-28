@@ -1,0 +1,25 @@
+[shell]
+font = "JetBrains Mono"
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Catppuccin"
+
+[wallpaper.default]
+path = "~/Pictures/wallpapers/framework_dunes.jpeg"
+
+[lockscreen]
+enabled = true
+blurred_desktop = false
+wallpaper = ""
+
+[idle.behavior.lock]
+timeout = 600
+action = "lock"
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 900
+action = "screen_off"
+enabled = true

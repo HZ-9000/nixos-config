@@ -230,14 +230,8 @@ in
 
     on = [
       (mkStartup [
-        "hyprlock"
-        "nm-applet"
         "poweralertd"
-        "waybar"
-        "swaync"
         "hyprctl setcursor Bibata-Modern-Ice 24"
-        "awww-daemon"
-        "waypaper --restore"
         "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
       ])
     ];
@@ -253,21 +247,21 @@ in
       (modBind "F" ''hl.dsp.window.fullscreen()'')
       (modBind "SHIFT + F" ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
       (modBind "Space" ''hl.dsp.exec_cmd("toggle-float")'')
-      (modBind "D" ''hl.dsp.exec_cmd("rofi -show drun")'')
+      (modBind "D" ''hl.dsp.exec_cmd("noctalia msg panel-toggle launcher")'')
       (modBind "SHIFT + D" ''hl.dsp.exec_cmd("webcord --enable-features=UseOzonePlatform --ozone-platform=wayland")'')
       (modBind "SHIFT + S" ''hl.dsp.exec_cmd("SoundWireServer", { workspace = "5 silent" })'')
-      (modBind "L" ''hl.dsp.exec_cmd("hyprlock")'')
-      (modBind "SHIFT + Escape" ''hl.dsp.exec_cmd("power-menu")'')
+      (modBind "L" ''hl.dsp.exec_cmd("noctalia msg session lock")'')
+      (modBind "SHIFT + Escape" ''hl.dsp.exec_cmd("noctalia msg panel-toggle session")'')
       (modBind "P" ''hl.dsp.window.pseudo()'')
       (modBind "X" ''hl.dsp.layout("togglesplit")'')
       (modBind "T" ''hl.dsp.exec_cmd("toggle-oppacity")'')
       (modBind "E" ''hl.dsp.exec_cmd("nemo")'')
       (mkBind "ALT + E" ''hl.dsp.exec_cmd("nemo", { float = true, size = { x = 1111, y = 700 } })'')
-      (modBind "SHIFT + B" ''hl.dsp.exec_cmd("toggle-waybar")'')
+      (modBind "SHIFT + B" ''hl.dsp.exec_cmd("noctalia msg bar-toggle")'')
       (modBind "C" ''hl.dsp.exec_cmd("hyprpicker -a")'')
-      (modBind "W" ''hl.dsp.exec_cmd("wallpaper-picker")'')
-      (modBind "SHIFT + W" ''hl.dsp.exec_cmd("waypaper", { float = true, size = { x = 925, y = 615 } })'')
-      (modBind "N" ''hl.dsp.exec_cmd("swaync-client -t -sw")'')
+      (modBind "W" ''hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper")'')
+      (modBind "SHIFT + W" ''hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper")'')
+      (modBind "N" ''hl.dsp.exec_cmd("noctalia msg panel-toggle control-center")'')
       (mkBind "CTRL + SHIFT + Escape" ''hl.dsp.exec_cmd("missioncenter", { workspace = "9" })'')
       (modBind "equal" ''hl.dsp.exec_cmd("woomer")'')
       (mkBind "Print" ''hl.dsp.exec_cmd("screenshot --copy")'')
@@ -352,8 +346,6 @@ in
       { match.class = "^(imv)$"; float = true; }
       { match.class = "^(mpv)$"; float = true; }
       { match.class = "^(Aseprite)$"; tile = true; }
-      { match.class = "^(rofi)$"; pin = true; }
-      { match.class = "^(waypaper)$"; pin = true; }
       { match.title = "^(Transmission)$"; float = true; }
       { match.title = "^(Volume Control)$"; float = true; }
       { match.title = "^(Firefox — Sharing Indicator)$"; float = true; }
@@ -379,7 +371,6 @@ in
       { match.class = "^(mpv)$"; idle_inhibit = "focus"; }
       { match.class = "^(firefox)$"; idle_inhibit = "fullscreen"; }
       { match.class = "^(org.gnome.Calculator)$"; float = true; }
-      { match.class = "^(waypaper)$"; float = true; }
       { match.class = "^(zenity)$"; float = true; }
       { match.class = "^(org.gnome.FileRoller)$"; float = true; }
       { match.class = "^(org.pulseaudio.pavucontrol)$"; float = true; }
@@ -432,8 +423,13 @@ in
 
     layer_rule = [
       { match.namespace = "vicinae"; dim_around = true; }
-      { match.namespace = "rofi"; dim_around = true; }
-      { match.namespace = "swaync-control-center"; dim_around = true; }
+      {
+        match.namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$";
+        no_anim = true;
+        ignore_alpha = 0.5;
+        blur = true;
+        blur_popups = true;
+      }
     ];
   };
 }

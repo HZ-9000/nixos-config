@@ -2,16 +2,14 @@
 {
   imports = [
     ./browser.nix
+    ./git.nix
     ./gtk.nix
-    ./theme.nix
     ./nemo.nix
+    ./theme.nix
     ./xdg-mimes.nix
-    ./waypaper.nix
     ./hyprland
     ./packages
-    ./waybar
-    ./swaync/swaync.nix
-    ./rofi/rofi.nix
+    ./noctalia
     ./zsh
   ];
 }
