@@ -64,7 +64,7 @@ in
         disable_autoreload = true;
         disable_hyprland_logo = true;
         always_follow_on_dnd = true;
-        layers_hog_keyboard_focus = true;
+        layers_hog_keyboard_focus = false;
         animate_manual_resizes = false;
         enable_swallow = true;
         focus_on_activate = true;
@@ -243,7 +243,7 @@ in
       (mkBind "ALT + Return" ''hl.dsp.exec_cmd(terminal, { float = true, size = { x = 1111, y = 700 } })'')
       (modBind "SHIFT + Return" ''hl.dsp.exec_cmd(terminal, { fullscreen = true })'')
       (modBind "B" ''hl.dsp.exec_cmd(browser, { workspace = "1 silent" })'')
-      (modBind "Q" ''hl.dsp.window.close()'')
+      (modBind "Q" ''hl.dsp.exec_cmd("close-window")'')
       (modBind "F" ''hl.dsp.window.fullscreen()'')
       (modBind "SHIFT + F" ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
       (modBind "Space" ''hl.dsp.exec_cmd("toggle-float")'')
