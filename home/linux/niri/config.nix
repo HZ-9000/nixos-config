@@ -46,6 +46,7 @@ in
       "Mod+Shift+Return".action.spawn-sh = "${terminal} --fullscreen";
       "Mod+B".action.spawn-sh = "${browser} --new-window";
       "Mod+Q".action.close-window = { };
+      "Ctrl+Alt+Delete".action.quit = { };
       "Mod+F".action.fullscreen-window = { };
       "Mod+Shift+F".action.toggle-windowed-fullscreen = { };
       "Mod+Space".action.toggle-window-floating = { };
@@ -57,6 +58,7 @@ in
         "webcord --enable-features=UseOzonePlatform --ozone-platform=wayland";
       "Mod+Shift+S".action.spawn-sh = "SoundWireServer";
       "Mod+Shift+Escape".action.spawn-sh = "noctalia msg panel-toggle session";
+      "Ctrl+Alt+L".action.spawn-sh = "noctalia msg session lock";
       "Mod+X".action.toggle-column-tabbed-display = { };
       "Mod+E".action.spawn = "nemo";
       "Alt+E".action.spawn-sh = "nemo --new-window";

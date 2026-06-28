@@ -23,7 +23,7 @@ nix fmt
 | **Audio** | PipeWire |
 | **System resource monitor** | [btop][btop] / Mission Center |
 | **File manager** | [Nemo][Nemo] / [Thunar][Thunar] |
-| **Shell** | [Zsh][Zsh] + [Starship][Starship] |
+| **Shell** | [Nushell][Nushell] + [Starship][Starship] |
 | **Editors / IDE** | [Cursor][Cursor] / [Zed][Zed] / [Neovim][Neovim] / [Rider][Rider] |
 | **Game development** | [Godot][Godot] + [.NET SDK][dotnet] |
 | **Clipboard** | [Vicinae][Vicinae] + [cliphist][cliphist] + [wl-clipboard][wl-clipboard] |
@@ -45,7 +45,7 @@ nix fmt
 [btop]: https://github.com/aristocratos/btop
 [Nemo]: https://github.com/linuxmint/nemo
 [Thunar]: https://gitlab.xfce.org/xfce/thunar
-[Zsh]: https://www.zsh.org/
+[Nushell]: https://www.nushell.sh/
 [Starship]: https://github.com/starship/starship
 [Cursor]: https://cursor.com/
 [Zed]: https://zed.dev/

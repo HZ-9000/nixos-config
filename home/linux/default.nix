@@ -11,6 +11,6 @@
     ./packages
     ./noctalia
     ./vicinae
-    ./zsh
+    ./nushell
   ];
 }
