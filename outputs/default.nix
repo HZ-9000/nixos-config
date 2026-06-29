@@ -35,8 +35,14 @@ let
     aarch64-linux = import ./aarch64-linux (args // { system = "aarch64-linux"; });
   };
 
-  allSystemNames = builtins.attrNames nixosSystems;
+  darwinSystems = {
+    aarch64-darwin = import ./darwin (args // { system = "aarch64-darwin"; });
+  };
+
+  allSystemNames =
+    (builtins.attrNames nixosSystems) ++ (builtins.attrNames darwinSystems);
   nixosSystemValues = builtins.attrValues nixosSystems;
+  darwinSystemValues = builtins.attrValues darwinSystems;
 
   forAllSystems = func: (nixpkgs.lib.genAttrs allSystemNames func);
 in
@@ -46,8 +52,15 @@ in
     map (it: it.nixosConfigurations or { }) nixosSystemValues
   );
 
-  # Eval tests for all NixOS systems. Each per-arch evalTests must be { } (pass).
-  evalTests = lib.lists.all (it: it.evalTests == { }) nixosSystemValues;
+  # nix-darwin Configurations
+  darwinConfigurations = lib.attrsets.mergeAttrsList (
+    map (it: it.darwinConfigurations or { }) darwinSystemValues
+  );
+
+  # Eval tests for all systems. Each per-arch evalTests must be { } (pass).
+  evalTests =
+    (lib.lists.all (it: it.evalTests == { }) nixosSystemValues)
+    && (lib.lists.all (it: it.evalTests == { }) darwinSystemValues);
 
   # Formatter for nix files
   formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);

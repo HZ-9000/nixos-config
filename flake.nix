@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration for storm, stormlight, squall, and parallels";
+  description = "NixOS and nix-darwin configuration for storm, stormlight, squall, parallels, and tempest";
 
   outputs = inputs: import ./outputs inputs;
 
@@ -27,6 +27,11 @@
 
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    darwin = {
+      url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
