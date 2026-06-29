@@ -1,4 +1,4 @@
-{ myvars, ... }:
+{ config, myvars, ... }:
 {
   users.mutableUsers = false;
 
@@ -9,7 +9,7 @@
   };
 
   users.users."${myvars.username}" = {
-    initialPassword = "root";
+    passwordFile = config.sops.secrets.user-password.path;
     home = "/home/${myvars.username}";
     isNormalUser = true;
     extraGroups = [
@@ -23,6 +23,6 @@
   };
 
   users.users.root = {
-    initialPassword = "root";
+    passwordFile = config.sops.secrets.root-password.path;
   };
 }

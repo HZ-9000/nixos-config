@@ -51,4 +51,19 @@ in
 
   # Formatter for nix files
   formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+
+  devShells = forAllSystems (
+    system:
+    let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          age
+          sops
+        ];
+      };
+    }
+  );
 }
