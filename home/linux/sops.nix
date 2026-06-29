@@ -17,5 +17,5 @@
     };
   };
 
-  home.file.".config/gh/hosts.yml".source = config.sops.templates.gh-config.path;
+  home.file.".config/gh/hosts.yml".source = config.lib.file.mkOutOfStoreSymlink config.sops.templates.gh-config.path;
 }

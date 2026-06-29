@@ -32,7 +32,7 @@ Copy the public key (`age-keygen -y /etc/age/keys.txt`) into `nixos-secrets/keys
 cd nixos-secrets && sops updatekeys secrets.yaml
 ```
 
-For **parallels**, do this inside the VM after `just bootstrap0` but before the first sops-enabled `just switch`. The VM bootstrap still uses a temporary `initialPassword = "root"` in the generated installer config; once `/etc/age/keys.txt` is in place and secrets are set, subsequent deploys use sops-managed passwords.
+For **parallels**, `just bootstrap` runs `just secrets` to install `/etc/age/keys.txt` from `nixos-secrets/keys/parallels.age` before the first sops-enabled switch. Run this manually after `just copy` if you only need to refresh keys.
 
 Each host's private key must match the corresponding `nixos-secrets/keys/<hostname>.age.pub` in the private secrets repo. Host private keys stay on the machine at `/etc/age/keys.txt` only.
 
