@@ -1,16 +1,15 @@
 { ... }:
 {
   imports = [
+    ../common/default.nix
     ./browser.nix
-    ./git.nix
     ./gtk.nix
     ./nemo.nix
-    ./theme.nix
+    ./sops.nix
     ./xdg-mimes.nix
     ./niri
-    ./packages
-    ./noctalia
     ./vicinae
-    ./nushell
+    ./noctalia
+    ./packages
   ];
 }

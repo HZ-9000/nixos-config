@@ -9,7 +9,7 @@
   };
 
   users.users."${myvars.username}" = {
-    initialPassword = "root";
+    initialHashedPassword = myvars.initialHashedPassword;
     home = "/home/${myvars.username}";
     isNormalUser = true;
     extraGroups = [
@@ -23,6 +23,6 @@
   };
 
   users.users.root = {
-    initialPassword = "root";
+    initialHashedPassword = myvars.initialHashedPassword;
   };
 }

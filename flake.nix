@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration for storm, stormlight, squall, and parallels";
+  description = "NixOS and nix-darwin configuration for storm, stormlight, squall, parallels, and tempest";
 
   outputs = inputs: import ./outputs inputs;
 
@@ -27,6 +27,11 @@
 
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    darwin = {
+      url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -61,5 +66,17 @@
 
     vicinae.url = "github:vicinaehq/vicinae";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    #### Personal Repositories ####
+
+    nixos-secrets = {
+      url = "git+ssh://git@github.com/HZ-9000/nixos-secrets";
+      flake = false;
+    };
   };
 }

@@ -1,9 +1,8 @@
 { ... }:
 {
   imports = [
-    ./dev.nix
-    ./gamedev.nix
+    ./cli-linux.nix
     ./gui.nix
-    ./cli.nix
+    ./gamedev.nix
   ];
 }
