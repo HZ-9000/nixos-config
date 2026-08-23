@@ -18,8 +18,10 @@
         "modules/nixos/desktop.nix"
       ])
       ++ [
+        inputs.disko.nixosModules.disko
         inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
         inputs.catppuccin.nixosModules.catppuccin
+        inputs.preservation.nixosModules.preservation
       ];
     home-modules = map mylib.relativeToRoot [
       "home/hosts/linux/stormlight.nix"

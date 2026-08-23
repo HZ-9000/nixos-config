@@ -1,5 +1,5 @@
 # Connectivity info for Linux VM
-NIXADDR := "UNSET"
+NIXADDR := "10.211.55.7"
 NIXPORT := "22"
 NIXUSER := "root"
 
@@ -119,9 +119,7 @@ copy:
     rsync -av -e 'ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }}' \
     	--exclude='.git/' \
     	--rsync-path="sudo rsync" \
-    	{{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:/nix-config
-    ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-    "
+    {{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:/nix-config
 
 # install the host age key on the VM for sops-nix (requires nixos-secrets checkout locally).
 [group('vm')]

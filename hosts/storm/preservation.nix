@@ -1,0 +1,333 @@
+{
+  preservation,
+  lib,
+  pkgs,
+  myvars,
+  ...
+}:
+let
+  inherit (myvars) username;
+in
+{
+  imports = [
+    preservation.nixosModules.default
+  ];
+
+  preservation.enable = true;
+  # pverservation required initrd using systemd.
+  boot.initrd.systemd.enable = true;
+
+  environment.systemPackages = [
+    # `sudo ncdu -x /`
+    pkgs.ncdu
+  ];
+
+  # There are two ways to clear the root filesystem on every boot:
+  ##  1. use tmpfs for /
+  ##  2. (btrfs/zfs only)take a blank snapshot of the root filesystem and revert to it on every boot via:
+  ##     boot.initrd.postDeviceCommands = ''
+  ##       mkdir -p /run/mymount
+  ##       mount -o subvol=/ /dev/disk/by-uuid/UUID /run/mymount
+  ##       btrfs subvolume delete /run/mymount
+  ##       btrfs subvolume snapshot / /run/mymount
+  ##     '';
+  #
+  #  See also https://grahamc.com/blog/erase-your-darlings/
+
+  # NOTE: preservation only mounts the directory/file list below to /persistent
+  # If the directory/file already exists in the root filesystem you should
+  # move those files/directories to /persistent first!
+  preservation.preserveAt."/persistent" = {
+    directories = [
+      "/etc/NetworkManager/system-connections"
+      "/etc/ssh"
+      "/etc/nix/inputs"
+      "/etc/secureboot" # lanzaboote - secure boot
+      # my secrets
+      "/etc/agenix/"
+
+      "/var/log"
+
+      # system-core
+      "/var/lib/nixos"
+      "/var/lib/systemd"
+      {
+        directory = "/var/lib/private";
+        mode = "0700";
+      }
+
+      # containers
+      # "/var/lib/docker"
+      "/var/lib/cni"
+      "/var/lib/containers"
+
+      # other data
+      "/var/lib/flatpak"
+
+      # virtualisation
+      "/var/lib/libvirt"
+      "/var/lib/lxc"
+      "/var/lib/lxd"
+      "/var/lib/qemu"
+      # "/var/lib/waydroid"
+
+      # network
+      "/var/lib/bluetooth"
+      "/var/lib/NetworkManager"
+      "/var/lib/iwd"
+      "/var/lib/tailscale"
+    ];
+    files = [
+      # auto-generated machine ID
+      {
+        file = "/etc/machine-id";
+        inInitrd = true;
+      }
+    ];
+
+    # the following directories will be passed to /persistent/home/$USER
+    users.${username} = {
+      commonMountOptions = [
+        "x-gvfs-hide"
+      ];
+      directories = [
+        # ======================================
+        # XDG Directories
+        # ======================================
+
+        "Desktop"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Documents"
+        "Videos"
+
+        # Keep .cache off tmpfs to avoid high RAM usage; many apps use it and it is storage-heavy.
+        ".cache"
+
+        # NOTE: do NOT persist ~/.local/share/Trash here. The trash crate (nushell
+        # `rm --trash`) picks the home trash only when the file's mount topdir equals
+        # the trash dir's topdir; a bind-mounted Trash dir would make files straight
+        # under $HOME fail with EACCES (it would try /.Trash-$uid). The home trash on
+        # tmpfs is lost on reboot, which is acceptable: scattered per-mount
+        # .Trash-$uid dirs on persistent volumes are covered by the trash-empty
+        # retention timer (modules/nixos/base/trash.nix).
+
+        # ======================================
+        # Nix Config
+        # ======================================
+        "nix-config"
+        "tmp"
+
+        # ======================================
+        # Nix / Home Manager Profiles
+        # ======================================
+
+        ".local/state/home-manager"
+        ".local/state/nix/profiles"
+        ".local/share/nix"
+
+        # ======================================
+        # IDE / Editors
+        # ======================================
+
+        # zed
+        ".config/zed"
+        ".local/share/zed"
+
+        # cursor ai editor / cli
+        ".cursor"
+        ".config/cursor"
+        ".config/Cursor"
+
+        # ai agents
+        ".agents" # skills for all agents
+        ".config/agents"
+        ".claude"
+        ".codex"
+        ".kimi-code"
+        ".config/opencode"
+        ".local/share/opencode"
+        ".local/state/opencode"
+
+        ".context7" # up-to-date docs and code examples for for LLMs & agents
+
+        # nvim
+        ".local/share/nvim"
+        ".local/state/nvim"
+
+        ".local/share/jupyter"
+        ".ipython"
+
+        # ======================================
+        # Cloud Native
+        # ======================================
+        {
+          directory = ".config/gcloud";
+          mode = "0700";
+        }
+        {
+          directory = ".config/gh";
+          mode = "0700";
+        }
+        {
+          directory = ".docker";
+          mode = "0700";
+        }
+        {
+          directory = ".kube";
+          mode = "0700";
+        }
+        ".terraform.d/plugin-cache" # terraform's plugin cache
+
+        # ======================================
+        # language package managers
+        # ======================================
+        ".npm" # typsescript/javascript
+        "go"
+        ".cargo" # rust
+        ".conda" # python generated by `conda-shell`
+        ".local/bin"
+        # python uv
+        ".local/share/uv"
+
+        # ======================================
+        # Security
+        # ======================================
+
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+        {
+          directory = ".pki";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/password-store";
+          mode = "0700";
+        }
+        {
+          # gnmome keyrings
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+
+        # ======================================
+        # Games / Media
+        # ======================================
+
+        "Games"
+        ".steam"
+        ".config/blender"
+        ".config/LDtk"
+
+        ".local/share/umu"
+
+        ".local/share/Steam"
+
+        # ======================================
+        # Remote Desktop / Recording
+        # ======================================
+        ".config/obs-studio"
+        ".config/freerdp"
+
+        ".config/remmina"
+        ".local/share/remmina"
+
+        # ======================================
+        # browsers
+        # ======================================
+        ".mozilla"
+        ".config/google-chrome"
+        ".config/chromium"
+
+        # ======================================
+        # CLI data
+        # ======================================
+        ".local/share/zoxide"
+        ".local/share/direnv"
+        ".local/share/k9s"
+
+        # ======================================
+        # Containers
+        # ======================================
+        ".local/share/containers"
+        ".local/share/flatpak"
+        # flatpak/nixpak app's data
+        {
+          directory = ".var";
+          mode = "0700";
+        }
+
+        # ======================================
+        # Misc
+        # ======================================
+
+        # Audio
+        ".config/pulse"
+        ".local/state/wireplumber"
+
+        ".config/nushell"
+      ];
+      files = [
+        {
+          file = ".claude.json";
+          how = "bindmount";
+        }
+      ];
+    };
+  };
+
+  # Create some directories with custom permissions.
+  #
+  # In this configuration the path `/home/butz/.local` is not an immediate parent
+  # of any persisted file so it would be created with the systemd-tmpfiles default
+  # ownership `root:root` and mode `0755`. This would mean that the user `butz`
+  # could not create other files or directories inside `/home/butz/.local`.
+  #
+  # Therefore systemd-tmpfiles is used to prepare such directories with
+  # appropriate permissions.
+  #
+  # Note that immediate parent directories of persisted files can also be
+  # configured with ownership and permissions from the `parent` settings if
+  # `configureParent = true` is set for the file.
+  systemd.tmpfiles.settings.preservation =
+    let
+      permission = {
+        user = username;
+        group = lib.mkForce username;
+        mode = lib.mkForce "0750";
+      };
+    in
+    {
+      "/home/${username}/.config".d = permission;
+      "/home/${username}/.local".d = permission;
+      "/home/${username}/.local/share".d = permission;
+      "/home/${username}/.local/state".d = permission;
+      "/home/${username}/.local/state/nix".d = permission;
+      "/home/${username}/.terraform.d".d = permission;
+    };
+
+  # systemd-machine-id-commit.service would fail but it is not relevant
+  # in this specific setup for a persistent machine-id so we disable it
+  #
+  # see the firstboot example below for an alternative approach
+  systemd.suppressedSystemUnits = [ "systemd-machine-id-commit.service" ];
+
+  # let the service commit the transient ID to the persistent volume
+  systemd.services.systemd-machine-id-commit = {
+    unitConfig.ConditionPathIsMountPoint = [
+      ""
+      "/persistent/etc/machine-id"
+    ];
+    serviceConfig.ExecStart = [
+      ""
+      "systemd-machine-id-setup --commit --root /persistent"
+    ];
+  };
+}
