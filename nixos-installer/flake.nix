@@ -66,7 +66,7 @@
             inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
             ../hosts/stormlight/disko-fs.nix
             ../hosts/stormlight/hardware-configuration.nix
-            # ../hosts/stormlight/preservation.nix
+            ../hosts/stormlight/preservation.nix
           ];
         };
 
