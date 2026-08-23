@@ -25,7 +25,7 @@
               end = "-8G";
               content = {
                 type = "filesystem";
-                format = "ext4";
+                format = "tmpfs";
                 mountpoint = "/";
                 extraArgs = [ "-L" "nixos" ];
               };
