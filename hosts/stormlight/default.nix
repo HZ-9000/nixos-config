@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ./disko-fs.nix
+    ./preservation.nix
   ];
 
   networking.hostName = "stormlight";
