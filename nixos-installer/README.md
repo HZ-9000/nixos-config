@@ -14,11 +14,11 @@ switch to the full flake after its age key and encrypted secrets are available.
 1. Boot the NixOS installation media, connect to the network, and become root.
 2. Verify the target disk with `lsblk`. If needed, update the host's
    `disko-fs.nix` device path before formatting.
-3. Clone this repository and enter the installer flake:
+3. Clone this repository outside `/mnt` and enter the installer flake:
 
    ```bash
-   git clone https://github.com/HZ-9000/nixos-config.git /mnt/etc/nixos/nixos-config
-   cd /mnt/etc/nixos/nixos-config/nixos-installer
+   git clone https://github.com/HZ-9000/nixos-config.git /tmp/nixos-config
+   cd /tmp/nixos-config/nixos-installer
    ```
 
 4. Replace `<hostname>` with `storm` or `stormlight`, then format and mount the
@@ -28,19 +28,21 @@ switch to the full flake after its age key and encrypted secrets are available.
    nix run github:nix-community/disko -- --mode disko --flake .#<hostname>
    ```
 
-5. Install the installer flake and reboot:
+5. Copy the flake into the mounted target, install it, and reboot:
 
    ```bash
-   nixos-install --flake .#<hostname>
+   mkdir -p /mnt/etc/nixos
+   mv /tmp/nixos-config /mnt/etc/nixos/nixos-config
+   nixos-install --flake /mnt/etc/nixos/nixos-config/nixos-installer#<hostname>
    reboot
    ```
 
 ## Inject secrets and switch to the full configuration
 
 After booting the installed system, clone the private secrets repository beside
-the main configuration. Copy the matching pre-generated host age private key
-into `/etc/age/keys.txt`; it must correspond to
-`nixos-secrets/keys/<hostname>.age.pub`.
+the main configuration. Copy the matching pre-generated private key,
+`nixos-secrets/keys/<hostname>.age`, into `/etc/age/keys.txt`; its public
+counterpart must be `nixos-secrets/keys/<hostname>.age.pub`.
 
 ```bash
 cd /etc/nixos/nixos-config
