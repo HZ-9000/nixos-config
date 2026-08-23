@@ -15,7 +15,7 @@
 
     disk.nixos-stormlight = {
       type = "disk";
-      device = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_1TB_S7U5NJ0Y798106N";
+      device = "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_1TB_S7U5NJ0Y798106N";
       content = {
         type = "gpt";
         partitions = {
