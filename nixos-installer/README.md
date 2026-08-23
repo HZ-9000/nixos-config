@@ -42,7 +42,9 @@ switch to the full flake after its age key and encrypted secrets are available.
 After booting the installed system, clone the private secrets repository beside
 the main configuration. Copy the matching pre-generated private key,
 `nixos-secrets/keys/<hostname>.age`, into `/etc/age/keys.txt`; its public
-counterpart must be `nixos-secrets/keys/<hostname>.age.pub`.
+counterpart must already be present as
+`nixos-secrets/keys/<hostname>.age.pub`. Run the following as the installed
+user with `sudo` access:
 
 ```bash
 cd /etc/nixos/nixos-config
