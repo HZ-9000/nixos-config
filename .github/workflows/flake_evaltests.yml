@@ -15,7 +15,6 @@ on:
       - closed
     branches:
       - main
-      - feat/nixos-installer
     paths-ignore:
       - "**.md"
       - "Justfile"
