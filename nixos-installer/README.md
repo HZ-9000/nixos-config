@@ -42,9 +42,9 @@ switch to the full flake after its age key and encrypted secrets are available.
 After booting the installed system, clone the private secrets repository beside
 the main configuration. Copy the matching pre-generated private key,
 `nixos-secrets/keys/<hostname>.age`, into `/etc/age/keys.txt`; its public
-counterpart must already be present as
-`nixos-secrets/keys/<hostname>.age.pub`. Run the following as the installed
-user with `sudo` access:
+counterpart must already be committed to the secrets repository as
+`nixos-secrets/keys/<hostname>.age.pub` during key generation. Run the
+following as the installed user with `sudo` access:
 
 ```bash
 cd /etc/nixos/nixos-config
@@ -53,7 +53,8 @@ sudo install -d -m 700 /etc/age
 sudo install -m 600 nixos-secrets/keys/<hostname>.age /etc/age/keys.txt
 ```
 
-Apply the full configuration using the local secrets checkout:
+From `/etc/nixos/nixos-config`, apply the full configuration using the local
+secrets checkout:
 
 ```bash
 sudo nixos-rebuild switch --flake .#<hostname> \
