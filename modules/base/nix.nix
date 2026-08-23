@@ -34,10 +34,4 @@
     ];
     builders-use-substitutes = true;
   };
-  nixpkgs = {
-    overlays = [
-      inputs.nur.overlays.default
-      inputs.niri.overlays.niri
-    ];
-  };
 }
