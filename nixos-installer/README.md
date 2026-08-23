@@ -55,7 +55,7 @@ Apply the full configuration using the local secrets checkout:
 
 ```bash
 sudo nixos-rebuild switch --flake .#<hostname> \
-  --override-input nixos-secrets path:./nixos-secrets
+  --override-input nixos-secrets path:/etc/nixos/nixos-config/nixos-secrets
 ```
 
 If the host does not yet have a matching age key, follow the key-generation and
