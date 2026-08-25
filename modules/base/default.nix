@@ -6,5 +6,6 @@
     ./nix.nix
     ./user.nix
     ./xserver.nix
+    ./packages.nix
   ];
 }
