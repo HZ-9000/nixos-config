@@ -89,7 +89,8 @@ shell:
 [linux]
 [group('desktop')]
 switch flake_name:
-  sudo nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config
+  sudo nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config \
+    --override-input nixos-secrets "path:{{ justfile_directory() }}/nixos-secrets"
 
 
 # ==============================================================================
