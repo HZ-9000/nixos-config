@@ -1,5 +1,9 @@
+# ==============================================================================
+# Configuration
+# ==============================================================================
+
 # Connectivity info for Linux VM
-NIXADDR := "10.211.55.7"
+NIXADDR := "unset"
 NIXPORT := "22"
 NIXUSER := "root"
 
@@ -19,6 +23,10 @@ SSH_OPTIONS := "-o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o St
 # List all the just commands
 default:
     @just --list
+
+# ==============================================================================
+# Nix Maintenance
+# ==============================================================================
 
 # Run eval tests
 [group('nix')]
@@ -74,6 +82,20 @@ cache:
 shell:
   nix shell nixpkgs#git nixpkgs#neovim nixpkgs#colmena
 
+# ==============================================================================
+# Desktop Deployment
+# ==============================================================================
+
+[linux]
+[group('desktop')]
+switch flake_name:
+  sudo nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config
+
+
+# ==============================================================================
+# VM Bootstrap and Deployment
+# ==============================================================================
+
 [group('vm')]
 bootstrap0:
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} root@{{ NIXADDR }} " \
@@ -108,7 +130,7 @@ bootstrap0:
 bootstrap:
     just NIXUSER=root copy
     just NIXUSER=root secrets
-    just NIXUSER=root switch
+    just NIXUSER=root vm-switch
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
     	sudo reboot; \
     "
@@ -144,9 +166,9 @@ secrets:
 # run the nixos-rebuild switch command. This does NOT copy files so you
 # have to run vm/copy before.
 [group('vm')]
-switch:
+vm-switch:
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-    	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake \"/nix-config#{{ NIXNAME }}\" \
-    		--accept-flake-config \
-    		--override-input nixos-secrets path:/nix-config/nixos-secrets \
+      sudo nixos-rebuild switch --flake \"/nix-config#{{ NIXNAME }}\" \
+        --accept-flake-config \
+        --override-input nixos-secrets path:/nix-config/nixos-secrets \
     "
