@@ -5,7 +5,6 @@
     ./browser.nix
     ./gtk.nix
     ./nemo.nix
-    ./sops.nix
     ./xdg-mimes.nix
     ./niri
     ./vicinae
