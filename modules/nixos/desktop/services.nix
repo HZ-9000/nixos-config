@@ -3,6 +3,7 @@
   services = {
     gvfs.enable = true;
     tumbler.enable = true; # thumbnail generation for file managers
+    upower.enable = true;
 
     gnome = {
       tinysparql.enable = true;
