@@ -232,7 +232,7 @@ in
       (mkStartup [
         "poweralertd"
         "hyprctl setcursor Bibata-Modern-Ice 24"
-        "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"
+        "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets,pkcs11"
       ])
     ];
 

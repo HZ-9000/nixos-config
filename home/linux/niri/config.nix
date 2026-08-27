@@ -9,7 +9,7 @@ in
 
     spawn-at-startup = [
       { argv = [ "poweralertd" ]; }
-      { sh = "gnome-keyring-daemon --start --components=secrets,pkcs11,ssh"; }
+      { sh = "gnome-keyring-daemon --start --components=secrets,pkcs11"; }
     ];
 
     cursor = {
