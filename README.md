@@ -39,6 +39,34 @@ darwin-rebuild switch --flake .#tempest \
   --override-input nixos-secrets path:./nixos-secrets
 ```
 
+## Secure Boot (storm and stormlight)
+
+Lanzaboote is enabled for the two ephemeral Btrfs hosts. Its signing keys live
+only on each machine at sbctl's current default, `/var/lib/sbctl`, which the
+preservation module keeps under `/persistent`.
+
+Prepare setup mode first:
+
+- **storm:** In MSI Advanced Mode, open Settings → Security → Secure Boot,
+  choose Custom mode, delete the existing Secure Boot variables, save, and
+  reboot without enabling Secure Boot.
+- **stormlight:** In the Framework firmware's Secure Boot menu, clear the
+  existing keys or select setup mode, then boot with Secure Boot disabled.
+
+Create and enroll the machine-local keys before the first Lanzaboote rebuild:
+
+```bash
+nix shell nixpkgs#sbctl
+sudo sbctl create-keys
+sudo sbctl enroll-keys --microsoft
+sudo nixos-rebuild switch --flake .#<storm-or-stormlight>
+sudo sbctl verify
+```
+
+After `sbctl verify` succeeds, reboot into firmware setup and enable Secure
+Boot. Firmware labels vary by version; do not clear enrolled firmware keys
+again unless `/var/lib/sbctl` has been backed up.
+
 ## macOS bootstrap (tempest)
 
 First-time nix-darwin install (requires root for system activation):
@@ -114,55 +142,39 @@ Ensure your deploy age key exists at `~/.config/sops/age/keys.txt` before enabli
 
 ```
 .
-├── flake.nix              # Flake inputs and entry point
-├── flake.lock
-├── outputs/               # Flake outputs — wires hosts into nixosConfigurations / darwinConfigurations
-│   ├── default.nix        # Merges per-arch outputs, exposes formatter
-│   ├── x86_64-linux/
-│   │   ├── default.nix    # Aggregates x86_64 host configs
-│   │   └── src/           # One file per host (storm, stormlight, squall, …)
-│   ├── aarch64-linux/
-│   │   ├── default.nix
-│   │   └── src/           # parallels
-│   └── darwin/
-│       ├── default.nix
-│       └── src/           # tempest
-├── hosts/                 # Per-machine system config
-│   ├── <hostname>/        # NixOS hosts
-│   │   ├── default.nix
-│   │   └── hardware-configuration.nix
-│   └── darwin/
-│       └── tempest/
-├── home/
-│   ├── common/            # Shared user environment (git, shells, editors, dev tools)
-│   ├── hosts/
-│   │   ├── linux/         # Per-host NixOS home-manager entry points
-│   │   └── darwin/        # Per-host macOS home-manager entry points
-│   ├── linux/             # Linux-only user environment (Niri, Vicinae, GTK, …)
-│   └── darwin/            # macOS-only user environment (sops key path, …)
+├── flake.nix
+├── outputs/
+│   ├── default.nix
+│   └── <system>/{default.nix,src/,tests/}
+├── hosts/<hostname>/       # Hardware, storage, and machine-specific state
 ├── modules/
-│   ├── base/              # Shared modules used by both NixOS and home-manager
-│   └── nixos/
-│       ├── base/          # Core system settings (SSH, i18n, users, nix)
-│       └── desktop/       # Desktop stack (Niri, Vicinae, PipeWire, Bluetooth, …)
-│       └── desktop.nix    # Bundles base + desktop for full desktop hosts
-│   └── darwin/
-│       └── base/          # macOS system settings (nix, users)
-├── lib/                   # Helpers (nixosSystem, darwinSystem, path utilities)
-├── vars/                  # Shared constants (username, email, …)
-└── Justfile               # VM bootstrap/deploy recipes (parallels)
+│   ├── base/               # Cross-platform system policy
+│   ├── nixos/
+│   │   ├── base/           # Always-on NixOS policy
+│   │   ├── desktop/        # Desktop role
+│   │   └── optional/       # Explicit host capabilities
+│   └── darwin/             # nix-darwin policy
+├── home/
+│   ├── base/{core,tui,gui}/
+│   ├── linux/{base,gui}/
+│   ├── darwin/
+│   └── hosts/{linux,darwin}/
+├── lib/                    # System constructors and path helpers
+├── vars/                   # Shared identity and path constants
+└── nixos-installer/        # Minimal installer flake
 ```
 
 ## How it fits together
 
 1. **`flake.nix`** declares inputs (nixpkgs, home-manager, nix-darwin, Niri, Vicinae, Catppuccin, …) and delegates to `outputs/`.
 2. **`outputs/<arch>/src/<host>.nix`** defines a `nixosConfiguration` or `darwinConfiguration` by combining:
-   - `hosts/<hostname>/` or `hosts/darwin/<hostname>/` — machine-specific settings
-   - `modules/nixos/desktop.nix` or `modules/darwin/base/` — shared system modules
+   - `hosts/<hostname>/` — machine-specific settings
+   - `modules/nixos/desktop.nix` or `modules/darwin/` — role/platform modules
+   - explicit `modules/nixos/optional/` capabilities where needed
    - optional flake input modules (e.g. nixos-hardware, Catppuccin)
    - `home/hosts/linux/<hostname>.nix` or `home/hosts/darwin/<hostname>.nix` — home-manager config
-3. **`lib/nixosSystem.nix`** and **`lib/darwinSystem.nix`** wrap system builders and attach home-manager for `vars.username`.
-4. **`home/common/default.nix`** holds portable user config; **`home/linux/`** and **`home/darwin/`** add platform-specific modules.
+3. **`lib/nixosSystem.nix`** and **`lib/macosSystem.nix`** wrap system builders and attach home-manager for `vars.username`.
+4. Home Manager composes portable `home/base/` modules, platform modules, then thin host entrypoints.
 
 ## References
 

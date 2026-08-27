@@ -1,95 +1,72 @@
 {
-  description = "NixOS configuration of HZ-9000";
+  description = "NixOS installer configurations for HZ-9000 hosts";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     preservation.url = "github:nix-community/preservation";
-    disko.url = "github:nix-community/disko/v1.11.0";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    inputs@{
-      nixpkgs,
-      disko,
-      # preservation,
-      ...
-    }:
+    inputs@{ nixpkgs, ... }:
     let
-      inherit (inputs.nixpkgs) lib;
+      inherit (nixpkgs) lib;
       mylib = import ../lib { inherit lib; };
       myvars = import ../vars { inherit lib; };
+      specialArgs = inputs // {
+        inherit mylib myvars;
+      };
+      baseModules = [
+        ./configuration.nix
+        ../modules/base
+        ../modules/nixos/base/bootloader.nix
+        ../modules/nixos/base/i18n.nix
+        ../modules/nixos/base/user-group.nix
+        ../modules/nixos/base/ssh.nix
+      ];
+      ephemeralModules = [
+        ../modules/nixos/optional/btrbk.nix
+        ../modules/nixos/optional/preservation.nix
+        ../modules/nixos/optional/secure-boot.nix
+      ];
+      mkInstallerSystem =
+        system: modules:
+        nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = baseModules ++ modules;
+        };
     in
     {
       nixosConfigurations = {
-        storm = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = inputs // {
-            inherit mylib myvars;
-          };
+        storm = mkInstallerSystem "x86_64-linux" (
+          [
+            inputs.disko.nixosModules.default
+            ../hosts/storm
+          ]
+          ++ ephemeralModules
+        );
 
-          modules = [
-            { networking.hostName = "storm"; }
-
-            ./configuration.nix
-
-            ../modules/base
-            ../modules/nixos/base/i18n.nix
-            ../modules/nixos/base/user-group.nix
-            ../modules/nixos/base/ssh.nix
-
-            disko.nixosModules.default
-            ../hosts/storm/disko-fs.nix
-            ../hosts/storm/hardware-configuration.nix
-            ../hosts/storm/preservation.nix
-          ];
-        };
-
-        stormlight = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = inputs // {
-            inherit mylib myvars;
-          };
-
-          modules = [
-            { networking.hostName = "stormlight"; }
-
-            ./configuration.nix
-
-            ../modules/base
-            ../modules/nixos/base/i18n.nix
-            ../modules/nixos/base/user-group.nix
-            ../modules/nixos/base/ssh.nix
-
-            disko.nixosModules.default
+        stormlight = mkInstallerSystem "x86_64-linux" (
+          [
+            inputs.disko.nixosModules.default
             inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-            ../hosts/stormlight/disko-fs.nix
-            ../hosts/stormlight/hardware-configuration.nix
-            ../hosts/stormlight/preservation.nix
-          ];
-        };
+            ../hosts/stormlight
+          ]
+          ++ ephemeralModules
+        );
 
-        parallels = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
-          specialArgs = inputs // {
-            inherit mylib myvars;
-          };
-
-          modules = [
-            ./configuration.nix
-
-            # ../modules/base
-            # ../modules/nixos/base/i18n.nix
-            # ../modules/nixos/base/user-group.nix
-            # ../modules/nixos/base/ssh.nix
-
-            # disko.nixosModules.default
-            # ../hosts/parallels/disko-fs.nix
-            ../hosts/parallels/hardware-configuration.nix
-            # ../hosts/parallels/preservation.nix
-          ];
-        };
+        parallels = mkInstallerSystem "aarch64-linux" [
+          inputs.disko.nixosModules.default
+          ../hosts/parallels
+        ];
       };
     };
 }

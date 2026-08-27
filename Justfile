@@ -9,6 +9,7 @@ NIXUSER := "root"
 
 # The name of the nixosConfiguration in the flake
 NIXNAME := "parallels"
+REMOTE_CONFIG_DIR := "/nix-config"
 
 # SSH options that are used. These aren't meant to be overridden but are
 # reused a lot so we just store them up here.
@@ -66,15 +67,6 @@ gc:
 fmt:
   # format the nix files in this repo
   ls **/*.nix | each { |it| nixfmt $it.name }
-
-# This builds the given NixOS configuration and pushes the results to the
-# cache. This does not alter the current running system. This requires
-# cachix authentication to be configured out of band.
-[group('nix')]
-cache:
-    nix build '.#nixosConfigurations.{{ NIXNAME }}.config.system.build.toplevel' --json \
-    	| jq -r '.[].outputs | to_entries[].value' \
-    	| cachix push mitchellh-nixos-config
 
 # Enter a shell session which has all the necessary tools for this flake
 [linux]
@@ -142,7 +134,7 @@ copy:
     rsync -av -e 'ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }}' \
     	--exclude='.git/' \
     	--rsync-path="sudo rsync" \
-    {{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:/nix-config
+    {{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:{{ REMOTE_CONFIG_DIR }}
 
 # install the host age key on the VM for sops-nix (requires nixos-secrets checkout locally).
 [group('vm')]
@@ -169,7 +161,7 @@ secrets:
 [group('vm')]
 vm-switch:
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-      sudo nixos-rebuild switch --flake \"/nix-config#{{ NIXNAME }}\" \
+      sudo nixos-rebuild switch --flake \"{{ REMOTE_CONFIG_DIR }}#{{ NIXNAME }}\" \
         --accept-flake-config \
-        --override-input nixos-secrets path:/nix-config/nixos-secrets \
+        --override-input nixos-secrets path:{{ REMOTE_CONFIG_DIR }}/nixos-secrets \
     "
