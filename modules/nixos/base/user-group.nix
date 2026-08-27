@@ -6,6 +6,10 @@
     "${myvars.username}" = { };
     podman = { };
     docker = { };
+    wireshark = { };
+    # for android platform tools's udev rules
+    adbusers = { };
+    dialout = { };
   };
 
   users.users."${myvars.username}" = {
@@ -19,10 +23,15 @@
       "networkmanager"
       "podman"
       "docker"
+      "wireshark"
+      "adbusers" # android debugging
+      "libvirtd" # virt-viewer / qemu
     ];
   };
 
+  # root's ssh key are mainly used for remote deployment
   users.users.root = {
-    initialHashedPassword = myvars.initialHashedPassword;
+    inherit (myvars) initialHashedPassword;
+    openssh.authorizedKeys.keys = myvars.mainSshAuthorizedKeys ++ myvars.secondaryAuthorizedKeys;
   };
 }

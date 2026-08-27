@@ -15,5 +15,6 @@
     ./bootloader.nix
     ./nh.nix
     ./xdg.nix
+    ./gaming.nix
   ];
 }
