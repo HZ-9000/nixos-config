@@ -25,7 +25,7 @@
       python3
       python312Packages.ipython
     ]
-    ++ lib.optionals stdenv.isLinux [
+    ++ lib.optionals stdenv.hostPlatform.isLinux [
       valgrind
     ];
 
