@@ -41,7 +41,7 @@
             ../hosts/storm/hardware-configuration.nix
             ../hosts/storm/preservation.nix
           ];
-        );
+        };
 
         stormlight = mylib.nixosSystem {
           system = "x86_64-linux";
