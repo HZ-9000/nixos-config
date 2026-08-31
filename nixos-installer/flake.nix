@@ -12,7 +12,13 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ 
+      nixpkgs,
+      disko,
+      preservation,
+      nixos-hardware,
+      ...
+    }:
     let
       inherit (nixpkgs) lib;
       mylib = import ../lib { inherit lib; };
@@ -59,6 +65,7 @@
             ../modules/nixos/base/ssh.nix
 
             inputs.disko.nixosModules.default
+            inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
             ../hosts/stormlight/disko-fs.nix
             ../hosts/stormlight/hardware-configuration.nix
             ../hosts/stormlight/preservation.nix
