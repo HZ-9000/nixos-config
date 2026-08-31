@@ -33,9 +33,7 @@
         ../modules/nixos/base/ssh.nix
       ];
       ephemeralModules = [
-        ../modules/nixos/optional/btrbk.nix
-        ../modules/nixos/optional/preservation.nix
-        ../modules/nixos/optional/secure-boot.nix
+        ../modules/nixos/base/btrbk.nix
       ];
       mkInstallerSystem =
         system: modules:

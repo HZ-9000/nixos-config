@@ -22,10 +22,6 @@
         "hosts/storm"
         # system modules
         "modules/nixos/desktop.nix"
-        # host capabilities
-        "modules/nixos/optional/btrbk.nix"
-        "modules/nixos/optional/preservation.nix"
-        "modules/nixos/optional/secure-boot.nix"
       ])
       ++ [
         inputs.disko.nixosModules.disko
