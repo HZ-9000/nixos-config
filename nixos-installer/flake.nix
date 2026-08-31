@@ -9,10 +9,6 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v1.1.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -21,50 +17,54 @@
       inherit (nixpkgs) lib;
       mylib = import ../lib { inherit lib; };
       myvars = import ../vars { inherit lib; };
-      specialArgs = inputs // {
-        inherit mylib myvars;
-      };
-      baseModules = [
-        ./configuration.nix
-        ../modules/base
-        ../modules/nixos/base/bootloader.nix
-        ../modules/nixos/base/i18n.nix
-        ../modules/nixos/base/user-group.nix
-        ../modules/nixos/base/ssh.nix
-      ];
-      ephemeralModules = [
-        ../modules/nixos/base/btrbk.nix
-      ];
-      mkInstallerSystem =
-        system: modules:
-        nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = baseModules ++ modules;
-        };
     in
     {
       nixosConfigurations = {
-        storm = mkInstallerSystem "x86_64-linux" (
-          [
-            inputs.disko.nixosModules.default
-            ../hosts/storm
-          ]
-          ++ ephemeralModules
+        storm = mylib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = inputs // {
+            inherit mylib myvars;
+          };
+
+          modules = [
+            { networking.hostName = "storm"; }
+
+            ./configuration.nix
+
+            ../modules/base
+            ../modules/nixos/base/i18n.nix
+            ../modules/nixos/base/user-group.nix
+            ../modules/nixos/base/ssh.nix
+
+            disko.nixosModules.default
+            ../hosts/storm/disko-fs.nix
+            ../hosts/storm/hardware-configuration.nix
+            ../hosts/storm/preservation.nix
+          ];
         );
 
-        stormlight = mkInstallerSystem "x86_64-linux" (
-          [
-            inputs.disko.nixosModules.default
-            inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-            ../hosts/stormlight
-          ]
-          ++ ephemeralModules
-        );
+        stormlight = mylib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = inputs // {
+            inherit mylib myvars;
+          };
 
-        parallels = mkInstallerSystem "aarch64-linux" [
-          inputs.disko.nixosModules.default
-          ../hosts/parallels
-        ];
+          modules = [
+            { networking.hostName = "stormlight"; }
+
+            ./configuration.nix
+
+            ../modules/base
+            ../modules/nixos/base/i18n.nix
+            ../modules/nixos/base/user-group.nix
+            ../modules/nixos/base/ssh.nix
+
+            disko.nixosModules.default
+            ../hosts/stormlight/disko-fs.nix
+            ../hosts/stormlight/hardware-configuration.nix
+            ../hosts/stormlight/preservation.nix
+          ];
+        };
       };
     };
 }

@@ -3,6 +3,10 @@ default:
     @just --list
 
 # Enter a shell session which has all the necessary tools for this flake
-[linux]
+[group('nix')]
 test:
   nix build ".#nixosConfigurations.storm.config.system.build.toplevel" --show-trace --verbose
+
+[group('nix')]
+format host:
+  nix run github:nix-community/disko -- --mode destroy,format,mount ../hosts/{{host}}/disko-fs.nix

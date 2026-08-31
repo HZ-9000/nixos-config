@@ -13,6 +13,7 @@
     just # a command runner(replacement of gnumake in some cases)
     curl
     nix-output-monitor
+    sbctl # secure boot tool
   ];
   networking = {
     # configures the network interface(include wireless) via `nmcli` & `nmtui`
