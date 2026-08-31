@@ -36,10 +36,9 @@
             ../modules/nixos/base/user-group.nix
             ../modules/nixos/base/ssh.nix
 
-            disko.nixosModules.default
+            inputs.disko.nixosModules.default
             ../hosts/storm/disko-fs.nix
             ../hosts/storm/hardware-configuration.nix
-            ../hosts/storm/preservation.nix
           ];
         };
 
@@ -59,7 +58,7 @@
             ../modules/nixos/base/user-group.nix
             ../modules/nixos/base/ssh.nix
 
-            disko.nixosModules.default
+            inputs.disko.nixosModules.default
             ../hosts/stormlight/disko-fs.nix
             ../hosts/stormlight/hardware-configuration.nix
             ../hosts/stormlight/preservation.nix
