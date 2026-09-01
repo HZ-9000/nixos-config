@@ -20,6 +20,18 @@
         "type": "github"
       }
     },
+    "nixos-config": {
+      "flake": false,
+      "locked": {
+        "path": "..",
+        "type": "path"
+      },
+      "original": {
+        "path": "..",
+        "type": "path"
+      },
+      "parent": []
+    },
     "nixos-hardware": {
       "inputs": {
         "nixpkgs": "nixpkgs"
@@ -86,6 +98,7 @@
     "root": {
       "inputs": {
         "disko": "disko",
+        "nixos-config": "nixos-config",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "preservation": "preservation"
