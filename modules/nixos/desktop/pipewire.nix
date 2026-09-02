@@ -1,9 +1,8 @@
-{ ... }:
-{
+_: {
   # Disable PulseAudio in favour of PipeWire
   services.pulseaudio.enable = false;
 
-  # Real-time audio support (was only in the orphaned audio.nix home file)
+  # Real-time audio support for desktop workloads.
   security.rtkit.enable = true;
 
   services.pipewire = {

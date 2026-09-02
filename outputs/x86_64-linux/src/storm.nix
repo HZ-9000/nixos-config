@@ -6,10 +6,16 @@
   system,
   genSpecialArgs,
   ...
-}@args:
+}:
 {
   nixosConfigurations.storm = mylib.nixosSystem {
-    inherit inputs lib system genSpecialArgs myvars;
+    inherit
+      inputs
+      lib
+      system
+      genSpecialArgs
+      myvars
+      ;
     nixos-modules =
       (map mylib.relativeToRoot [
         # host-specific hardware

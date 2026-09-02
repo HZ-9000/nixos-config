@@ -9,15 +9,17 @@
 {
   imports = [ ];
 
-  boot.initrd.availableKernelModules = [
-    "ehci_pci"
-    "xhci_pci"
-    "usbhid"
-    "sr_mod"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    initrd.availableKernelModules = [
+      "ehci_pci"
+      "xhci_pci"
+      "usbhid"
+      "sr_mod"
+    ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ ];
+    extraModulePackages = [ ];
+  };
 
   swapDevices = [ ];
 

@@ -1,4 +1,4 @@
-{ inputs, lib, ... }@args:
+{ inputs, ... }@args:
 let
   inherit (inputs) haumea;
 

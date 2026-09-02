@@ -1,8 +1,7 @@
 { ... }:
 {
   imports = [
-    ../common/default.nix
+    ../base
     ./sops.nix
-    ./browser.nix
   ];
 }

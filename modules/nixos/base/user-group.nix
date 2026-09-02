@@ -1,28 +1,39 @@
 { myvars, ... }:
 {
-  users.mutableUsers = false;
+  users = {
+    mutableUsers = false;
 
-  users.groups = {
-    "${myvars.username}" = { };
-    podman = { };
-    docker = { };
-  };
+    groups = {
+      "${myvars.username}" = { };
+      podman = { };
+      docker = { };
+      wireshark = { };
+      adbusers = { };
+      dialout = { };
+    };
 
-  users.users."${myvars.username}" = {
-    initialHashedPassword = myvars.initialHashedPassword;
-    home = "/home/${myvars.username}";
-    isNormalUser = true;
-    extraGroups = [
-      myvars.username
-      "users"
-      "wheel"
-      "networkmanager"
-      "podman"
-      "docker"
-    ];
-  };
+    users = {
+      "${myvars.username}" = {
+        inherit (myvars) initialHashedPassword;
+        home = "/home/${myvars.username}";
+        isNormalUser = true;
+        extraGroups = [
+          myvars.username
+          "users"
+          "wheel"
+          "networkmanager"
+          "podman"
+          "docker"
+          "wireshark"
+          "adbusers"
+          "libvirtd"
+        ];
+      };
 
-  users.users.root = {
-    initialHashedPassword = myvars.initialHashedPassword;
+      root = {
+        inherit (myvars) initialHashedPassword;
+        openssh.authorizedKeys.keys = myvars.mainSshAuthorizedKeys ++ myvars.secondaryAuthorizedKeys;
+      };
+    };
   };
 }

@@ -1,8 +1,8 @@
 { ... }:
 {
+  disabledModules = [
+    ../../linux/base/sops.nix
+  ];
+
   imports = [ ../../linux/default.nix ];
-
-  home.stateVersion = "26.05";
-
-  programs.home-manager.enable = true;
 }

@@ -14,7 +14,7 @@ in
   ];
 
   preservation.enable = true;
-  # pverservation required initrd using systemd.
+  # Preservation requires a systemd-based initrd.
   boot.initrd.systemd.enable = true;
 
   environment.systemPackages = [
@@ -42,15 +42,14 @@ in
       "/etc/NetworkManager/system-connections"
       "/etc/ssh"
       "/etc/nix/inputs"
-      "/etc/secureboot" # lanzaboote - secure boot
-      # my secrets
-      "/etc/agenix/"
+      "/etc/age" # sops-nix age key
 
       "/var/log"
 
       # system-core
       "/var/lib/nixos"
       "/var/lib/systemd"
+      "/var/lib/sbctl" # Lanzaboote signing keys
       {
         directory = "/var/lib/private";
         mode = "0700";
@@ -105,18 +104,13 @@ in
         # Keep .cache off tmpfs to avoid high RAM usage; many apps use it and it is storage-heavy.
         ".cache"
 
-        # NOTE: do NOT persist ~/.local/share/Trash here. The trash crate (nushell
-        # `rm --trash`) picks the home trash only when the file's mount topdir equals
-        # the trash dir's topdir; a bind-mounted Trash dir would make files straight
-        # under $HOME fail with EACCES (it would try /.Trash-$uid). The home trash on
-        # tmpfs is lost on reboot, which is acceptable: scattered per-mount
-        # .Trash-$uid dirs on persistent volumes are covered by the trash-empty
-        # retention timer (modules/nixos/base/trash.nix).
+        # Do not persist ~/.local/share/Trash: bind-mounting it changes the mount
+        # top-level used by freedesktop trash implementations.
 
         # ======================================
         # Nix Config
         # ======================================
-        "nix-config"
+        myvars.configDirectoryName
         "tmp"
 
         # ======================================
@@ -296,38 +290,35 @@ in
   # Note that immediate parent directories of persisted files can also be
   # configured with ownership and permissions from the `parent` settings if
   # `configureParent = true` is set for the file.
-  systemd.tmpfiles.settings.preservation =
-    let
-      permission = {
-        user = username;
-        group = lib.mkForce username;
-        mode = lib.mkForce "0750";
+  systemd = {
+    tmpfiles.settings.preservation =
+      let
+        permission = {
+          user = username;
+          group = lib.mkForce username;
+          mode = lib.mkForce "0750";
+        };
+      in
+      {
+        "/home/${username}/.config".d = permission;
+        "/home/${username}/.local".d = permission;
+        "/home/${username}/.local/share".d = permission;
+        "/home/${username}/.local/state".d = permission;
+        "/home/${username}/.local/state/nix".d = permission;
+        "/home/${username}/.terraform.d".d = permission;
       };
-    in
-    {
-      "/home/${username}/.config".d = permission;
-      "/home/${username}/.local".d = permission;
-      "/home/${username}/.local/share".d = permission;
-      "/home/${username}/.local/state".d = permission;
-      "/home/${username}/.local/state/nix".d = permission;
-      "/home/${username}/.terraform.d".d = permission;
+
+    suppressedSystemUnits = [ "systemd-machine-id-commit.service" ];
+
+    services.systemd-machine-id-commit = {
+      unitConfig.ConditionPathIsMountPoint = [
+        ""
+        "/persistent/etc/machine-id"
+      ];
+      serviceConfig.ExecStart = [
+        ""
+        "systemd-machine-id-setup --commit --root /persistent"
+      ];
     };
-
-  # systemd-machine-id-commit.service would fail but it is not relevant
-  # in this specific setup for a persistent machine-id so we disable it
-  #
-  # see the firstboot example below for an alternative approach
-  systemd.suppressedSystemUnits = [ "systemd-machine-id-commit.service" ];
-
-  # let the service commit the transient ID to the persistent volume
-  systemd.services.systemd-machine-id-commit = {
-    unitConfig.ConditionPathIsMountPoint = [
-      ""
-      "/persistent/etc/machine-id"
-    ];
-    serviceConfig.ExecStart = [
-      ""
-      "systemd-machine-id-setup --commit --root /persistent"
-    ];
   };
 }
