@@ -236,6 +236,10 @@ in
         # ======================================
         # browsers
         # ======================================
+        # Zen stores profiles here on current XDG-compliant releases. Older
+        # releases keep using ~/.zen when that legacy directory exists.
+        ".config/zen"
+        ".zen"
         ".mozilla"
         ".config/google-chrome"
         ".config/chromium"
