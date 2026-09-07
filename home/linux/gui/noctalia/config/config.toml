@@ -24,6 +24,20 @@ timeout = 900
 action = "screen_off"
 enabled = true
 
-# Graphical battery with percentage overlay
+# Graphical battery without percentage text
 [widget.battery]
 display_mode = "graphic"
+show_label = false
+
+[widget.brightness]
+show_label = false
+
+[widget.volume]
+show_label = false
+
+# Hide the Now Playing and application-search widgets from the bar.
+[widget.media]
+enabled = false
+
+[widget.launcher]
+enabled = false
