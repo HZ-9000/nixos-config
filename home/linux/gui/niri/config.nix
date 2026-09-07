@@ -31,6 +31,7 @@ in
 
     layout = {
       gaps = 6;
+      default-column-width.proportion = 1.0;
       border = {
         enable = true;
         width = 2;
@@ -157,6 +158,11 @@ in
       "XF86AudioNext".action.spawn-sh = "playerctl next";
       "XF86AudioPrev".action.spawn-sh = "playerctl previous";
       "XF86AudioStop".action.spawn-sh = "playerctl stop";
+      "XF86AudioRaiseVolume".action.spawn-sh = "pamixer -i 5";
+      "XF86AudioLowerVolume".action.spawn-sh = "pamixer -d 5";
+      "XF86AudioMute".action.spawn-sh = "pamixer -t";
+      "XF86MonBrightnessUp".action.spawn-sh = "brightnessctl set 5%+";
+      "XF86MonBrightnessDown".action.spawn-sh = "brightnessctl set 5%-";
     };
 
     window-rules = [
