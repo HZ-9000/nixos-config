@@ -11,6 +11,7 @@ lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (
   in
   {
     firewall = config.networking.firewall.enable;
+    networkmanager = config.networking.networkmanager.enable;
     polkit = config.security.polkit.enable;
     tailscale = config.services.tailscale.enable;
     sunshine = config.services.sunshine.enable;
