@@ -10,5 +10,8 @@
 
     ## .NET SDK for Godot C# projects and Rider
     dotnet-sdk_8
+
+    ## 3D modeling and animation
+    blender
   ];
 }
