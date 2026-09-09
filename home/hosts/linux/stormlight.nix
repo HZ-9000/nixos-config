@@ -7,7 +7,7 @@ in
     ../../linux/base/sops.nix
   ];
 
-  programs.ssh.settings."github.com".IdentityFile = "${config.home.homeDirectory}/.ssh/${hostName}";
+  programs.ssh.settings."github.com".IdentityFile = "~/.ssh/${hostName}";
 
   imports = [ ../../linux/default.nix ];
 }
