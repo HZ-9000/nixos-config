@@ -100,7 +100,7 @@ Ensure your deploy age key exists at `~/.config/sops/age/keys.txt` before enabli
 | **File manager** | [Nemo][Nemo] / [Thunar][Thunar] |
 | **Shell** | [Nushell][Nushell] + [Starship][Starship] |
 | **Editors / IDE** | [Cursor][Cursor] / [Zed][Zed] / [Neovim][Neovim] / [Rider][Rider] |
-| **Game development** | [Godot][Godot] + [.NET SDK][dotnet] + [Blender][Blender] |
+| **Game development** | [Godot][Godot] + [.NET SDK][dotnet] + [Blender][Blender] + Android SDK/NDK + [scrcpy][scrcpy] |
 | **Clipboard** | [Vicinae][Vicinae] + [cliphist][cliphist] + [wl-clipboard][wl-clipboard] |
 | **Screenshot / color picker** | grim + slurp / [wl-color-picker][wl-color-picker] / swappy |
 | **Screen recording** | [wf-recorder][wf-recorder] |
@@ -128,6 +128,7 @@ Ensure your deploy age key exists at `~/.config/sops/age/keys.txt` before enabli
 [Rider]: https://www.jetbrains.com/rider/
 [Godot]: https://godotengine.org/
 [Blender]: https://www.blender.org/
+[scrcpy]: https://github.com/Genymobile/scrcpy
 [dotnet]: https://dotnet.microsoft.com/
 [Vicinae]: https://github.com/vicinaehq/vicinae
 [cliphist]: https://github.com/sentriz/cliphist

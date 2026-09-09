@@ -10,6 +10,9 @@
   # to install chrome, you need to enable unfree packages
   nixpkgs.config.allowUnfree = lib.mkForce true;
 
+  # Required for the Android SDK used by Godot mobile export tooling.
+  nixpkgs.config.android_sdk.accept_license = lib.mkDefault true;
+
   nix = {
     # Do garbage collection weekly to keep disk usage low.
     gc = {
