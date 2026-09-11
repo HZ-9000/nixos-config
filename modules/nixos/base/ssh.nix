@@ -1,15 +1,16 @@
-{ ... }:
+{ lib, ... }:
 {
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  # Secure by default: firewall ON everywhere unless a host explicitly disables it
+  # (servers disable it in modules/nixos/server/{server,server-aarch64}.nix).
+  networking.firewall.enable = lib.mkDefault true;
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
     settings = {
-      X11Forwarding = true;
+      X11Forwarding = lib.mkDefault false;
       # root user is used for remote deployment, so we need to allow it
-      PermitRootLogin = "yes";
-      PasswordAuthentication = true; # disable password login
+      PermitRootLogin = lib.mkDefault "prohibit-password";
+      PasswordAuthentication = lib.mkDefault false; # disable password login
     };
     openFirewall = true;
   };

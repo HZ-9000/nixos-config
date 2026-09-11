@@ -1,13 +1,14 @@
 # Hosts
 
-Per-machine system configuration. NixOS hosts live under `hosts/<hostname>/`; macOS hosts live under `hosts/darwin/<hostname>/`.
+Per-machine hardware, storage, and system state lives under `hosts/<hostname>/`.
+Reusable policy and opt-in capabilities live under `modules/`.
 
 ## NixOS
 
 | Host | Architecture | Notes |
 |------|--------------|-------|
-| `storm` | x86_64-linux | Ryzen 7-9700x + RX 7900XTX |
-| `stormlight` | x86_64-linux | Framework AMD AI 300, Catppuccin |
+| `storm` | x86_64-linux | Ryzen 7-9700x + RX 7900XTX, preservation, Secure Boot |
+| `stormlight` | x86_64-linux | Framework AMD AI 300, preservation, Secure Boot |
 | `squall` | x86_64-linux | Lenovo Yoga 7i, Catppuccin |
 | `parallels` | aarch64-linux | Parallels VM |
 
@@ -55,6 +56,24 @@ cd nixos-secrets && sops updatekeys secrets.yaml
 For **parallels**, `just bootstrap` runs `just secrets` to install `/etc/age/keys.txt` from `nixos-secrets/keys/parallels.age` before the first sops-enabled switch. Run this manually after `just copy` if you only need to refresh keys.
 
 Each NixOS host's private key must match the corresponding `nixos-secrets/keys/<hostname>.age.pub` in the private secrets repo. Host private keys stay on the machine at `/etc/age/keys.txt` only.
+
+## Secure Boot keys (storm and stormlight)
+
+Lanzaboote keys are machine-local and must not be committed. Put Storm's MSI
+firmware in Custom/setup mode by clearing its Secure Boot variables. Put
+Stormlight's Framework firmware in setup mode through its Secure Boot menu.
+Then boot with Secure Boot disabled and run:
+
+```bash
+nix shell nixpkgs#sbctl
+sudo sbctl create-keys
+sudo sbctl enroll-keys --microsoft
+sudo nixos-rebuild switch --flake .#<hostname>
+sudo sbctl verify
+```
+
+Both hosts preserve `/var/lib/sbctl`. Enable Secure Boot only after `sbctl
+verify` reports the expected signed EFI files.
 
 ## Age key bootstrap (tempest)
 

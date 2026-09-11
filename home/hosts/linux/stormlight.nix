@@ -1,8 +1,9 @@
 { ... }:
+let
+  hostName = "stormlight";
+in
 {
+  programs.ssh.settings."github.com".IdentityFile = "~/.ssh/${hostName}";
+
   imports = [ ../../linux/default.nix ];
-
-  home.stateVersion = "26.05";
-
-  programs.home-manager.enable = true;
 }

@@ -1,7 +1,6 @@
 # Declarative disk layout – mirrors the parted/mkfs steps in the repo Justfile.
 # Adjust `device` if the NVMe enumeration differs on the target machine.
-{ ... }:
-{
+_: {
   disko.devices = {
     disk = {
       main = {
@@ -17,7 +16,10 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "fmask=0077" "dmask=0077" ];
+                mountOptions = [
+                  "fmask=0077"
+                  "dmask=0077"
+                ];
               };
             };
             root = {
@@ -27,7 +29,10 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
-                extraArgs = [ "-L" "nixos" ];
+                extraArgs = [
+                  "-L"
+                  "nixos"
+                ];
               };
             };
             swap = {

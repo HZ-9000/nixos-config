@@ -13,7 +13,7 @@
       ];
     };
 
-    disk.nixos-stormlight = {
+    disk.nixos-storm = {
       type = "disk";
       device = "/dev/disk/by-id/nvme0n1";
       content = {

@@ -1,5 +1,4 @@
 {
-  self,
   nixpkgs,
   ...
 }@inputs:
@@ -12,12 +11,10 @@ let
   # Note: `inputs // { ... }` spreads each individual flake input as a separate attr.
   # We must explicitly re-add `inputs` itself so modules can use `{ inputs, ... }:`.
   genSpecialArgs =
-    system:
+    _system:
     inputs
     // {
       inherit inputs mylib myvars;
-      # pass username for backwards compat with existing modules
-      username = myvars.username;
     };
 
   args = {
@@ -36,11 +33,10 @@ let
   };
 
   darwinSystems = {
-    aarch64-darwin = import ./darwin (args // { system = "aarch64-darwin"; });
+    aarch64-darwin = import ./aarch64-darwin (args // { system = "aarch64-darwin"; });
   };
 
-  allSystemNames =
-    (builtins.attrNames nixosSystems) ++ (builtins.attrNames darwinSystems);
+  allSystemNames = (builtins.attrNames nixosSystems) ++ (builtins.attrNames darwinSystems);
   nixosSystemValues = builtins.attrValues nixosSystems;
   darwinSystemValues = builtins.attrValues darwinSystems;
 

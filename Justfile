@@ -1,10 +1,15 @@
+# ==============================================================================
+# Configuration
+# ==============================================================================
+
 # Connectivity info for Linux VM
-NIXADDR := "10.211.55.7"
+NIXADDR := "unset"
 NIXPORT := "22"
 NIXUSER := "root"
 
 # The name of the nixosConfiguration in the flake
 NIXNAME := "parallels"
+REMOTE_CONFIG_DIR := "/nix-config"
 
 # SSH options that are used. These aren't meant to be overridden but are
 # reused a lot so we just store them up here.
@@ -19,6 +24,10 @@ SSH_OPTIONS := "-o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o St
 # List all the just commands
 default:
     @just --list
+
+# ==============================================================================
+# Nix Maintenance
+# ==============================================================================
 
 # Run eval tests
 [group('nix')]
@@ -59,20 +68,26 @@ fmt:
   # format the nix files in this repo
   ls **/*.nix | each { |it| nixfmt $it.name }
 
-# This builds the given NixOS configuration and pushes the results to the
-# cache. This does not alter the current running system. This requires
-# cachix authentication to be configured out of band.
-[group('nix')]
-cache:
-    nix build '.#nixosConfigurations.{{ NIXNAME }}.config.system.build.toplevel' --json \
-    	| jq -r '.[].outputs | to_entries[].value' \
-    	| cachix push mitchellh-nixos-config
-
 # Enter a shell session which has all the necessary tools for this flake
 [linux]
 [group('nix')]
 shell:
   nix shell nixpkgs#git nixpkgs#neovim nixpkgs#colmena
+
+# ==============================================================================
+# Desktop Deployment
+# ==============================================================================
+
+[linux]
+[group('desktop')]
+switch flake_name:
+  sudo nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config \
+    --override-input nixos-secrets "path:{{ justfile_directory() }}/nixos-secrets"
+
+
+# ==============================================================================
+# VM Bootstrap and Deployment
+# ==============================================================================
 
 [group('vm')]
 bootstrap0:
@@ -108,7 +123,7 @@ bootstrap0:
 bootstrap:
     just NIXUSER=root copy
     just NIXUSER=root secrets
-    just NIXUSER=root switch
+    just NIXUSER=root vm-switch
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
     	sudo reboot; \
     "
@@ -119,7 +134,7 @@ copy:
     rsync -av -e 'ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }}' \
     	--exclude='.git/' \
     	--rsync-path="sudo rsync" \
-    {{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:/nix-config
+    {{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:{{ REMOTE_CONFIG_DIR }}
 
 # install the host age key on the VM for sops-nix (requires nixos-secrets checkout locally).
 [group('vm')]
@@ -144,9 +159,9 @@ secrets:
 # run the nixos-rebuild switch command. This does NOT copy files so you
 # have to run vm/copy before.
 [group('vm')]
-switch:
+vm-switch:
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-    	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake \"/nix-config#{{ NIXNAME }}\" \
-    		--accept-flake-config \
-    		--override-input nixos-secrets path:/nix-config/nixos-secrets \
+      sudo nixos-rebuild switch --flake \"{{ REMOTE_CONFIG_DIR }}#{{ NIXNAME }}\" \
+        --accept-flake-config \
+        --override-input nixos-secrets path:{{ REMOTE_CONFIG_DIR }}/nixos-secrets \
     "
