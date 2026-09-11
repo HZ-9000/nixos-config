@@ -1,9 +1,28 @@
-_:
+{
+  config,
+  lib,
+  ...
+}:
 let
   browser = "zen-beta";
   terminal = "ghostty";
 in
 {
+  # Keep the generated Niri configuration declarative while allowing
+  # nwg-displays to write monitor layouts at runtime.
+  xdg.configFile.niri-config.target = lib.mkForce "niri/nix-generated-config.kdl";
+  xdg.configFile."niri/config.kdl".text = ''
+    include "nix-generated-config.kdl"
+    include "monitor.kdl"
+  '';
+
+  home.activation.ensureNwgDisplaysConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [[ ! -e "${config.xdg.configHome}/niri/monitor.kdl" ]]; then
+      $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/niri"
+      $DRY_RUN_CMD touch "${config.xdg.configHome}/niri/monitor.kdl"
+    fi
+  '';
+
   programs.niri.settings = {
     prefer-no-csd = true;
 
@@ -60,6 +79,7 @@ in
       "Mod+Shift+S".action.spawn-sh = "SoundWireServer";
       "Mod+Shift+Escape".action.spawn-sh = "noctalia msg panel-toggle session";
       "Ctrl+Alt+L".action.spawn-sh = "noctalia msg session lock";
+      "Mod+Shift+M".action.spawn = "nwg-displays";
       "Mod+X".action.toggle-column-tabbed-display = { };
       "Mod+E".action.spawn = "nemo";
       "Alt+E".action.spawn-sh = "nemo --new-window";

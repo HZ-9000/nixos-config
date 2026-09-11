@@ -1,6 +1,4 @@
 {
-  pkgs,
-  pkgs-x64,
   nix-gaming,
   config,
   lib,
@@ -35,7 +33,6 @@ in
     programs = {
       steam = {
         enable = true;
-        package = pkgs-x64.steam;
         gamescopeSession.enable = true;
         protontricks.enable = true;
         extest.enable = true;

@@ -3,6 +3,7 @@
   home.packages = with pkgs; [
     grim
     slurp
+    nwg-displays
     wl-clip-persist
     cliphist
     wf-recorder

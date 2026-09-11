@@ -6,5 +6,5 @@ lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (name: {
   tailscale = true;
   sunshine = false;
   homeSsh = true;
-  sopsAgeKey = if name == "stormlight" then null else "/etc/age/keys.txt";
+  sopsAgeKey = "/etc/age/keys.txt";
 })
