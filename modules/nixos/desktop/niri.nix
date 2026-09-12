@@ -7,6 +7,9 @@
     package = pkgs.niri;
   };
 
+  # Steam's client is an X11 application and needs XWayland in a niri session.
+  programs.xwayland.enable = true;
+
   services.displayManager.defaultSession = "niri";
 
   # System-wide Wayland env vars (string "1", not integer)
