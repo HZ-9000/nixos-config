@@ -4,11 +4,6 @@
   ...
 }:
 {
-  imports = [
-    ./config.nix
-    ./variables.nix
-  ];
-
   home.packages = with pkgs; [
     xwayland-satellite
 
@@ -16,6 +11,19 @@
     grim
     satty
   ];
+
+  xdg.configFile =
+    let
+      mkSymlink = config.lib.file.mkOutOfStoreSymlink;
+      confPath = "${config.home.homeDirectory}/nix-config/home/linux/gui/niri/conf";
+    in
+    {
+      "niri/config.kdl".source = mkSymlink "${confPath}/config.kdl";
+      "niri/noctalia-shell.kdl".source = mkSymlink "${confPath}/noctalia-shell.kdl";
+      "niri/spawn-at-startup.kdl".source = mkSymlink "${confPath}/spawn-at-startup.kdl";
+      "niri/key-bindings.kdl".source = mkSymlink "${confPath}/key-bindings.kdl";
+      "niri/window-rules.kdl".source = mkSymlink "${confPath}/window-rules.kdl";
+    };
 
   systemd.user.services.niri-flake-polkit = {
     Unit = {
