@@ -81,8 +81,7 @@ shell:
 [linux]
 [group('desktop')]
 switch flake_name:
-  sudo nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config \
-    --override-input nixos-secrets "path:{{ justfile_directory() }}/nixos-secrets"
+  sudo nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config
 
 
 # ==============================================================================
@@ -122,7 +121,6 @@ bootstrap0:
 [group('vm')]
 bootstrap:
     just NIXUSER=root copy
-    just NIXUSER=root secrets
     just NIXUSER=root vm-switch
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
     	sudo reboot; \
@@ -136,26 +134,6 @@ copy:
     	--rsync-path="sudo rsync" \
     {{ justfile_directory() }}/ {{ NIXUSER }}@{{ NIXADDR }}:{{ REMOTE_CONFIG_DIR }}
 
-# install the host age key on the VM for sops-nix (requires nixos-secrets checkout locally).
-[group('vm')]
-secrets:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    key="{{ justfile_directory() }}/nixos-secrets/keys/{{ NIXNAME }}.age"
-    if [[ ! -f "$key" ]]; then
-    	echo "error: missing host age key: $key" >&2
-    	echo "Clone nixos-secrets alongside this repo or generate keys per nixos-secrets/README.md" >&2
-    	exit 1
-    fi
-    ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-    	getent group keys >/dev/null || groupadd --system keys; \
-    	mkdir -p /etc/age && chmod 700 /etc/age \
-    "
-    scp {{ SSH_OPTIONS }} -P {{ NIXPORT }} "$key" {{ NIXUSER }}@{{ NIXADDR }}:/etc/age/keys.txt
-    ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
-    	chown root:keys /etc/age/keys.txt && chmod 640 /etc/age/keys.txt \
-    "
-
 # run the nixos-rebuild switch command. This does NOT copy files so you
 # have to run vm/copy before.
 [group('vm')]
@@ -163,5 +141,4 @@ vm-switch:
     ssh {{ SSH_OPTIONS }} -p {{ NIXPORT }} {{ NIXUSER }}@{{ NIXADDR }} " \
       sudo nixos-rebuild switch --flake \"{{ REMOTE_CONFIG_DIR }}#{{ NIXNAME }}\" \
         --accept-flake-config \
-        --override-input nixos-secrets path:{{ REMOTE_CONFIG_DIR }}/nixos-secrets \
     "

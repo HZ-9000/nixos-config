@@ -2,6 +2,5 @@
 {
   imports = [
     ../base
-    ./sops.nix
   ];
 }

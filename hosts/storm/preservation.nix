@@ -42,7 +42,6 @@ in
       "/etc/NetworkManager/system-connections"
       "/etc/ssh"
       "/etc/nix/inputs"
-      "/etc/age" # sops-nix age key
 
       "/var/log"
 

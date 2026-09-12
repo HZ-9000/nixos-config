@@ -67,12 +67,7 @@ in
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      default = pkgs.mkShell {
-        packages = with pkgs; [
-          age
-          sops
-        ];
-      };
+      default = pkgs.mkShell { };
     }
   );
 }
