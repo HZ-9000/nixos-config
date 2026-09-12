@@ -15,7 +15,7 @@
   xdg.configFile =
     let
       mkSymlink = config.lib.file.mkOutOfStoreSymlink;
-      confPath = "${config.home.homeDirectory}/nix-config/home/linux/gui/niri/conf";
+      confPath = "${config.home.homeDirectory}/nixos-config/home/linux/gui/niri/conf";
     in
     {
       "niri/config.kdl".source = mkSymlink "${confPath}/config.kdl";
