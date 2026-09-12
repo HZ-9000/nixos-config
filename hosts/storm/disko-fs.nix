@@ -15,7 +15,7 @@
 
     disk.nixos-storm = {
       type = "disk";
-      device = "/dev/disk/by-id/nvme0n1";
+      device = "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_1TB_S7U5NJ0Y204513P";
       content = {
         type = "gpt";
         partitions = {

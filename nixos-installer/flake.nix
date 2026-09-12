@@ -12,7 +12,7 @@
   };
 
   outputs =
-    inputs@{ 
+    inputs@{
       nixpkgs,
       disko,
       preservation,
@@ -45,6 +45,8 @@
             inputs.disko.nixosModules.default
             ../hosts/storm/disko-fs.nix
             ../hosts/storm/hardware-configuration.nix
+            ../hosts/storm/preservation.nix
+            ../hosts/storm/amd-hardware.nix
           ];
         };
 

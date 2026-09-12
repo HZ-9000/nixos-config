@@ -10,12 +10,19 @@
   ...
 }:
 let
-  inherit (inputs) darwin home-manager;
+  inherit (inputs) darwin home-manager nixpkgs;
 in
 darwin.lib.darwinSystem {
-  inherit system specialArgs;
+  inherit specialArgs;
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+  };
   modules =
-    darwin-modules
+    [
+      { nixpkgs.hostPlatform = system; }
+    ]
+    ++ darwin-modules
     ++ (lib.optionals ((lib.lists.length home-modules) > 0) [
       home-manager.darwinModules.home-manager
       {

@@ -6,5 +6,4 @@ lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (name: {
   tailscale = true;
   sunshine = false;
   homeSsh = true;
-  sopsAgeKey = "/etc/age/keys.txt";
 })

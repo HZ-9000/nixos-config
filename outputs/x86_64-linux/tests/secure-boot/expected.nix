@@ -1,9 +1,9 @@
 _: {
   storm = {
-    lanzaboote = false;
-    preservation = false;
+    lanzaboote = true;
+    preservation = true;
     btrbk = "Tue,Sat *-*-* 3:45:20";
-    systemdBoot = true;
+    systemdBoot = false;
   };
   stormlight = {
     lanzaboote = true;

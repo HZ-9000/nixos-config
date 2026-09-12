@@ -16,6 +16,5 @@ lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (
     tailscale = config.services.tailscale.enable;
     sunshine = config.services.sunshine.enable;
     homeSsh = home.programs.ssh.enable;
-    sopsAgeKey = home.sops.age.keyFile or null;
   }
 )

@@ -1,5 +1,2 @@
-# local checkout of private secrets repo (not a submodule)
+# Local checkout of the former private secrets repo, not a submodule.
 nixos-secrets/
-
-# age private keys (if any remain locally)
-*.age

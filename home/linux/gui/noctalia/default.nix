@@ -25,7 +25,7 @@ in
     enable = true;
     systemd.enable = true;
     inherit package;
-    validateConfig = false;
+    checkConfig = false;
   };
 
   # Live-editable config under the repository checkout.

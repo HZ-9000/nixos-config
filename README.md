@@ -8,37 +8,6 @@ Format Nix files:
 nix fmt
 ```
 
-Open a dev shell with `sops` and `age`:
-
-```bash
-nix develop
-```
-
-## Secrets
-
-Encrypted secrets live in the private [nixos-secrets](https://github.com/HZ-9000/nixos-secrets) repository, fetched as a flake input (`flake = false`). This repo only declares which secrets it consumes via sops-nix modules.
-
-Clone nixos-secrets alongside this repo for local editing, or rely on flake fetch over SSH:
-
-```bash
-git clone git@github.com:HZ-9000/nixos-secrets.git
-```
-
-All setup, key generation, and `sops` commands are documented in the nixos-secrets README.
-
-When using a local checkout instead of fetching over SSH:
-
-```bash
-nix eval .#evalTests --accept-flake-config \
-  --override-input nixos-secrets path:./nixos-secrets
-
-sudo nixos-rebuild switch --flake .#storm \
-  --override-input nixos-secrets path:./nixos-secrets
-
-darwin-rebuild switch --flake .#tempest \
-  --override-input nixos-secrets path:./nixos-secrets
-```
-
 ## Secure Boot (storm and stormlight)
 
 Lanzaboote is enabled for the two ephemeral Btrfs hosts. Its signing keys live
@@ -80,8 +49,6 @@ Subsequent rebuilds:
 ```bash
 darwin-rebuild switch --flake .#tempest
 ```
-
-Ensure your deploy age key exists at `~/.config/sops/age/keys.txt` before enabling sops-backed home-manager modules. See the nixos-secrets README.
 
 ## Components
 
