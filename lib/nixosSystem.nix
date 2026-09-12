@@ -13,7 +13,11 @@ let
   inherit (inputs) nixpkgs home-manager;
 in
 nixpkgs.lib.nixosSystem {
-  inherit system specialArgs;
+  inherit specialArgs;
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+  };
   modules =
     nixos-modules
     ++ (lib.optionals ((lib.lists.length home-modules) > 0) [

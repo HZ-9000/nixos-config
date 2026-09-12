@@ -3,5 +3,5 @@
   outputs,
 }:
 lib.genAttrs (builtins.attrNames outputs.darwinConfigurations) (
-  name: outputs.darwinConfigurations.${name}.config.nixpkgs.system
+  name: outputs.darwinConfigurations.${name}.pkgs.stdenv.hostPlatform.system
 )

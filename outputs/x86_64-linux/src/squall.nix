@@ -26,6 +26,7 @@
       ++ [
         inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
         inputs.catppuccin.nixosModules.catppuccin
+        { catppuccin.autoEnable = true; }
       ];
     home-modules = map mylib.relativeToRoot [
       "home/hosts/linux/squall.nix"
