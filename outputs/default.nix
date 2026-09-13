@@ -1,0 +1,73 @@
+{
+  nixpkgs,
+  ...
+}@inputs:
+let
+  inherit (inputs.nixpkgs) lib;
+  mylib = import ../lib { inherit lib; };
+  myvars = import ../vars { inherit lib; };
+
+  # specialArgs passed to every NixOS module and home-manager module
+  # Note: `inputs // { ... }` spreads each individual flake input as a separate attr.
+  # We must explicitly re-add `inputs` itself so modules can use `{ inputs, ... }:`.
+  genSpecialArgs =
+    _system:
+    inputs
+    // {
+      inherit inputs mylib myvars;
+    };
+
+  args = {
+    inherit
+      inputs
+      lib
+      mylib
+      myvars
+      genSpecialArgs
+      ;
+  };
+
+  nixosSystems = {
+    x86_64-linux = import ./x86_64-linux (args // { system = "x86_64-linux"; });
+    aarch64-linux = import ./aarch64-linux (args // { system = "aarch64-linux"; });
+  };
+
+  darwinSystems = {
+    aarch64-darwin = import ./aarch64-darwin (args // { system = "aarch64-darwin"; });
+  };
+
+  allSystemNames = (builtins.attrNames nixosSystems) ++ (builtins.attrNames darwinSystems);
+  nixosSystemValues = builtins.attrValues nixosSystems;
+  darwinSystemValues = builtins.attrValues darwinSystems;
+
+  forAllSystems = func: (nixpkgs.lib.genAttrs allSystemNames func);
+in
+{
+  # NixOS Configurations
+  nixosConfigurations = lib.attrsets.mergeAttrsList (
+    map (it: it.nixosConfigurations or { }) nixosSystemValues
+  );
+
+  # nix-darwin Configurations
+  darwinConfigurations = lib.attrsets.mergeAttrsList (
+    map (it: it.darwinConfigurations or { }) darwinSystemValues
+  );
+
+  # Eval tests for all systems. Each per-arch evalTests must be { } (pass).
+  evalTests =
+    (lib.lists.all (it: it.evalTests == { }) nixosSystemValues)
+    && (lib.lists.all (it: it.evalTests == { }) darwinSystemValues);
+
+  # Formatter for nix files
+  formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+
+  devShells = forAllSystems (
+    system:
+    let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      default = pkgs.mkShell { };
+    }
+  );
+}

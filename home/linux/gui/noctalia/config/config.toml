@@ -1,0 +1,53 @@
+[shell]
+font_family = "JetBrains Mono"
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Catppuccin"
+
+[wallpaper]
+enabled = true
+directory = "~/Pictures/wallpapers"
+
+[wallpaper.default]
+path = "~/Pictures/wallpapers/02.jpg"
+
+[backdrop]
+enabled = true
+
+[lockscreen]
+enabled = true
+blurred_desktop = false
+wallpaper = ""
+
+[idle.behavior.lock]
+timeout = 600
+action = "lock"
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 900
+action = "screen_off"
+enabled = true
+
+# Graphical battery without percentage text
+[widget.battery]
+display_mode = "graphic"
+show_label = false
+
+[widget.brightness]
+show_label = false
+
+[widget.volume]
+show_label = false
+
+[widget.network]
+show_label = false
+
+# Hide the Now Playing and application-search widgets from the bar.
+[widget.media]
+enabled = false
+
+[widget.launcher]
+enabled = false

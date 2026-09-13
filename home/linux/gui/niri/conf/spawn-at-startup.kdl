@@ -1,0 +1,2 @@
+// https://docs.noctalia.dev/noctalia/compositor-settings/niri/
+spawn-at-startup "noctalia"

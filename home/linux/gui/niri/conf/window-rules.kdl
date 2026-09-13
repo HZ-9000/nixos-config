@@ -1,0 +1,52 @@
+window-rule {
+    match app-id="^Viewnior$"
+    match app-id="^imv$"
+    match app-id="^mpv$"
+    match title="^Transmission$"
+    match title="^Volume Control$"
+    match title="^Firefox — Sharing Indicator$"
+    match title="^Picture-in-Picture$"
+    match app-id="^org.gnome.Calculator$"
+    match app-id="^zenity$"
+    match app-id="^org.gnome.FileRoller$"
+    match app-id="^org.pulseaudio.pavucontrol$"
+    match app-id="^SoundWireServer$"
+    open-floating true
+}
+
+window-rule {
+    match app-id="^zen-beta$"
+    open-on-workspace "1"
+}
+window-rule {
+    match app-id="^evince$"
+    open-on-workspace "3"
+}
+window-rule {
+    match app-id="^Gimp-2.10$"
+    open-on-workspace "4"
+}
+window-rule {
+    match app-id="^Aseprite$"
+    open-on-workspace "4"
+}
+window-rule {
+    match app-id="^Audacious$"
+    open-on-workspace "5"
+}
+window-rule {
+    match app-id="^Spotify$"
+    open-on-workspace "5"
+}
+window-rule {
+    match app-id="^com.obsproject.Studio$"
+    open-on-workspace "8"
+}
+window-rule {
+    match app-id="^discord$"
+    open-on-workspace "10"
+}
+window-rule {
+    match app-id="^WebCord$"
+    open-on-workspace "10"
+}
