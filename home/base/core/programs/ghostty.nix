@@ -6,6 +6,11 @@
       font-family = [
         "JetBrainsMono Nerd Font"
       ];
+      theme = "Rose Pine Moon";
+      background-opacity = 0.55;
+      background-opacity-cells = true;
+      window-decoration = false;
+      gtk-titlebar = false;
     };
   };
 }
