@@ -9,8 +9,6 @@ Reusable policy and opt-in capabilities live under `modules/`.
 |------|--------------|-------|
 | `storm` | x86_64-linux | Ryzen 7-9700x + RX 7900XTX, preservation, Secure Boot |
 | `stormlight` | x86_64-linux | Framework AMD AI 300, preservation, Secure Boot |
-| `squall` | x86_64-linux | Lenovo Yoga 7i, Catppuccin |
-| `parallels` | aarch64-linux | Parallels VM |
 
 Deploy a NixOS host:
 

@@ -7,8 +7,8 @@ NIXADDR := "unset"
 NIXPORT := "22"
 NIXUSER := "root"
 
-# The name of the nixosConfiguration in the flake
-NIXNAME := "parallels"
+# The name of the nixosConfiguration in the flake. Set it before running VM recipes.
+NIXNAME := "unset"
 REMOTE_CONFIG_DIR := "/nix-config"
 
 # SSH options that are used. These aren't meant to be overridden but are

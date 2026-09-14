@@ -1,4 +1,0 @@
-{ ... }:
-{
-  imports = [ ../../linux/default.nix ];
-}
