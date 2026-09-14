@@ -29,7 +29,6 @@ let
 
   nixosSystems = {
     x86_64-linux = import ./x86_64-linux (args // { system = "x86_64-linux"; });
-    aarch64-linux = import ./aarch64-linux (args // { system = "aarch64-linux"; });
   };
 
   darwinSystems = {
@@ -58,8 +57,7 @@ in
     (lib.lists.all (it: it.evalTests == { }) nixosSystemValues)
     && (lib.lists.all (it: it.evalTests == { }) darwinSystemValues);
 
-  # Formatter for nix files
-  formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+  formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
   devShells = forAllSystems (
     system:

@@ -36,7 +36,7 @@ in
         gamescopeSession.enable = true;
         protontricks.enable = true;
         extest.enable = true;
-        fontPackages = [];
+        fontPackages = [ ];
         platformOptimizations.enable = true;
       };
 
