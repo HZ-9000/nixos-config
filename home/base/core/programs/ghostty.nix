@@ -7,7 +7,7 @@
         "JetBrainsMono Nerd Font"
       ];
       theme = "Rosé Pine Moon";
-      background-opacity = 0.82;
+      background-opacity = 0.55;
       background-opacity-cells = true;
       window-decoration = false;
       gtk-titlebar = false;
