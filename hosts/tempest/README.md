@@ -1,8 +1,11 @@
-# Host - Tempest
+# Tempest
 
-Macbook Air.
+MacBook Air.
+
 - M5
 
-# Setup
+## Setup
 
-This flake just covers the home-manager related configurations.
+This flake covers the nix-darwin and Home Manager configuration. See the
+[macOS instructions](../README.md#macos-nix-darwin) for installation and rebuild
+commands.

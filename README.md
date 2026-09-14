@@ -57,12 +57,14 @@ See [./hosts](./hosts) for details of each host.
 
 WIP
 
-## Deployment 
+## Deployment
 
-Deployment is outlined in [./nixos-installer](./nixos-installer)
+The available hosts and rebuild commands are documented in [./hosts](./hosts).
+For a fresh NixOS installation, use the [installer guide](./nixos-installer).
 
-**WARNING**: Hardware specific configurations are in place for my specific hardware. IF you are hoping to deploy this configuration 
-on your own hardware, you will need to modify the hardware-specific configurations. See [./nixos-installer](./nixos-installer) for more information.
+**Warning:** The NixOS hosts include machine-specific disk identifiers, hardware
+configuration, user identity, and initial credentials. Review and replace these
+settings before deploying this flake on hardware other than the listed hosts.
 
 ## References
 
