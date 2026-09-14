@@ -20,7 +20,12 @@ input {
 layout {
     gaps 6
     default-column-width { proportion 1.0; }
-    border { width 2; }
+    border {
+        width 2
+        active-color "#3e8fb0"
+        inactive-color "#393552"
+        urgent-color "#eb6f92"
+    }
     focus-ring { off; }
 }
 

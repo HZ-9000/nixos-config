@@ -3,8 +3,12 @@ font_family = "JetBrains Mono"
 
 [theme]
 mode = "dark"
-source = "builtin"
-builtin = "Catppuccin"
+source = "custom"
+custom_palette = "RosePineMoon"
+
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids = ["gtk3", "gtk4"]
 
 # Compact, floating capsule bar modeled after the referenced Waybar setup.
 [bar.main]
@@ -106,7 +110,7 @@ show_label = true
 
 # Noctalia's session menu replaces Waybar's standalone wlogout power button.
 [widget.session]
-color = "#ffffff"
+color = "#e0def4"
 
 # Keep the application launcher out of the bar, as in the source layout.
 [widget.media]
