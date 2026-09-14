@@ -6,6 +6,52 @@ mode = "dark"
 source = "builtin"
 builtin = "Catppuccin"
 
+# Compact, floating capsule bar modeled after the referenced Waybar setup.
+[bar.main]
+position = "top"
+thickness = 28
+background_opacity = 0.0
+margin_ends = 6
+margin_edge = 2
+padding = 0
+widget_spacing = 4
+font_family = "JetBrains Mono"
+font_weight = 400
+shadow = false
+hover_highlight = false
+start = ["group:system"]
+center = ["group:clock"]
+end = ["group:controls"]
+
+[[bar.main.capsule_group]]
+id = "system"
+members = ["cpu", "gpu", "memory", "temperature"]
+fill = "#141414"
+foreground = "#ffffff"
+opacity = 0.5
+padding = 10
+radius = 10
+widget_spacing = 4
+
+[[bar.main.capsule_group]]
+id = "clock"
+members = ["clock"]
+fill = "#141414"
+foreground = "#ffffff"
+opacity = 0.5
+padding = 10
+radius = 10
+
+[[bar.main.capsule_group]]
+id = "controls"
+members = ["media", "volume", "session"]
+fill = "#141414"
+foreground = "#ffffff"
+opacity = 0.5
+padding = 10
+radius = 10
+widget_spacing = 4
+
 [wallpaper]
 enabled = true
 directory = "~/Pictures/wallpapers"
@@ -31,23 +77,41 @@ timeout = 900
 action = "screen_off"
 enabled = true
 
-# Graphical battery without percentage text
-[widget.battery]
-display_mode = "graphic"
-show_label = false
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+visualization = "none"
 
-[widget.brightness]
-show_label = false
+[widget.gpu]
+type = "sysmon"
+stat = "gpu_usage"
+visualization = "none"
+
+[widget.memory]
+type = "sysmon"
+stat = "ram_pct"
+visualization = "none"
+
+[widget.temperature]
+type = "sysmon"
+stat = "cpu_temp"
+visualization = "none"
+
+[widget.clock]
+format = "{:%H:%M}"
+font_weight = 700
 
 [widget.volume]
-show_label = false
+show_label = true
 
-[widget.network]
-show_label = false
+# Noctalia's session menu replaces Waybar's standalone wlogout power button.
+[widget.session]
+color = "#ffffff"
 
-# Hide the Now Playing and application-search widgets from the bar.
+# Keep the application launcher out of the bar, as in the source layout.
 [widget.media]
-enabled = false
+hide_when_no_media = true
+title_scroll = "on_hover"
 
 [widget.launcher]
 enabled = false
