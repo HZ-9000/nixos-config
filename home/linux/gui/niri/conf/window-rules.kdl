@@ -1,4 +1,8 @@
 window-rule {
+    draw-border-with-background false
+}
+
+window-rule {
     match app-id="^Viewnior$"
     match app-id="^imv$"
     match app-id="^mpv$"

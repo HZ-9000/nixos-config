@@ -1,10 +1,10 @@
 // https://docs.noctalia.dev/noctalia/compositor-settings/niri/
 
 window-rule {
-  // Rounded corners for a modern look.
-  geometry-corner-radius 20
+    // Square Noctalia surfaces to match the tiled window bezels.
+    geometry-corner-radius 0
 
-  // Clips window contents to the rounded corner boundaries.
+    // Keep surface contents within the compositor's square geometry.
   clip-to-geometry true
 }
 
