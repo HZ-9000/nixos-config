@@ -1,3 +1,7 @@
+[accessibility]
+# Content scale for panels and other non-bar shell UI.
+ui_scale = 1.1
+
 [shell]
 font_family = "JetBrains Mono"
 
@@ -10,14 +14,12 @@ custom_palette = "RosePineMoon"
 enable_builtin_templates = true
 builtin_ids = ["gtk3", "gtk4"]
 
-# Compact, floating capsule bar modeled after the referenced Waybar setup.
 [bar.main]
 position = "top"
 thickness = 28
-background_opacity = 0.0
+background_opacity = 0.2
 margin_ends = 6
 margin_edge = 2
-padding = 0
 widget_spacing = 4
 font_family = "JetBrains Mono"
 font_weight = 400
@@ -29,7 +31,7 @@ end = ["group:controls"]
 
 [[bar.main.capsule_group]]
 id = "system"
-members = ["cpu", "gpu", "memory", "temperature"]
+members = ["workspaces"]
 fill = "#141414"
 foreground = "#ffffff"
 opacity = 0.5
@@ -81,25 +83,12 @@ timeout = 900
 action = "screen_off"
 enabled = true
 
-[widget.cpu]
-type = "sysmon"
-stat = "cpu_usage"
-visualization = "none"
-
-[widget.gpu]
-type = "sysmon"
-stat = "gpu_usage"
-visualization = "none"
-
-[widget.memory]
-type = "sysmon"
-stat = "ram_pct"
-visualization = "none"
-
-[widget.temperature]
-type = "sysmon"
-stat = "cpu_temp"
-visualization = "none"
+[widget.workspaces]
+show_labels = true
+label_source = "id"
+style = "minimal"
+active_pill_size = 2.2
+inactive_pill_size = 1.0
 
 [widget.clock]
 format = "{:%H:%M}"
@@ -108,11 +97,9 @@ font_weight = 700
 [widget.volume]
 show_label = true
 
-# Noctalia's session menu replaces Waybar's standalone wlogout power button.
 [widget.session]
 color = "#e0def4"
 
-# Keep the application launcher out of the bar, as in the source layout.
 [widget.media]
 hide_when_no_media = true
 title_scroll = "on_hover"
