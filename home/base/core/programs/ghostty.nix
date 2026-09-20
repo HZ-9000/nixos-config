@@ -6,7 +6,7 @@
       font-family = [
         "JetBrainsMono Nerd Font"
       ];
-      theme = "Rose Pine Moon";
+      theme = "Gruvbox Dark Hard";
       background-opacity = 0.55;
       background-opacity-cells = true;
       window-decoration = false;

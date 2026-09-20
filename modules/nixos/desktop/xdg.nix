@@ -33,11 +33,16 @@
 
     config = {
       common = {
-        # Use xdg-desktop-portal-gtk for every portal interface...
         default = [
           "gtk"
-          "gnome"
         ];
+      };
+      hyprland = {
+        default = [
+          "hyprland"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
       };
     };
 
@@ -50,8 +55,7 @@
 
     # ls /run/current-system/sw/share/xdg-desktop-portal/portals/
     extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk # for provides file picker / OpenURI
-      xdg-desktop-portal-gnome # for screensharing
+      xdg-desktop-portal-gtk
     ];
   };
 
@@ -68,8 +72,8 @@
     overrideStrategy = "asDropin";
     text = ''
       [Unit]
-      After=xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-gnome.service
-      Wants=xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-gnome.service
+      After=xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-hyprland.service
+      Wants=xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-hyprland.service
     '';
   };
 }

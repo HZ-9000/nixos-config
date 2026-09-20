@@ -34,11 +34,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     noctalia = {
       # The cachix branch tracks the latest upstream revision with binaries available.
       url = "github:noctalia-dev/noctalia/cachix";
