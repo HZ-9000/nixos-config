@@ -100,13 +100,6 @@ end
 hl.bind(mod .. " + SHIFT + up", hl.dsp.window.move({ direction = "up" }))
 hl.bind(mod .. " + SHIFT + down", hl.dsp.window.move({ direction = "down" }))
 
-for workspace = 1, 10 do
-    local key = workspace % 10
-    hl.bind(mod .. " + " .. key, hl.dsp.focus({ workspace = workspace }))
-    hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace, follow = false }))
-    hl.workspace_rule({ workspace = tostring(workspace), persistent = true })
-end
-
 hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mod .. " + V", hl.dsp.exec_cmd("vicinae vicinae://extensions/vicinae/clipboard/history"))
