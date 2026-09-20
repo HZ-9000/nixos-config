@@ -10,6 +10,7 @@ in
 {
   home.packages = with pkgs; [
     grim
+    nwg-displays
     playerctl
     satty
     slurp
@@ -31,6 +32,26 @@ in
       Restart = "on-failure";
       RestartSec = 1;
       TimeoutStopSec = 10;
+    };
+  };
+
+  systemd.user.services.hyprland-monitor-reload = {
+    Unit.Description = "Reload Hyprland monitor configuration";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.hyprland}/bin/hyprctl reload";
+    };
+  };
+
+  systemd.user.paths.hyprland-monitor-reload = {
+    Unit = {
+      Description = "Watch nwg-displays monitor configuration";
+      PartOf = [ "graphical-session.target" ];
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+    Path = {
+      PathModified = "%h/.config/hypr/monitors.lua";
+      Unit = "hyprland-monitor-reload.service";
     };
   };
 

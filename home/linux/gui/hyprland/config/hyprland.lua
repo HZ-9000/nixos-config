@@ -4,6 +4,9 @@ hl.monitor({
     position = "auto",
     scale = "auto",
 })
+local config_home = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
+package.path = config_home .. "/hypr/?.lua;" .. package.path
+pcall(require, "monitors")
 
 hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("XCURSOR_SIZE", "24")
@@ -140,20 +143,6 @@ for _, title in ipairs({
     "^Picture-in-Picture$",
 }) do
     hl.window_rule({ match = { title = title }, float = true })
-end
-
-for class, workspace in pairs({
-    ["^zen-beta$"] = "1 silent",
-    ["^evince$"] = "3 silent",
-    ["^Gimp-2.10$"] = "4 silent",
-    ["^Aseprite$"] = "4 silent",
-    ["^Audacious$"] = "5 silent",
-    ["^Spotify$"] = "5 silent",
-    ["^com.obsproject.Studio$"] = "8 silent",
-    ["^discord$"] = "10 silent",
-    ["^WebCord$"] = "10 silent",
-}) do
-    hl.window_rule({ match = { class = class }, workspace = workspace })
 end
 
 hl.window_rule({
