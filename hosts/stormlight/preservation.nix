@@ -228,6 +228,12 @@ in
         ".local/share/Steam"
 
         # ======================================
+        # Desktop / Displays
+        # ======================================
+        ".config/hypr"
+        ".config/nwg-displays"
+
+        # ======================================
         # Remote Desktop / Recording
         # ======================================
         ".config/obs-studio"
