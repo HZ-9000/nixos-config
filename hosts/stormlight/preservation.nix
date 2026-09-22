@@ -128,6 +128,10 @@ in
         ".config/zed"
         ".local/share/zed"
 
+        # godot
+        ".config/godot"
+        ".local/share/godot"
+
         # cursor ai editor / cli
         ".cursor"
         ".config/cursor"
@@ -222,12 +226,6 @@ in
         ".local/share/umu"
 
         ".local/share/Steam"
-
-        # ======================================
-        # Desktop / Displays
-        # ======================================
-        ".config/hypr"
-        ".config/nwg-displays"
 
         # ======================================
         # Remote Desktop / Recording

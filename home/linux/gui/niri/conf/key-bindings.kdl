@@ -1,0 +1,86 @@
+binds {
+    Mod+F1 { show-hotkey-overlay; }
+    Mod+Return { spawn "ghostty"; }
+    Ctrl+Alt+T { spawn "kitty"; }
+    Alt+Return { spawn-sh "ghostty --class=float"; }
+    Mod+Shift+Return { spawn-sh "ghostty --fullscreen"; }
+    Mod+B { spawn-sh "zen-beta --new-window"; }
+    Mod+Q { close-window; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+F { fullscreen-window; }
+    Mod+Shift+F { toggle-windowed-fullscreen; }
+    Mod+Space { toggle-window-floating; }
+    Mod+D { spawn "vicinae" "toggle"; }
+    Mod+Shift+D { spawn-sh "webcord --enable-features=UseOzonePlatform --ozone-platform=wayland"; }
+    Mod+Shift+S { spawn-sh "SoundWireServer"; }
+    Mod+Shift+Escape { spawn-sh "noctalia msg panel-toggle session"; }
+    Ctrl+Alt+L { spawn-sh "noctalia msg session lock"; }
+    Mod+Shift+M { spawn "nwg-displays"; }
+    Mod+X { toggle-column-tabbed-display; }
+    Mod+E { spawn "nemo"; }
+    Alt+E { spawn-sh "nemo --new-window"; }
+    Mod+Shift+B { spawn-sh "noctalia msg bar-toggle"; }
+    Mod+C { spawn-sh "wl-color-picker clipboard"; }
+    Mod+W { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+    Mod+Shift+W { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+    Mod+N { spawn-sh "noctalia msg panel-toggle control-center"; }
+    Ctrl+Shift+Escape { spawn "missioncenter"; }
+    Mod+equal { spawn "woomer"; }
+    Print { spawn-sh "grim -g \"$(slurp)\" - | wl-copy"; }
+    Mod+Print { spawn-sh "mkdir -p \"$HOME/Pictures/screenshots\" && grim -g \"$(slurp)\" \"$HOME/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png\""; }
+    Mod+Shift+Print { spawn-sh "grim -g \"$(slurp)\" - | swappy -f -"; }
+
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up { focus-window-up; }
+    Mod+Down { focus-window-down; }
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+l { focus-column-right; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
+
+    Mod+Shift+1 { move-window-to-workspace 1 focus=false; }
+    Mod+Shift+2 { move-window-to-workspace 2 focus=false; }
+    Mod+Shift+3 { move-window-to-workspace 3 focus=false; }
+    Mod+Shift+4 { move-window-to-workspace 4 focus=false; }
+    Mod+Shift+5 { move-window-to-workspace 5 focus=false; }
+    Mod+Shift+6 { move-window-to-workspace 6 focus=false; }
+    Mod+Shift+7 { move-window-to-workspace 7 focus=false; }
+    Mod+Shift+8 { move-window-to-workspace 8 focus=false; }
+    Mod+Shift+9 { move-window-to-workspace 9 focus=false; }
+    Mod+Shift+0 { move-window-to-workspace 10 focus=false; }
+
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+Up { move-window-up; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+l { move-column-right; }
+
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+    Mod+V { spawn "vicinae" "vicinae://extensions/vicinae/clipboard/history"; }
+
+    XF86AudioPlay { spawn-sh "playerctl play-pause"; }
+    XF86AudioNext { spawn-sh "playerctl next"; }
+    XF86AudioPrev { spawn-sh "playerctl previous"; }
+    XF86AudioStop { spawn-sh "playerctl stop"; }
+    XF86AudioRaiseVolume { spawn-sh "pamixer -i 5"; }
+    XF86AudioLowerVolume { spawn-sh "pamixer -d 5"; }
+    XF86AudioMute { spawn-sh "pamixer -t"; }
+    XF86MonBrightnessUp { spawn-sh "brightnessctl set 5%+"; }
+    XF86MonBrightnessDown { spawn-sh "brightnessctl set 5%-"; }
+}

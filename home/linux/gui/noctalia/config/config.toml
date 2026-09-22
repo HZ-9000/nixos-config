@@ -8,7 +8,7 @@ font_family = "JetBrains Mono"
 [theme]
 mode = "dark"
 source = "custom"
-custom_palette = "GruvboxDarkHard"
+custom_palette = "RosePineMoon"
 
 [theme.templates]
 enable_builtin_templates = true
@@ -98,7 +98,7 @@ font_weight = 700
 show_label = true
 
 [widget.session]
-color = "#ebdbb2"
+color = "#e0def4"
 
 [widget.media]
 hide_when_no_media = true

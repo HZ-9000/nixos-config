@@ -11,11 +11,9 @@ lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (
   in
   {
     firewall = config.networking.firewall.enable;
-    hyprland = config.programs.hyprland.enable;
     networkmanager = config.networking.networkmanager.enable;
     polkit = config.security.polkit.enable;
     tailscale = config.services.tailscale.enable;
-    uwsm = config.programs.uwsm.enable;
     sunshine = config.services.sunshine.enable;
     homeSsh = home.programs.ssh.enable;
   }

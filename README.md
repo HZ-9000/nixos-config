@@ -1,5 +1,9 @@
 <h2 align="center">NixOS Config</h2>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rose-pine/rose-pine-theme/main/assets/icon.png" width="160" />
+</p>
+
 This repository contains a NixOS configuration that builds the following:
 
 1. Linux systems using the components listed below.
@@ -11,12 +15,12 @@ See [./hosts](./hosts) for details of each host.
 
 | | NixOS (Wayland) |
 | --- | --- |
-| **Window Manager** | [Hyprland][Hyprland] |
+| **Window Manager** | [Niri][Niri] |
 | **App launcher** | [Vicinae][Vicinae] |
 | **Status bar / notifications / lock screen** | [noctalia-shell][noctalia-shell] |
 | **Terminal emulator** | [Ghostty][Ghostty] / [Kitty][Kitty] |
 | **Browser** | [Zen Browser][Zen] |
-| **Color scheme** | [Gruvbox Dark Hard][gruvbox] |
+| **Color scheme** | [Rosé Pine][rose-pine] |
 | **Network management** | [NetworkManager][NetworkManager] |
 | **System resource monitor** | [btop][btop] / Mission Center |
 | **File manager** | [Nemo][Nemo] / [Thunar][Thunar] |
@@ -27,12 +31,12 @@ See [./hosts](./hosts) for details of each host.
 | **Filesystem & Encryption** | tmpfs as `/`, with [Btrfs][Btrfs] subvolumes on a [LUKS][LUKS]-encrypted partition for persistent storage, unlocked with a passphrase |
 | **Secure Boot** | [lanzaboote][lanzaboote] |
 
-[Hyprland]: https://hypr.land/
+[Niri]: https://github.com/YaLTeR/niri
 [noctalia-shell]: https://github.com/noctalia-dev/noctalia-shell
 [Ghostty]: https://ghostty.org/
 [Kitty]: https://github.com/kovidgoyal/kitty
 [Zen]: https://zen-browser.app/
-[gruvbox]: https://github.com/morhetz/gruvbox
+[rose-pine]: https://rosepinetheme.com/
 [NetworkManager]: https://wiki.gnome.org/Projects/NetworkManager
 [btop]: https://github.com/aristocratos/btop
 [Nemo]: https://github.com/linuxmint/nemo
