@@ -128,10 +128,6 @@ in
         ".config/zed"
         ".local/share/zed"
 
-        # godot
-        ".config/godot"
-        ".local/share/godot"
-
         # cursor ai editor / cli
         ".cursor"
         ".config/cursor"
