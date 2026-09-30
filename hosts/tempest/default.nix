@@ -1,5 +1,10 @@
-_: {
+{ myvars, ... }:
+{
   networking.hostName = "tempest";
 
-  system.stateVersion = 5;
+  # Required by nix-darwin options that used to apply to whoever ran
+  # darwin-rebuild (system.defaults, homebrew, system.keyboard, ...).
+  system.primaryUser = myvars.username;
+
+  system.stateVersion = 7;
 }

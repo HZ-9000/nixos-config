@@ -7,6 +7,11 @@
   genSpecialArgs,
   ...
 }:
+let
+  hostVars = myvars // {
+    username = "hz-9000";
+  };
+in
 {
   darwinConfigurations.tempest = mylib.macosSystem {
     inherit
@@ -14,8 +19,11 @@
       lib
       system
       genSpecialArgs
-      myvars
       ;
+    myvars = hostVars;
+    specialArgs = (genSpecialArgs system) // {
+      myvars = hostVars;
+    };
     darwin-modules = map mylib.relativeToRoot [
       "hosts/tempest"
       "modules/darwin"
