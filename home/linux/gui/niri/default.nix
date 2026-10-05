@@ -1,11 +1,25 @@
 {
   pkgs,
   config,
+  osConfig,
+  myvars,
   ...
 }:
+let
+  hostName = osConfig.networking.hostName;
+in
 {
+  assertions = [
+    {
+      assertion = builtins.pathExists (./conf/monitors + "/${hostName}.kdl");
+      message = "niri: no display layout for host '${hostName}', create home/linux/gui/niri/conf/monitors/${hostName}.kdl";
+    }
+  ];
+
   home.packages = with pkgs; [
     xwayland-satellite
+
+    nwg-displays # GUI display arranger, writes ~/.config/niri/monitor.kdl
 
     slurp
     grim
@@ -15,7 +29,7 @@
   xdg.configFile =
     let
       mkSymlink = config.lib.file.mkOutOfStoreSymlink;
-      confPath = "${config.home.homeDirectory}/nixos-config/home/linux/gui/niri/conf";
+      confPath = "${config.home.homeDirectory}/${myvars.configDirectoryName}/home/linux/gui/niri/conf";
     in
     {
       "niri/config.kdl".source = mkSymlink "${confPath}/config.kdl";
@@ -23,6 +37,10 @@
       "niri/spawn-at-startup.kdl".source = mkSymlink "${confPath}/spawn-at-startup.kdl";
       "niri/key-bindings.kdl".source = mkSymlink "${confPath}/key-bindings.kdl";
       "niri/window-rules.kdl".source = mkSymlink "${confPath}/window-rules.kdl";
+
+      # Display arrangement is per-host and is meant to be rewritten at runtime
+      # by nwg-displays, so it points at a tracked file instead of the store.
+      "niri/monitor.kdl".source = mkSymlink "${confPath}/monitors/${hostName}.kdl";
     };
 
   systemd.user.services.niri-flake-polkit = {

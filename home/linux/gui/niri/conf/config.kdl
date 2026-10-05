@@ -29,6 +29,9 @@ layout {
     focus-ring { off; }
 }
 
+// Per-host display arrangement, written by nwg-displays (Mod+Shift+M).
+include optional=true "./monitor.kdl"
+
 include "./noctalia-shell.kdl"
 include "./spawn-at-startup.kdl"
 include "./key-bindings.kdl"

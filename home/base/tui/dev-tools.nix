@@ -4,6 +4,9 @@
 }:
 {
   home.packages = with pkgs; [
+    # Claude Code
+    claude-code
+
     # Opencode
     opencode
     opencode-desktop

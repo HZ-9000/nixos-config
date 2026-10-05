@@ -1,0 +1,30 @@
+// Monitor layout for storm.
+//
+// Arrange displays graphically with `nwg-displays` (bound to Mod+Shift+M):
+// drag the outputs around, set mode/scale/rotation, then hit Apply. It
+// overwrites this file and niri reloads it immediately.
+//
+// Hand-editing works just as well. Run `niri msg outputs` for connector
+// names and the modes each one supports:
+//
+//   output "DP-1" {
+//       mode "2560x1440@143.912"
+//       scale 1.0
+//       position x=0 y=0
+//       variable-refresh-rate
+//   }
+//
+//   output "HDMI-A-1" {
+//       mode "1920x1080@60.000"
+//       scale 1.0
+//       // positions are in logical (post-scale) pixels
+//       position x=2560 y=0
+//   }
+//
+// `off` disables an output, `transform "90"` rotates it, and an output with
+// no position set is placed automatically.
+//
+// For a throwaway tweak that should not be saved, use
+// `niri msg output <name> position set <x> <y>` instead.
+//
+// Docs: https://yalter.github.io/niri/Configuration:-Outputs
