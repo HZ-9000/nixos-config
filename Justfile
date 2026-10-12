@@ -15,12 +15,6 @@ REMOTE_CONFIG_DIR := "/nix-config"
 # reused a lot so we just store them up here.
 SSH_OPTIONS := "-o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-# Use nushell for shell commands
-# To use this justfile, you need to enter a shell with just & nushell installed:
-#
-#   nix shell nixpkgs#just nixpkgs#nushell
-# set shell := ["nu", "-c"]
-
 # List all the just commands
 default:
     @just --list
@@ -51,7 +45,7 @@ clean:
   # Wipe out NixOS's history
   sudo nix profile wipe-history --profile /nix/var/nix/profiles/system
   # Wipe out home-manager's history
-  nix profile wipe-history --profile $"($env.XDG_STATE_HOME)/nix/profiles/home-manager"
+  nix profile wipe-history --profile "${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/home-manager"
 
 # Garbage collect all unused nix store entries
 [group('nix')]
@@ -65,8 +59,8 @@ gc:
 
 [group('nix')]
 fmt:
-  # format the nix files in this repo
-  ls **/*.nix | each { |it| nixfmt $it.name }
+  # format the nix files in this repo with the flake's formatter (nixfmt-tree)
+  nix fmt
 
 # Enter a shell session which has all the necessary tools for this flake
 [linux]

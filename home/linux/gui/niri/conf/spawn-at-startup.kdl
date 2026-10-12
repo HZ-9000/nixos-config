@@ -1,2 +1,4 @@
 // https://docs.noctalia.dev/noctalia/compositor-settings/niri/
-spawn-at-startup "noctalia"
+// Noctalia is started by its home-manager systemd user service
+// (programs.noctalia.systemd.enable in home/linux/gui/noctalia/default.nix),
+// so it must not also be spawned here.
