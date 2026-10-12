@@ -286,10 +286,10 @@ in
 
   # Create some directories with custom permissions.
   #
-  # In this configuration the path `/home/butz/.local` is not an immediate parent
+  # In this configuration the path `/home/${username}/.local` is not an immediate parent
   # of any persisted file so it would be created with the systemd-tmpfiles default
-  # ownership `root:root` and mode `0755`. This would mean that the user `butz`
-  # could not create other files or directories inside `/home/butz/.local`.
+  # ownership `root:root` and mode `0755`. This would mean that the user `${username}`
+  # could not create other files or directories inside `/home/${username}/.local`.
   #
   # Therefore systemd-tmpfiles is used to prepare such directories with
   # appropriate permissions.
