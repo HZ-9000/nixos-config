@@ -14,7 +14,6 @@ window-rule {
     match app-id="^zenity$"
     match app-id="^org.gnome.FileRoller$"
     match app-id="^org.pulseaudio.pavucontrol$"
-    match app-id="^SoundWireServer$"
     open-floating true
 }
 

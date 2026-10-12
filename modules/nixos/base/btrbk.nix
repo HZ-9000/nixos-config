@@ -33,6 +33,9 @@
 
       volume = {
         "/btr_pool" = {
+          # relative to /btr_pool, so snapshots show up under /snapshots
+          snapshot_dir = "@snapshots";
+
           subvolume = {
             "@persistent" = {
               snapshot_create = "always";

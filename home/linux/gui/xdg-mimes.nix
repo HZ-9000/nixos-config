@@ -8,9 +8,11 @@ let
     audio = [ "mpv.desktop" ];
     video = [ "mpv.desktop" ];
     directory = [ "nemo.desktop" ];
-    office = [ "libreoffice.desktop" ];
+    document = [ "writer.desktop" ];
+    spreadsheet = [ "calc.desktop" ];
+    presentation = [ "impress.desktop" ];
     pdf = [ "org.gnome.Evince.desktop" ];
-    terminal = [ "ghostty.desktop" ];
+    terminal = [ "com.mitchellh.ghostty.desktop" ];
     archive = [ "org.gnome.FileRoller.desktop" ];
     discord = [ "webcord.desktop" ];
   };
@@ -55,17 +57,21 @@ let
       "x-scheme-handler/https"
       "x-scheme-handler/unknown"
     ];
-    office = [
+    document = [
       "application/vnd.oasis.opendocument.text"
-      "application/vnd.oasis.opendocument.spreadsheet"
-      "application/vnd.oasis.opendocument.presentation"
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
       "application/msword"
-      "application/vnd.ms-excel"
-      "application/vnd.ms-powerpoint"
       "application/rtf"
+    ];
+    spreadsheet = [
+      "application/vnd.oasis.opendocument.spreadsheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.ms-excel"
+    ];
+    presentation = [
+      "application/vnd.oasis.opendocument.presentation"
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      "application/vnd.ms-powerpoint"
     ];
     pdf = [ "application/pdf" ];
     terminal = [ "terminal" ];
