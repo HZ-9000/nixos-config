@@ -11,7 +11,9 @@
       PermitRootLogin = lib.mkDefault "prohibit-password";
       PasswordAuthentication = lib.mkDefault false; # disable password login
     };
-    openFirewall = true;
+    # Don't open port 22 on every interface; tailscale0 is a trusted interface
+    # (modules/nixos/desktop/networking/firewall.nix), so SSH works over the tailnet.
+    openFirewall = lib.mkDefault false;
   };
 
   # Add terminfo database of all known terminals to the system profile.

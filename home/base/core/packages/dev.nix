@@ -23,7 +23,7 @@
 
       ## Python
       python3
-      python312Packages.ipython
+      python3Packages.ipython
     ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [
       valgrind

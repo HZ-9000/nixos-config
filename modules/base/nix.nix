@@ -21,6 +21,7 @@
       "https://nix-gaming.cachix.org"
       "https://ghostty.cachix.org"
       "https://vicinae.cachix.org"
+      "https://noctalia.cachix.org"
     ];
 
     trusted-public-keys = [
@@ -28,6 +29,7 @@
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
     builders-use-substitutes = true;
   };
