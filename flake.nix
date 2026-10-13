@@ -69,5 +69,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Private repo of agenix-encrypted secrets (passwords, tokens). Not a flake itself.
+    nixos-secrets = {
+      url = "git+ssh://git@github.com/HZ-9000/nixos-secrets.git";
+      flake = false;
+    };
+
   };
 }

@@ -41,6 +41,7 @@ in
     directories = [
       "/etc/NetworkManager/system-connections"
       "/etc/ssh"
+      "/etc/age"
       "/etc/nix/inputs"
 
       "/var/log"

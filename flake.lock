@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "agenix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790734419,
+        "narHash": "sha256-n7wew722m1OTBT9DOIMxNX/NF4zfsSUABAO5eW3wikE=",
+        "owner": "ryantm",
+        "repo": "agenix",
+        "rev": "3daa710894355fa2fad8243380af373a2b4046ef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryantm",
+        "repo": "agenix",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -338,6 +358,22 @@
         "type": "github"
       }
     },
+    "nixos-secrets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788360044,
+        "narHash": "sha256-AMiX+FCcK1pgen4PPWtFltOTdmWtw82V2quSkItXJNQ=",
+        "ref": "refs/heads/main",
+        "rev": "8bd857e9316df7bc9d117bdfa92d893172862cf9",
+        "revCount": 4,
+        "type": "git",
+        "url": "ssh://git@github.com/HZ-9000/nixos-secrets.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/HZ-9000/nixos-secrets.git"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1789546076,
@@ -540,6 +576,7 @@
     },
     "root": {
       "inputs": {
+        "agenix": "agenix",
         "darwin": "darwin",
         "disko": "disko",
         "haumea": "haumea",
@@ -548,6 +585,7 @@
         "niri": "niri",
         "nix-gaming": "nix-gaming",
         "nixos-hardware": "nixos-hardware",
+        "nixos-secrets": "nixos-secrets",
         "nixpkgs": "nixpkgs_2",
         "noctalia": "noctalia",
         "preservation": "preservation",

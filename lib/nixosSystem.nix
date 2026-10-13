@@ -10,7 +10,7 @@
   ...
 }:
 let
-  inherit (inputs) nixpkgs home-manager;
+  inherit (inputs) nixpkgs home-manager agenix;
 in
 nixpkgs.lib.nixosSystem {
   inherit specialArgs;
@@ -20,6 +20,7 @@ nixpkgs.lib.nixosSystem {
   };
   modules =
     nixos-modules
+    ++ [ agenix.nixosModules.default ]
     ++ (lib.optionals ((lib.lists.length home-modules) > 0) [
       home-manager.nixosModules.home-manager
       {
