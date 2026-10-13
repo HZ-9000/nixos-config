@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   # Secure by default: firewall ON everywhere unless a host explicitly disables it.
   networking.firewall.enable = lib.mkDefault true;
@@ -16,7 +16,7 @@
     openFirewall = lib.mkDefault false;
   };
 
-  # Add terminfo database of all known terminals to the system profile.
+  # Add terminfo entries for the terminals actually used in this flake.
   # https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/modules/config/terminfo.nix
-  environment.enableAllTerminfo = true;
+  environment.systemPackages = map (x: x.terminfo) (with pkgs.pkgsBuildBuild; [ ghostty kitty ]);
 }
