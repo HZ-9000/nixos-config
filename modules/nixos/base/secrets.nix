@@ -1,6 +1,8 @@
 { inputs, ... }:
 {
-  age.identityPaths = [ "/etc/age/keys.txt" ];
+  # Read the key from /persistent directly: with systemd initrd, activation (and
+  # agenix) runs before preservation bind-mounts /etc/age.
+  age.identityPaths = [ "/persistent/etc/age/keys.txt" ];
 
   # agenix orders its own activation script before the users activation script
   # (system.activationScripts.users.deps), so these are decrypted in time for
