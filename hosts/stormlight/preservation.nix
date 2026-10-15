@@ -41,7 +41,11 @@ in
     directories = [
       "/etc/NetworkManager/system-connections"
       "/etc/ssh"
-      "/etc/age"
+      {
+        # Host age identity: root-only, same posture as /etc/ssh host keys.
+        directory = "/etc/age";
+        mode = "0700";
+      }
       "/etc/nix/inputs"
 
       "/var/log"
