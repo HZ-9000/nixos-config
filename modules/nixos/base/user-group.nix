@@ -1,4 +1,4 @@
-{ myvars, config, ... }:
+{ myvars, ... }:
 {
   users = {
     mutableUsers = false;
@@ -14,7 +14,6 @@
 
     users = {
       "${myvars.username}" = {
-        hashedPasswordFile = config.age.secrets.user-password.path;
         home = "/home/${myvars.username}";
         isNormalUser = true;
         extraGroups = [
@@ -31,7 +30,6 @@
       };
 
       root = {
-        hashedPasswordFile = config.age.secrets.root-password.path;
         openssh.authorizedKeys.keys = myvars.mainSshAuthorizedKeys ++ myvars.secondaryAuthorizedKeys;
       };
     };

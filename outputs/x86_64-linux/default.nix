@@ -7,6 +7,7 @@ let
 
   outputs = {
     nixosConfigurations = (storm.nixosConfigurations or { }) // (stormlight.nixosConfigurations or { });
+    installerConfigurations = import ./installer.nix args;
   };
 in
 outputs

@@ -2,6 +2,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./amd-hardware.nix
     ./disko-fs.nix
     ./preservation.nix
     ./secure-boot.nix

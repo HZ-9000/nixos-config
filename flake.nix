@@ -39,6 +39,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # noctalia and vicinae deliberately keep their own nixpkgs: their cachix
+    # binaries are built against it, so following ours would mean cache misses
+    # and local builds.
     noctalia = {
       # The cachix branch tracks the latest upstream revision with binaries available.
       url = "github:noctalia-dev/noctalia/cachix";
@@ -50,7 +53,11 @@
     };
 
     vicinae.url = "github:vicinaehq/vicinae";
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
 
     preservation.url = "github:nix-community/preservation";
 

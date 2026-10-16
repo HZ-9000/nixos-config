@@ -47,6 +47,11 @@ in
     map (it: it.nixosConfigurations or { }) nixosSystemValues
   );
 
+  # Minimal first-install systems for the NixOS hosts (see nixos-installer/README.md)
+  installerConfigurations = lib.attrsets.mergeAttrsList (
+    map (it: it.installerConfigurations or { }) nixosSystemValues
+  );
+
   # nix-darwin Configurations
   darwinConfigurations = lib.attrsets.mergeAttrsList (
     map (it: it.darwinConfigurations or { }) darwinSystemValues

@@ -18,5 +18,11 @@
 
   # Add terminfo entries for the terminals actually used in this flake.
   # https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/modules/config/terminfo.nix
-  environment.systemPackages = map (x: x.terminfo) (with pkgs.pkgsBuildBuild; [ ghostty kitty ]);
+  environment.systemPackages = map (x: x.terminfo) (
+    with pkgs.pkgsBuildBuild;
+    [
+      ghostty
+      kitty
+    ]
+  );
 }

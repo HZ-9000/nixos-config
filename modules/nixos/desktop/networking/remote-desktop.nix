@@ -29,7 +29,9 @@
     enable = lib.mkDefault false; # default to false, for security reasons.
     autoStart = true;
     capSysAdmin = true; # only needed for Wayland -- omit this when using with Xorg
-    openFirewall = true;
+    # Reachable over the tailnet only: tailscale0 is a trusted interface
+    # (./firewall.nix), so no ports are opened on LAN/Wi-Fi interfaces.
+    openFirewall = false;
     settings = {
       # pc  - Only localhost may access the web ui
       # lan - Only LAN devices may access the web ui

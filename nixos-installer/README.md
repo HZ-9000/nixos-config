@@ -1,10 +1,13 @@
-# NixOS installer flake
+# NixOS installer
 
-This flake installs NixOS on a target system.
+Minimal first-install systems, exposed by the root flake as
+`installerConfigurations.<host>` ([../outputs/x86_64-linux/installer.nix](../outputs/x86_64-linux/installer.nix)).
+They use the root `flake.lock`, so disko, preservation and nixpkgs are the same revisions
+the main config switches to afterwards.
 
-## Why this flake exists
+## Why this exists
 
-The main flake is heavy and slow to deploy. This minimal flake helps to:
+The main config is heavy and slow to deploy. This minimal one helps to:
 
 1. Adjust and verify `hardware-configuration.nix` and disk layout before deploying the main flake.
 2. Test preservation, Secure Boot, TPM 2.0, and encryption on a fresh install.
@@ -26,16 +29,17 @@ root filesystem is tmpfs; [preservation](https://github.com/nix-community/preser
 
 ```bash
 git clone https://github.com/HZ-9000/nixos-config.git
-cd nixos-config/nixos-installer
+cd nixos-config
 
 sudo su
 
 # Encrypt the root partition with LUKS2 and Argon2id. You will be prompted for a passphrase to unlock it.
 # WARNING: destroys all data on nvme0n1. Layout is mounted at /mnt by default.
-nix run github:nix-community/disko -- --mode destroy,format,mount ../hosts/storm/disko-fs.nix
+# `--inputs-from .` runs the disko pinned in this repo's flake.lock.
+nix run --inputs-from . disko -- --mode destroy,format,mount hosts/storm/disko-fs.nix
 
 # Mount only (e.g. after first format, without wiping):
-# nix run github:nix-community/disko -- --mode mount ../hosts/storm/disko-fs.nix
+# nix run --inputs-from . disko -- --mode mount hosts/storm/disko-fs.nix
 
 # Set up automatic unlocking with the TPM 2.0 chip.
 systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/<encrypted-disk-part-path>
@@ -46,9 +50,24 @@ systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/<encrypted-disk-part
 ```bash
 sudo su
 
-# From nixos-config/nixos-installer
-nixos-install --root /mnt --flake .#storm --no-root-password
+# From nixos-config. The installer isn't under nixosConfigurations, so build it and
+# pass the result with --system instead of --flake.
+nixos-install --root /mnt --no-root-password --system \
+  "$(nix build --no-link --print-out-paths .#installerConfigurations.storm.config.system.build.toplevel)"
 ```
+
+The installer has no agenix (the host's age identity doesn't exist yet), so both `root`
+and the main user read their password hash from `/persistent/etc/installer-password`.
+Write it before rebooting (root is tmpfs, so it must be under `/persistent`):
+
+```bash
+mkdir -p /mnt/persistent/etc
+nix run --inputs-from . nixpkgs#mkpasswd -- -m yescrypt > /mnt/persistent/etc/installer-password
+chmod 600 /mnt/persistent/etc/installer-password
+```
+
+After the first switch to the main config the agenix-managed passwords take over, and the
+file can be deleted.
 
 ### 3. Copy data into /persistent and reboot
 
@@ -76,7 +95,6 @@ After the first boot:
 1. Deploy the main config:
 
     ```bash
-    cd ..
     just switch storm
     ```
 
