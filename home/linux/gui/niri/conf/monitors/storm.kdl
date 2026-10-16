@@ -1,11 +1,8 @@
 // Monitor layout for storm.
 //
-// Arrange displays graphically with `nwg-displays` (bound to Mod+Shift+M):
-// drag the outputs around, set mode/scale/rotation, then hit Apply. It
-// overwrites this file and niri reloads it immediately.
-//
-// Hand-editing works just as well. Run `niri msg outputs` for connector
-// names and the modes each one supports:
+// Run `niri msg outputs` for output names and the modes each one supports.
+// Prefer "make model serial" names over connectors like DP-1, which can be
+// renumbered (especially behind docks):
 //
 //   output "DP-1" {
 //       mode "2560x1440@143.912"

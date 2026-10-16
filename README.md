@@ -27,7 +27,6 @@ See [./hosts](./hosts) for details of each host.
 | **Shell** | [Nushell][Nushell] + [Starship][Starship] |
 | **Editors / IDE** | [Zed][Zed] / [Neovim][Neovim] / [Rider][Rider] |
 | **Screenshot** | grim + slurp + [Satty][Satty] |
-| **Display arrangement** | [nwg-displays][nwg-displays] (`Mod+Shift+M`), saved per host under [niri/conf/monitors](./home/linux/gui/niri/conf/monitors) |
 | **Fonts** | [Nerd fonts][Nerd fonts] |
 | **Filesystem & Encryption** | tmpfs as `/`, with [Btrfs][Btrfs] subvolumes on a [LUKS][LUKS]-encrypted partition for persistent storage, unlocked with a passphrase |
 | **Secure Boot** | [lanzaboote][lanzaboote] |
@@ -49,7 +48,6 @@ See [./hosts](./hosts) for details of each host.
 [Rider]: https://www.jetbrains.com/rider/
 [Vicinae]: https://github.com/vicinaehq/vicinae
 [Satty]: https://github.com/gabm/Satty
-[nwg-displays]: https://github.com/nwg-piotr/nwg-displays
 [Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
 [Btrfs]: https://btrfs.readthedocs.io/
 [LUKS]: https://gitlab.com/cryptsetup/cryptsetup/-/blob/main/README.md
