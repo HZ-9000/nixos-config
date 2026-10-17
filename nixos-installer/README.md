@@ -100,7 +100,7 @@ After the first boot:
 
 2. **Secure Boot**: follow
     [lanzaboote Quick Start](https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md)
-    and [hosts/storm/secure-boot.nix](../hosts/storm/secure-boot.nix).
+    and [hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix).
 
 ## Changing the LUKS2 Passphrase
 

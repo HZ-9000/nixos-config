@@ -2,6 +2,9 @@
   myvars,
   ...
 }:
+let
+  caches = builtins.attrValues myvars.binaryCaches;
+in
 {
   nix.settings = {
     # enable flakes globally
@@ -16,21 +19,10 @@
     trusted-users = [ myvars.username ];
 
     # substituers that will be considered before the official ones(https://cache.nixos.org)
-    substituters = [
-      "https://nix-community.cachix.org"
-      "https://nix-gaming.cachix.org"
-      "https://ghostty.cachix.org"
-      "https://vicinae.cachix.org"
-      "https://noctalia.cachix.org"
-    ];
+    # (all of myvars.binaryCaches)
+    substituters = map (c: c.url) caches;
+    trusted-public-keys = map (c: c.key) caches;
 
-    trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
-      "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
-      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
-      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-    ];
     builders-use-substitutes = true;
   };
 }

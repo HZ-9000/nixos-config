@@ -4,7 +4,8 @@
   outputs = inputs: import ./outputs inputs;
 
   # The nixConfig here only affects the flake itself, not the system configuration.
-  # System-level substituters are configured in modules/base/nix.nix
+  # System-level substituters are configured in vars/default.nix (binaryCaches);
+  # keep these entries in sync with it.
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org"

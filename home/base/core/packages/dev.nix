@@ -19,7 +19,6 @@
       gdb
       #gef
       cmake
-      gnumake
 
       ## Python
       python3

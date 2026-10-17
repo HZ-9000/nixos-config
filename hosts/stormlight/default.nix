@@ -4,8 +4,8 @@
     ./hardware-configuration.nix
     ./amd-hardware.nix
     ./disko-fs.nix
-    ./preservation.nix
-    ./secure-boot.nix
+    ../common/preservation.nix
+    ../common/secure-boot.nix
   ];
 
   modules.desktop.gaming.enable = true;

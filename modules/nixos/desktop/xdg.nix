@@ -8,8 +8,6 @@
         my_terminal_desktop = [
           "com.mitchellh.ghostty.desktop"
           "kitty.desktop"
-          "foot.desktop"
-          "Alacritty.desktop"
         ];
       in
       {

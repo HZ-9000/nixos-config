@@ -38,7 +38,7 @@ let
         "modules/nixos/base/ssh.nix"
         "hosts/${hostName}/disko-fs.nix"
         "hosts/${hostName}/hardware-configuration.nix"
-        "hosts/${hostName}/preservation.nix"
+        "hosts/common/preservation.nix"
       ])
       ++ extraModules;
     };
