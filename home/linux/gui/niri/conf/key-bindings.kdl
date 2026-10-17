@@ -27,6 +27,10 @@ binds {
     Print { spawn-sh "grim -g \"$(slurp)\" - | wl-copy"; }
     Mod+Print { spawn-sh "mkdir -p \"$HOME/Pictures/screenshots\" && grim -g \"$(slurp)\" \"$HOME/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png\""; }
     Mod+Shift+Print { spawn-sh "grim -g \"$(slurp)\" - | satty --filename -"; }
+    // Same as the Print binds above, for keyboards without a Print key (e.g. stormlight's Framework 13).
+    Mod+S { spawn-sh "grim -g \"$(slurp)\" - | wl-copy"; }
+    Mod+Ctrl+S { spawn-sh "mkdir -p \"$HOME/Pictures/screenshots\" && grim -g \"$(slurp)\" \"$HOME/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png\""; }
+    Mod+Shift+S { spawn-sh "grim -g \"$(slurp)\" - | satty --filename -"; }
 
     Mod+Left { focus-column-left; }
     Mod+Right { focus-column-right; }
