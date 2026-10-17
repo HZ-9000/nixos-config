@@ -3,6 +3,10 @@ _: {
   userfullname = "hz-9000";
   useremail = "hz-9000@proton.me";
   configDirectoryName = "nixos-config";
+
+  # Desktop theme (colours, fonts, cursor); see ./themes/.
+  theme = import ./themes/gruvbox-dark-hard.nix;
+
   mainSshAuthorizedKeys = [ ];
   secondaryAuthorizedKeys = [ ];
 

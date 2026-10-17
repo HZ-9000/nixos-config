@@ -1,8 +1,3 @@
-cursor {
-    xcursor-theme "Bibata-Modern-Ice"
-    xcursor-size 24
-}
-
 input {
     keyboard {
         xkb {
@@ -22,14 +17,14 @@ layout {
     default-column-width { proportion 1.0; }
     border {
         width 2
-        active-color "#3e8fb0"
-        inactive-color "#393552"
-        urgent-color "#eb6f92"
+        // colours come from theme.kdl
     }
     focus-ring { off; }
 }
 
 include "./monitor.kdl"
+// Generated from the flake theme (vars/themes) by home/linux/gui/niri/default.nix.
+include "./theme.kdl"
 include "./noctalia-shell.kdl"
 include "./spawn-at-startup.kdl"
 include "./key-bindings.kdl"

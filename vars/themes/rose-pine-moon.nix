@@ -1,0 +1,70 @@
+# Rosé Pine Moon — https://rosepinetheme.com/palette
+#
+# A theme is one of these files; pick the active one in ../default.nix.
+# `palette` uses noctalia's palette format
+# (https://docs.noctalia.dev/noctalia/theming/palette/#custom-palette-files)
+# and is the single source of colours: noctalia, GTK (via noctalia's
+# templates), niri and Ghostty are all derived from it.
+{
+  name = "RosePineMoon";
+  mode = "dark";
+
+  font = {
+    ui = "JetBrains Mono";
+    mono = "JetBrainsMono Nerd Font";
+    size = 12;
+  };
+
+  cursor = {
+    name = "Bibata-Modern-Ice";
+    package = "bibata-cursors"; # attribute name in nixpkgs
+    size = 24;
+  };
+
+  palette = {
+    mPrimary = "#3e8fb0";
+    mOnPrimary = "#232136";
+    mSecondary = "#9ccfd8";
+    mOnSecondary = "#232136";
+    mTertiary = "#c4a7e7";
+    mOnTertiary = "#232136";
+    mError = "#eb6f92";
+    mOnError = "#232136";
+    mSurface = "#232136";
+    mOnSurface = "#e0def4";
+    mSurfaceVariant = "#2a273f";
+    mOnSurfaceVariant = "#908caa";
+    mOutline = "#6e6a86";
+    mShadow = "#191724";
+    mHover = "#393552";
+    mOnHover = "#e0def4";
+    terminal = {
+      background = "#232136";
+      foreground = "#e0def4";
+      cursor = "#908caa";
+      cursorText = "#232136";
+      selectionBg = "#393552";
+      selectionFg = "#e0def4";
+      normal = {
+        black = "#393552";
+        red = "#eb6f92";
+        green = "#3e8fb0";
+        yellow = "#f6c177";
+        blue = "#9ccfd8";
+        magenta = "#c4a7e7";
+        cyan = "#ea9a97";
+        white = "#e0def4";
+      };
+      bright = {
+        black = "#6e6a86";
+        red = "#eb6f92";
+        green = "#3e8fb0";
+        yellow = "#f6c177";
+        blue = "#9ccfd8";
+        magenta = "#c4a7e7";
+        cyan = "#ea9a97";
+        white = "#e0def4";
+      };
+    };
+  };
+}

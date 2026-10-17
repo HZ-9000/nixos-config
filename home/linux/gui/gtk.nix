@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, myvars, ... }:
+let
+  inherit (myvars.theme) font cursor;
+in
 {
   fonts.fontconfig.enable = true;
 
@@ -9,13 +12,12 @@
       @import url("thunar.css");
     '';
     font = {
-      name = "Jetbrains Mono";
-      size = 12;
+      name = font.ui;
+      inherit (font) size;
     };
     cursorTheme = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-      size = 24;
+      inherit (cursor) name size;
+      package = pkgs.${cursor.package};
     };
   };
 
@@ -81,8 +83,7 @@
 
   home.pointerCursor = {
     enable = true;
-    name = "Bibata-Modern-Ice";
-    package = pkgs.bibata-cursors;
-    size = 24;
+    inherit (cursor) name size;
+    package = pkgs.${cursor.package};
   };
 }

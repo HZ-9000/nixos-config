@@ -7,6 +7,7 @@
 }:
 let
   hostName = osConfig.networking.hostName;
+  inherit (myvars.theme) palette cursor;
 in
 {
   assertions = [
@@ -36,6 +37,23 @@ in
       "niri/key-bindings.kdl".source = mkSymlink "${confPath}/key-bindings.kdl";
       "niri/window-rules.kdl".source = mkSymlink "${confPath}/window-rules.kdl";
       "niri/monitor.kdl".source = mkSymlink "${confPath}/monitors/${hostName}.kdl";
+
+      # Colours and cursor from the flake theme (vars/themes). niri merges this
+      # `layout` section into config.kdl's.
+      "niri/theme.kdl".text = ''
+        cursor {
+            xcursor-theme "${cursor.name}"
+            xcursor-size ${toString cursor.size}
+        }
+
+        layout {
+            border {
+                active-color "${palette.mPrimary}"
+                inactive-color "${palette.mHover}"
+                urgent-color "${palette.mError}"
+            }
+        }
+      '';
     };
 
   # The polkit agent (niri-flake-polkit) is provided by niri-flake's NixOS module.

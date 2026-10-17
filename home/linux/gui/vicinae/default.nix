@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, myvars, ... }:
 {
   imports = [
     inputs.vicinae.homeManagerModules.default
@@ -23,8 +23,8 @@
       favicon_service = "twenty";
       search_files_in_root = true;
       font.normal = {
-        size = 12;
-        family = "JetBrainsMono Nerd Font";
+        inherit (myvars.theme.font) size;
+        family = myvars.theme.font.mono;
       };
       launcher_window.opacity = 0.98;
     };
