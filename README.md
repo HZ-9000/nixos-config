@@ -55,7 +55,7 @@ See [./hosts](./hosts) for details of each host.
 
 ## Screenshots
 
-WIP
+![Niri desktop with Osaka Jade theme](./assets/screenshot_01.png)
 
 ## Deployment
 
