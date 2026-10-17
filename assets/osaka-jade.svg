@@ -1,0 +1,13 @@
+<!-- Osaka Jade emblem for the README; colours from vars/themes/osaka-jade.nix. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <rect width="160" height="160" rx="36" fill="#081512"/>
+  <rect x="6" y="6" width="148" height="148" rx="30" fill="none" stroke="#1b6352" stroke-width="2"/>
+  <!-- jade disc (bi) -->
+  <circle cx="80" cy="80" r="50" fill="#166050"/>
+  <circle cx="80" cy="80" r="50" fill="none" stroke="#1f8972" stroke-width="3"/>
+  <circle cx="80" cy="80" r="40" fill="none" stroke="#0f251f" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="80" cy="80" r="16" fill="#081512"/>
+  <circle cx="80" cy="80" r="16" fill="none" stroke="#1f8972" stroke-width="2"/>
+  <!-- highlight -->
+  <path d="M52 56 A36 36 0 0 1 76 42" fill="none" stroke="#c0cecb" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+</svg>

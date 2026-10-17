@@ -1,7 +1,7 @@
 <h2 align="center">NixOS Config</h2>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rose-pine/rose-pine-theme/main/assets/icon.png" width="160" />
+  <img src="./assets/osaka-jade.svg" width="160" />
 </p>
 
 This repository contains a NixOS configuration that builds the following:
@@ -20,7 +20,7 @@ See [./hosts](./hosts) for details of each host.
 | **Status bar / notifications / lock screen** | [noctalia-shell][noctalia-shell] |
 | **Terminal emulator** | [Ghostty][Ghostty] / [Kitty][Kitty] |
 | **Browser** | [Zen Browser][Zen] |
-| **Color scheme** | [Rosé Pine][rose-pine] |
+| **Color scheme** | [Osaka Jade][osaka-jade] |
 | **Network management** | [NetworkManager][NetworkManager] |
 | **System resource monitor** | [btop][btop] / Mission Center |
 | **File manager** | [Nemo][Nemo] / [Thunar][Thunar] |
@@ -36,7 +36,7 @@ See [./hosts](./hosts) for details of each host.
 [Ghostty]: https://ghostty.org/
 [Kitty]: https://github.com/kovidgoyal/kitty
 [Zen]: https://zen-browser.app/
-[rose-pine]: https://rosepinetheme.com/
+[osaka-jade]: ./vars/themes/osaka-jade.nix
 [NetworkManager]: https://wiki.gnome.org/Projects/NetworkManager
 [btop]: https://github.com/aristocratos/btop
 [Nemo]: https://github.com/linuxmint/nemo
