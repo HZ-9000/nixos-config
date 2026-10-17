@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   hostName = "stormlight";
 in

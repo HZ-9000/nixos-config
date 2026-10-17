@@ -3,7 +3,7 @@
 Framework 13 laptop.
 
 - AMD Ryzen AI 5 340
-- Radeon 890M
+- Radeon 840M
 
 ## Setup
 

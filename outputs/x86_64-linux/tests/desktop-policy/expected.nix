@@ -1,5 +1,5 @@
 { lib, outputs }:
-lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (name: {
+lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (_: {
   firewall = true;
   networkmanager = true;
   polkit = true;
