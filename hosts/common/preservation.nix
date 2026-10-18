@@ -117,6 +117,9 @@ in
         myvars.configDirectoryName
         "tmp"
 
+        # git repositories
+        "source"
+
         # ======================================
         # Nix / Home Manager Profiles
         # ======================================
