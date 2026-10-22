@@ -1,10 +1,10 @@
 {
   lib,
   myvars,
-  outputs,
+  desktopHosts,
 }:
 let
   inherit (myvars) username;
-  hosts = builtins.attrNames outputs.nixosConfigurations;
+  hosts = desktopHosts;
 in
 lib.genAttrs hosts (_: "/home/${username}")

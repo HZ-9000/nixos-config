@@ -73,3 +73,23 @@ darwin-bootstrap flake_name:
   sudo nix run nix-darwin/master#darwin-rebuild \
     --extra-experimental-features "nix-command flakes" \
     -- switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config
+
+# ==============================================================================
+# Kubernetes nodes (Proxmox VMs)
+# ==============================================================================
+
+# First install of a k8s node onto a VM booted from the NixOS ISO (see hosts/k8s/README.md)
+[linux]
+[group('k8s')]
+k8s-install node installer_ip:
+  nix run github:nix-community/nixos-anywhere -- \
+    --flake "{{ justfile_directory() }}#{{ node }}" \
+    --extra-files "{{ justfile_directory() }}/extra" \
+    --target-host "root@{{ installer_ip }}"
+
+# Deploy config to an installed k8s node; address is read from vars/k8s.nix
+[group('k8s')]
+k8s-switch node:
+  nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ node }}" \
+    --target-host "root@$(nix eval --raw --file {{ justfile_directory() }}/vars/k8s.nix 'nodes.{{ node }}.address')" \
+    --build-host localhost

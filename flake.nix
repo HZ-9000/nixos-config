@@ -1,5 +1,5 @@
 {
-  description = "NixOS and nix-darwin configuration for storm, stormlight, and tempest";
+  description = "NixOS and nix-darwin configuration for storm, stormlight, tempest, and the k8s nodes";
 
   outputs = inputs: import ./outputs inputs;
 

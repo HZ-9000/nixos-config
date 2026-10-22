@@ -7,6 +7,11 @@ _: {
   # Desktop theme (colours, fonts, cursor); see ./themes/.
   theme = import ./themes/osaka-jade.nix;
 
+  # Kubernetes cluster (Proxmox VMs); see ./k8s.nix.
+  k8s = import ./k8s.nix;
+
+  # Public keys allowed to ssh in as root and ${username}. Must be non-empty
+  # before deploying the k8s nodes: they have no password login at all.
   mainSshAuthorizedKeys = [ ];
   secondaryAuthorizedKeys = [ ];
 

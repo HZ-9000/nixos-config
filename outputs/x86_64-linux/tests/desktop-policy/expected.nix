@@ -1,5 +1,5 @@
-{ lib, outputs }:
-lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (_: {
+{ lib, desktopHosts }:
+lib.genAttrs desktopHosts (_: {
   firewall = true;
   networkmanager = true;
   polkit = true;

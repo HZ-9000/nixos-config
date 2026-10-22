@@ -9,6 +9,8 @@ Reusable policy and opt-in capabilities live under `modules/`.
 |------|--------------|-------|
 | `storm` | x86_64-linux | Ryzen 7-9700x + RX 7900XTX, preservation, Secure Boot |
 | `stormlight` | x86_64-linux | Framework AMD AI 300, preservation, Secure Boot |
+| `k8s-master-{1,2,3}` | x86_64-linux | k3s servers (HA etcd), Proxmox VMs; see [k8s/](./k8s/README.md) |
+| `k8s-worker-{1,2,3}` | x86_64-linux | k3s agents, Proxmox VMs; see [k8s/](./k8s/README.md) |
 
 Deploy a NixOS host:
 

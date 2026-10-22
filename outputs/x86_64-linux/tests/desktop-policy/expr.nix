@@ -1,9 +1,10 @@
 {
   lib,
   myvars,
+  desktopHosts,
   outputs,
 }:
-lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (
+lib.genAttrs desktopHosts (
   name:
   let
     config = outputs.nixosConfigurations.${name}.config;

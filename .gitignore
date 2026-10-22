@@ -1,2 +1,3 @@
 # Local checkout of the former private secrets repo, not a submodule.
 nixos-secrets/
+extra/
