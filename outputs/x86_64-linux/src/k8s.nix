@@ -9,7 +9,24 @@
   genSpecialArgs,
   ...
 }:
+let
+  modulesFor = name: node:
+    (map mylib.relativeToRoot [
+      "hosts/k8s"
+      "modules/nixos/k8s"
+    ])
+    ++ [
+      inputs.disko.nixosModules.disko
+      {
+        networking.hostName = name;
+        modules.k8s = {
+          inherit (node) role address;
+        };
+      }
+    ];
+in
 {
+  inherit modulesFor;
   nixosConfigurations = lib.mapAttrs (
     name: node:
     mylib.nixosSystem {
@@ -20,20 +37,7 @@
         genSpecialArgs
         myvars
         ;
-      nixos-modules =
-        (map mylib.relativeToRoot [
-          "hosts/k8s"
-          "modules/nixos/k8s"
-        ])
-        ++ [
-          inputs.disko.nixosModules.disko
-          {
-            networking.hostName = name;
-            modules.k8s = {
-              inherit (node) role address;
-            };
-          }
-        ];
+      nixos-modules = modulesFor name node;
     }
   ) myvars.k8s.nodes;
 }

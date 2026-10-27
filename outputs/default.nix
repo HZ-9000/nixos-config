@@ -27,6 +27,8 @@ let
       ;
   };
 
+  k8s = import ./x86_64-linux/src/k8s.nix (args // { system = "x86_64-linux"; });
+
   nixosSystems = {
     x86_64-linux = import ./x86_64-linux (args // { system = "x86_64-linux"; });
   };
@@ -42,6 +44,27 @@ let
   forAllSystems = func: (nixpkgs.lib.genAttrs allSystemNames func);
 in
 {
+  colmenaHive = inputs.colmena.lib.makeHive (
+    {
+      meta = {
+        nixpkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
+        specialArgs = genSpecialArgs "x86_64-linux";
+        allowApplyAll = false;
+      };
+    }
+    // lib.mapAttrs (name: node: {
+      imports = k8s.modulesFor name node ++ [ inputs.agenix.nixosModules.default ];
+      deployment = {
+        targetHost = node.address;
+        targetUser = "root";
+        tags = [ node.role ];
+      };
+    }) myvars.k8s.nodes
+  );
+
   # NixOS Configurations
   nixosConfigurations = lib.attrsets.mergeAttrsList (
     map (it: it.nixosConfigurations or { }) nixosSystemValues

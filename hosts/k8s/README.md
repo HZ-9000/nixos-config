@@ -47,6 +47,12 @@ nix run github:nix-community/nixos-anywhere -- \
 
 ## Day two
 
+The flake also exposes a Colmena hive for these hosts. It requires an explicit
+`--on` selector and uses the same host modules as `nixosConfigurations`.
+Initial deployment still requires securely placing the shared token on each
+node and applying the init master before the other masters and workers. The
+cluster manager's automated token delivery and sequencing are not yet ready.
+
 ```bash
 sudo nixos-rebuild switch --flake .#k8s-master-1 --target-host root@192.168.10.11
 # or: just k8s-switch k8s-master-1
