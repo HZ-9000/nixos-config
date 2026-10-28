@@ -12,8 +12,12 @@ _: {
 
   # Public keys allowed to ssh in as root and ${username}. Must be non-empty
   # before deploying the k8s nodes: they have no password login at all.
-  mainSshAuthorizedKeys = [ ];
-  secondaryAuthorizedKeys = [ ];
+  mainSshAuthorizedKeys = [ 
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINpbtnWX4Fm6eN78pNoofHbwr7vIS2/HLRMMhJ+tAgYV main"
+  ];
+  secondaryAuthorizedKeys = [ 
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOI3qImqNQnvJpw2XNZHlmKSUQUxuSqALGmQ/TrmdQNg secondary"
+  ];
 
   # Binary caches, name -> { url, key }. Used by modules/base/nix.nix and
   # modules/darwin/nix.nix. flake.nix's nixConfig must be a literal, so it

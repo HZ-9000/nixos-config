@@ -8,27 +8,27 @@ let
   nodes = {
     k8s-master-1 = {
       role = "master";
-      address = "192.168.10.11";
+      address = "192.168.6.11";
     };
     k8s-master-2 = {
       role = "master";
-      address = "192.168.10.12";
+      address = "192.168.6.12";
     };
     k8s-master-3 = {
       role = "master";
-      address = "192.168.10.13";
+      address = "192.168.6.13";
     };
     k8s-worker-1 = {
       role = "worker";
-      address = "192.168.10.21";
+      address = "192.168.6.21";
     };
     k8s-worker-2 = {
       role = "worker";
-      address = "192.168.10.22";
+      address = "192.168.6.22";
     };
     k8s-worker-3 = {
       role = "worker";
-      address = "192.168.10.23";
+      address = "192.168.6.23";
     };
   };
 
@@ -42,13 +42,13 @@ in
   # Address workers and the other masters use to reach the API server. Points
   # at the init master for now; swap in a virtual IP (kube-vip / keepalived)
   # or a DNS name once one exists, and it also becomes an API server TLS SAN.
-  apiEndpoint = nodes.${initNode}.address;
+  apiEndpoint = "192.168.6.32";
 
   network = {
     prefixLength = 24;
-    gateway = "192.168.10.1";
+    gateway = "192.168.6.1";
     nameservers = [
-      "192.168.10.1"
+      "192.168.1.1"
     ];
   };
 
