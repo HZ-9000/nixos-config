@@ -14,8 +14,6 @@ in
   ];
 
   preservation.enable = true;
-  # Preservation requires a systemd-based initrd.
-  boot.initrd.systemd.enable = true;
 
   environment.systemPackages = [
     # `sudo ncdu -x /`
