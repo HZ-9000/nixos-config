@@ -20,6 +20,7 @@
     ## Utility
     dconf-editor
     gnome-disk-utility
+    rpi-imager # flash SD cards / USB drives
     mission-center # GUI resources monitor
     zenity
     wl-color-picker # Mod+C
