@@ -1,89 +1,84 @@
 # NixOS installer
 
-Minimal first-install systems, exposed by the root flake as
-`installerConfigurations.<host>` ([../outputs/x86_64-linux/installer.nix](../outputs/x86_64-linux/installer.nix)).
-They use the root `flake.lock`, so disko, preservation and nixpkgs are the same revisions
-the main config switches to afterwards.
+A minimal flake for the first install of [storm](../hosts/storm) and
+[stormlight](../hosts/stormlight). It reuses the main flake's disk layout, hardware config,
+preservation and base modules, but skips the desktop, agenix and lanzaboote.
 
-## Why this exists
+## Why this flake exists
 
-The main config is heavy and slow to deploy. This minimal one helps to:
+The main flake is heavy and slow to deploy. This minimal flake helps to:
 
 1. Adjust and verify `hardware-configuration.nix` and disk layout before deploying the main flake.
-2. Test preservation, Secure Boot, TPM 2.0, and encryption on a fresh install.
+2. Test preservation, TPM 2.0, and encryption on a fresh install.
 
-Disk layout is **declarative** via [disko](https://github.com/nix-community/disko); manual
-partitioning is no longer needed.
+Disk layout is **declarative** via [disko](https://github.com/nix-community/disko). The
+`flake.lock` here is ignored on purpose, so each install resolves fresh inputs; check that
+`nixpkgs` in [flake.nix](./flake.nix) is on the same release as the main flake.
 
-## Deployment Steps
+Check that it still evaluates with `just test storm` (or `just test stormlight`).
 
-These steps set up storm, a desktop with a Ryzen CPU and GPU.
+## Steps to deploy
+
+The examples use `storm`; substitute `stormlight` as needed.
 
 1. Create a USB install medium from the official NixOS ISO and boot from it.
+2. Review `../hosts/<host>/hardware-configuration.nix` against the target machine; after
+   the disk is mounted, regenerate it with `nixos-generate-config --root /mnt` if the hardware
+   differs.
 
-### 1. Partition and mount with disko (recommended)
+### 1. Partition and mount with disko
 
 The layout is defined in [../hosts/storm/disko-fs.nix](../hosts/storm/disko-fs.nix): a 600 MiB ESP,
-LUKS, and Btrfs subvolumes (`@nix`, `@guix`, `@persistent`, `@snapshots`, `@tmp`, and `@swap`). The
-root filesystem is tmpfs; [preservation](https://github.com/nix-community/preservation) uses `/persistent`.
+LUKS, and Btrfs subvolumes. Root is tmpfs; [preservation](https://github.com/nix-community/preservation)
+uses `/persistent`.
 
 ```bash
 git clone https://github.com/HZ-9000/nixos-config.git
-cd nixos-config
+cd nixos-config/nixos-installer
 
 sudo su
 
-# Encrypt the root partition with LUKS2 and Argon2id. You will be prompted for a passphrase to unlock it.
-# WARNING: destroys all data on nvme0n1. Layout is mounted at /mnt by default.
-# `--inputs-from .` runs the disko pinned in this repo's flake.lock.
-nix run --inputs-from . disko -- --mode destroy,format,mount hosts/storm/disko-fs.nix
+# Encrypts the root partition with LUKS2 (prompts for a passphrase) and mounts at /mnt.
+# WARNING: destroys all data on the target disk.
+nix run github:nix-community/disko -- --mode destroy,format,mount ../hosts/storm/disko-fs.nix
 
 # Mount only (e.g. after first format, without wiping):
-# nix run --inputs-from . disko -- --mode mount hosts/storm/disko-fs.nix
+# nix run github:nix-community/disko -- --mode mount ../hosts/storm/disko-fs.nix
 
-# Set up automatic unlocking with the TPM 2.0 chip.
+# Set up automatic unlocking with the TPM 2.0 chip (find the partition with `lsblk -f`).
 systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/<encrypted-disk-part-path>
 ```
 
 ### 2. Install NixOS
 
-```bash
-sudo su
-
-# From nixos-config. The installer isn't under nixosConfigurations, so build it and
-# pass the result with --system instead of --flake.
-nixos-install --root /mnt --no-root-password --system \
-  "$(nix build --no-link --print-out-paths .#installerConfigurations.storm.config.system.build.toplevel)"
-```
-
-The installer has no agenix (the host's age identity doesn't exist yet), so both `root`
-and the main user read their password hash from `/persistent/etc/installer-password`.
-Write it before rebooting (root is tmpfs, so it must be under `/persistent`):
+Both `root` and the main user read their password hash from `/persistent/etc/installer-password`
+until the first switch to the main config, where agenix takes over (see
+[configuration.nix](./configuration.nix)):
 
 ```bash
 mkdir -p /mnt/persistent/etc
-nix run --inputs-from . nixpkgs#mkpasswd -- -m yescrypt > /mnt/persistent/etc/installer-password
+nix run nixpkgs#mkpasswd -- -m yescrypt > /mnt/persistent/etc/installer-password
 chmod 600 /mnt/persistent/etc/installer-password
+
+# From nixos-config/nixos-installer
+nixos-install --root /mnt --flake .#storm --no-root-password
 ```
 
-After the first switch to the main config the agenix-managed passwords take over, and the
-file can be deleted.
-
 ### 3. Copy data into /persistent and reboot
-
-Preservation expects state under `/persistent`; copy or migrate data there (e.g. from an old disk),
-then leave the chroot and reboot.
 
 ```bash
 nixos-enter
 
-# Copy/migrate into /persistent as needed (e.g. from old nvme0n1)
+# Copy/migrate into /persistent as needed (e.g. from an old disk).
 # At minimum for a fresh install:
 #   mkdir -p /persistent/etc
 #   mv /etc/machine-id /persistent/etc/
 #   mv /etc/ssh /persistent/etc/
-# Then exit and:
 exit
+
+# Keep this checkout: / is tmpfs, so put it where preservation mounts ~/nixos-config from.
+mkdir -p /mnt/persistent/home/hz-9000
+cp -r .. /mnt/persistent/home/hz-9000/nixos-config
 umount -R /mnt
 reboot
 ```
@@ -92,15 +87,107 @@ reboot
 
 After the first boot:
 
-1. Deploy the main config:
+### 1. Set up the GitHub SSH key
+
+The main flake pulls the private `nixos-secrets` repo over SSH, so the machine needs a key
+GitHub accepts. The [gh](https://cli.github.com/) CLI is installed by this flake; let it
+generate the key and upload it in one step:
+
+```bash
+sudo chown -R hz-9000:users ~/nixos-config
+
+# Choose SSH as the git protocol and accept "Generate a new SSH key".
+# This creates ~/.ssh/id_ed25519 (preserved across reboots) and adds it to your account.
+gh auth login --git-protocol ssh --web
+
+# `just switch` runs nixos-rebuild through sudo, so root fetches over your agent.
+ssh-add ~/.ssh/id_ed25519
+ssh -T git@github.com        # should greet you by username
+sudo ssh -T git@github.com   # accept GitHub's host key for root
+```
+
+The default key name is used on purpose: [../home/base/tui/ssh.nix](../home/base/tui/ssh.nix)
+sets `IdentitiesOnly` for `github.com`, and with no `IdentityFile` ssh falls back to
+`~/.ssh/id_ed25519`, so no per-host Home Manager change is needed.
+
+To allow SSH logins into this machine with the key, add the `.pub` line to
+`mainSshAuthorizedKeys` or `secondaryAuthorizedKeys` in [../vars/default.nix](../vars/default.nix).
+
+### 2. Deploy the main config
+
+```bash
+cd ~/nixos-config
+just switch storm
+```
+
+### 3. Set up Secure Boot
+
+[../hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix) replaces
+systemd-boot with [lanzaboote](https://github.com/nix-community/lanzaboote),
+which signs the kernel and boot files with keys stored in `/var/lib/sbctl`. That
+directory is preserved. Keep Secure Boot **disabled** in firmware until the end
+of this step.
+
+1. **Check that lanzaboote is active.** After the main config is deployed, it
+   should be the bootloader:
+
+    ```bash
+    bootctl status   # "Product" should mention lanzaboote
+    ```
+
+2. **Create the signing keys.** They are local to this machine; never commit them.
+
+    ```bash
+    sudo sbctl create-keys
+    ```
+
+3. **Rebuild so lanzaboote signs everything with the new keys**, then confirm:
 
     ```bash
     just switch storm
+    sudo sbctl verify   # every lanzaboote/kernel EFI file should be "signed"
     ```
 
-2. **Secure Boot**: follow
-    [lanzaboote Quick Start](https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md)
-    and [hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix).
+    The unsigned `systemd-bootx64.efi` / `BOOTX64.EFI` files that lanzaboote
+    doesn't use can be ignored.
+
+4. **Put the firmware in Setup Mode.** Reboot into the firmware settings:
+    - **storm** (MSI): Secure Boot → set mode to *Custom*, then delete or clear all
+      Secure Boot keys.
+    - **stormlight** (Framework): Secure Boot → *Erase all Secure Boot Settings*
+      (puts it in Setup Mode).
+
+    Save, boot back into NixOS, and confirm:
+
+    ```bash
+    sudo sbctl status   # "Setup Mode: Enabled"
+    ```
+
+5. **Enroll the keys.** `--microsoft` also enrolls Microsoft's certificates.
+   Keep that flag: without it, firmware option ROMs (e.g. the GPU) may fail to load
+   and the machine may not boot.
+
+    ```bash
+    sudo sbctl enroll-keys --microsoft
+    ```
+
+6. **Enable Secure Boot.** Reboot into the firmware, turn Secure Boot on, and boot
+   NixOS. Then check:
+
+    ```bash
+    sudo sbctl status   # "Secure Boot: Enabled", "Setup Mode: Disabled"
+    ```
+
+7. **Re-enroll TPM unlocking.** Enabling Secure Boot changes PCR 7, so the LUKS
+   TPM slot made during install stops matching and you will get a passphrase
+   prompt. Replace the slot:
+
+    ```bash
+    sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 /dev/<encrypted-disk-part-path>
+    ```
+
+If the machine doesn't boot after enabling Secure Boot, disable it in the firmware,
+boot, and check `sudo sbctl verify` again.
 
 ## Changing the LUKS2 Passphrase
 
