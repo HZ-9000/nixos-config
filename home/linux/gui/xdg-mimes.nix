@@ -14,7 +14,6 @@ let
     pdf = [ "org.gnome.Evince.desktop" ];
     terminal = [ "com.mitchellh.ghostty.desktop" ];
     archive = [ "org.gnome.FileRoller.desktop" ];
-    discord = [ "webcord.desktop" ];
   };
 
   mimeMap = {
@@ -81,7 +80,6 @@ let
       "application/7z"
       "application/*tar"
     ];
-    discord = [ "x-scheme-handler/discord" ];
   };
 
   associations =

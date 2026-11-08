@@ -14,9 +14,6 @@
     libreoffice
     file-roller # archives
 
-    ## Chat
-    webcord
-
     ## Utility
     dconf-editor
     gnome-disk-utility

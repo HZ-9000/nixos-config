@@ -11,7 +11,6 @@ binds {
     Mod+Shift+F { toggle-windowed-fullscreen; }
     Mod+Space { toggle-window-floating; }
     Mod+D { spawn "vicinae" "toggle"; }
-    Mod+Shift+D { spawn-sh "webcord --enable-features=UseOzonePlatform --ozone-platform=wayland"; }
     Mod+Shift+Escape { spawn-sh "noctalia msg panel-toggle session"; }
     Ctrl+Alt+L { spawn-sh "noctalia msg session lock"; }
     Mod+X { toggle-column-tabbed-display; }

@@ -49,7 +49,3 @@ window-rule {
     match app-id="^discord$"
     open-on-workspace "10"
 }
-window-rule {
-    match app-id="^WebCord$"
-    open-on-workspace "10"
-}

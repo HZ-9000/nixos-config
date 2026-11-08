@@ -9,7 +9,6 @@
 
     # Opencode
     opencode
-    opencode-desktop
 
     # Remote
     colmena
