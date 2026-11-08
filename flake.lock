@@ -404,11 +404,12 @@
         "narHash": "sha256-2LCG/XnsBOcvxqP7ZS2n4PEZGrkZ5AJSs4DguX9zpgI=",
         "ref": "refs/heads/main",
         "rev": "2d6b07d71f9a369bb2ac334c97fcb19a419e6d6b",
-        "revCount": 11,
+        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/HZ-9000/nixos-secrets.git"
       },
       "original": {
+        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/HZ-9000/nixos-secrets.git"
       }

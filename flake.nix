@@ -89,7 +89,7 @@
 
     # Private repo of agenix-encrypted secrets (passwords, tokens). Not a flake itself.
     nixos-secrets = {
-      url = "git+ssh://git@github.com/HZ-9000/nixos-secrets.git";
+      url = "git+ssh://git@github.com/HZ-9000/nixos-secrets.git?shallow=1";
       flake = false;
     };
 

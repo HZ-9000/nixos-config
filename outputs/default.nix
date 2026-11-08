@@ -27,8 +27,6 @@ let
       ;
   };
 
-  k8s = import ./x86_64-linux/src/k8s.nix (args // { system = "x86_64-linux"; });
-
   nixosSystems = {
     x86_64-linux = import ./x86_64-linux (args // { system = "x86_64-linux"; });
   };
@@ -37,43 +35,57 @@ let
     aarch64-darwin = import ./aarch64-darwin (args // { system = "aarch64-darwin"; });
   };
 
-  allSystemNames = (builtins.attrNames nixosSystems) ++ (builtins.attrNames darwinSystems);
+  allSystems = nixosSystems // darwinSystems;
+  allSystemNames = builtins.attrNames allSystems;
   nixosSystemValues = builtins.attrValues nixosSystems;
   darwinSystemValues = builtins.attrValues darwinSystems;
 
   forAllSystems = func: (nixpkgs.lib.genAttrs allSystemNames func);
-in
-{
-  colmenaHive = inputs.colmena.lib.makeHive (
-    {
-      meta = {
-        nixpkgs = import nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        };
-        specialArgs = genSpecialArgs "x86_64-linux";
-        allowApplyAll = false;
-      };
-    }
-    // lib.mapAttrs (name: node: {
-      imports = k8s.modulesFor name node ++ [ inputs.agenix.nixosModules.default ];
-      deployment = {
-        targetHost = node.address;
-        targetUser = "root";
-        tags = [ node.role ];
-      };
-    }) myvars.k8s.nodes
-  );
 
-  # NixOS Configurations
   nixosConfigurations = lib.attrsets.mergeAttrsList (
     map (it: it.nixosConfigurations or { }) nixosSystemValues
   );
 
-  # Minimal first-install systems for the NixOS hosts (see nixos-installer/README.md)
-  installerConfigurations = lib.attrsets.mergeAttrsList (
-    map (it: it.installerConfigurations or { }) nixosSystemValues
+  # Per-node deployment settings from `mylib.colmenaSystem`, keyed by host name.
+  colmenaDeployments = lib.attrsets.mergeAttrsList (map (it: it.colmena or { }) nixosSystemValues);
+in
+{
+  # Each colmena node is rebuilt from its nixosConfigurations entry: the same
+  # user modules and specialArgs, plus a package set matching lib/nixosSystem.nix.
+  colmenaHive = inputs.colmena.lib.makeHive (
+    {
+      meta = {
+        nixpkgs = import nixpkgs { system = "x86_64-linux"; };
+        nodeNixpkgs = builtins.mapAttrs (
+          name: _:
+          import nixpkgs {
+            inherit (nixosConfigurations.${name}.pkgs.stdenv.hostPlatform) system;
+            config.allowUnfree = true;
+          }
+        ) colmenaDeployments;
+        nodeSpecialArgs = builtins.mapAttrs (
+          name: _: nixosConfigurations.${name}._module.specialArgs
+        ) colmenaDeployments;
+        allowApplyAll = false;
+      };
+    }
+    // builtins.mapAttrs (name: deployment: {
+      imports = [
+        deployment
+        # colmena evaluates with nixpkgs' plain lib, which lacks the flake's
+        # version info; without this the toplevel reports `26.05pre-git` and
+        # differs from nixosConfigurations.
+        {
+          system.nixos.versionSuffix = lib.trivial.versionSuffix;
+          system.nixos.revision = lib.trivial.revisionWithDefault null;
+        }
+      ]
+      ++ nixosConfigurations.${name}._module.args.modules;
+    }) colmenaDeployments
   );
+
+  # NixOS Configurations
+  inherit nixosConfigurations;
 
   # nix-darwin Configurations
   darwinConfigurations = lib.attrsets.mergeAttrsList (
@@ -81,9 +93,21 @@ in
   );
 
   # Eval tests for all systems. Each per-arch evalTests must be { } (pass).
-  evalTests =
-    (lib.lists.all (it: it.evalTests == { }) nixosSystemValues)
-    && (lib.lists.all (it: it.evalTests == { }) darwinSystemValues);
+  evalTests = lib.lists.all (it: it.evalTests == { }) (builtins.attrValues allSystems);
+
+  # `nix flake check` needs derivations, so wrap each system's eval tests in one.
+  checks = forAllSystems (system: {
+    eval-tests =
+      let
+        results = allSystems.${system}.evalTests;
+      in
+      nixpkgs.legacyPackages.${system}.runCommand "eval-tests" { } (
+        if results == { } then
+          "touch $out"
+        else
+          "echo 'eval tests failed:' ${lib.escapeShellArg (builtins.toJSON results)} >&2; exit 1"
+      );
+  });
 
   formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
@@ -93,7 +117,15 @@ in
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      default = pkgs.mkShell { };
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          just
+          nixfmt
+          nixfmt-tree
+          deadnix # unused bindings in *.nix
+          statix # lints and suggestions for Nix code
+        ];
+      };
     }
   );
 }

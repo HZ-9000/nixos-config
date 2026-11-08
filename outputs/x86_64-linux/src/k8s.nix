@@ -9,24 +9,7 @@
   genSpecialArgs,
   ...
 }:
-let
-  modulesFor = name: node:
-    (map mylib.relativeToRoot [
-      "hosts/k8s"
-      "modules/nixos/k8s"
-    ])
-    ++ [
-      inputs.disko.nixosModules.disko
-      {
-        networking.hostName = name;
-        modules.k8s = {
-          inherit (node) role address;
-        };
-      }
-    ];
-in
 {
-  inherit modulesFor;
   nixosConfigurations = lib.mapAttrs (
     name: node:
     mylib.nixosSystem {
@@ -37,7 +20,30 @@ in
         genSpecialArgs
         myvars
         ;
-      nixos-modules = modulesFor name node;
+      nixos-modules =
+        (map mylib.relativeToRoot [
+          "hosts/k8s"
+          "modules/nixos/k8s"
+        ])
+        ++ [
+          inputs.disko.nixosModules.disko
+          {
+            networking.hostName = name;
+            modules.k8s = {
+              inherit (node) role address;
+            };
+          }
+        ];
+    }
+  ) myvars.k8s.nodes;
+
+  # Deployment settings only; outputs/default.nix takes the modules from
+  # nixosConfigurations above, so colmena deploys exactly what `just test` evaluates.
+  colmena = lib.mapAttrs (
+    _: node:
+    mylib.colmenaSystem {
+      targetHost = node.address;
+      tags = [ node.role ];
     }
   ) myvars.k8s.nodes;
 }

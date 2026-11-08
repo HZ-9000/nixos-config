@@ -6,6 +6,9 @@
   # Helper to build a nix-darwin system with optional home-manager
   macosSystem = import ./macosSystem.nix;
 
+  # Deployment settings for a colmena node
+  colmenaSystem = import ./colmenaSystem.nix;
+
   # Use path relative to the root of the project
   relativeToRoot = lib.path.append ../.;
 

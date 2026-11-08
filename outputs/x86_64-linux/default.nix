@@ -1,28 +1,33 @@
-{ inputs, ... }@args:
+{ lib, inputs, ... }@args:
 let
   inherit (inputs) haumea;
 
-  storm = import ./src/storm.nix args;
-  stormlight = import ./src/stormlight.nix args;
-  k8s = import ./src/k8s.nix args;
-
-  desktopConfigurations =
-    (storm.nixosConfigurations or { }) // (stormlight.nixosConfigurations or { });
+  # Every file in ./src returns { nixosConfigurations?, colmena? }.
+  data = haumea.lib.load {
+    src = ./src;
+    inputs = args;
+  };
+  dataWithoutPaths = builtins.attrValues data;
 
   outputs = {
-    nixosConfigurations = desktopConfigurations // k8s.nixosConfigurations;
-    installerConfigurations = import ./installer.nix args;
+    nixosConfigurations = lib.attrsets.mergeAttrsList (
+      map (it: it.nixosConfigurations or { }) dataWithoutPaths
+    );
+    colmena = lib.attrsets.mergeAttrsList (map (it: it.colmena or { }) dataWithoutPaths);
   };
+
+  k8sHosts = builtins.attrNames data.k8s.nixosConfigurations;
 in
 outputs
 // {
+  inherit data; # for debugging
+
   evalTests = haumea.lib.loadEvalTests {
     src = ./tests;
     inputs = args // {
-      inherit outputs;
+      inherit outputs k8sHosts;
       # Host groups, so tests can scope desktop-only / k8s-only expectations.
-      desktopHosts = builtins.attrNames desktopConfigurations;
-      k8sHosts = builtins.attrNames k8s.nixosConfigurations;
+      desktopHosts = builtins.attrNames (removeAttrs outputs.nixosConfigurations k8sHosts);
     };
   };
 }

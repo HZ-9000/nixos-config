@@ -22,6 +22,7 @@
         "hosts/stormlight"
         # system modules
         "modules/nixos/desktop.nix"
+        "secrets/nixos.nix"
       ])
       ++ [
         inputs.disko.nixosModules.disko

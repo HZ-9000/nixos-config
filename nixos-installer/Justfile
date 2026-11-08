@@ -1,0 +1,8 @@
+# List all the just commands
+default:
+    @just --list
+
+# Build an installer host's system closure to check this flake
+[linux]
+test host="storm":
+  nix build ".#nixosConfigurations.{{ host }}.config.system.build.toplevel" --show-trace --verbose

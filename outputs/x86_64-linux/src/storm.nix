@@ -22,6 +22,7 @@
         "hosts/storm"
         # system modules
         "modules/nixos/desktop.nix"
+        "secrets/nixos.nix"
       ])
       ++ [
         inputs.disko.nixosModules.disko

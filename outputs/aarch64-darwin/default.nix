@@ -1,15 +1,23 @@
-{ inputs, ... }@args:
+{ lib, inputs, ... }@args:
 let
   inherit (inputs) haumea;
 
-  tempest = import ./src/tempest.nix args;
+  # Every file in ./src returns { darwinConfigurations? }.
+  data = haumea.lib.load {
+    src = ./src;
+    inputs = args;
+  };
 
   outputs = {
-    darwinConfigurations = tempest.darwinConfigurations or { };
+    darwinConfigurations = lib.attrsets.mergeAttrsList (
+      map (it: it.darwinConfigurations or { }) (builtins.attrValues data)
+    );
   };
 in
 outputs
 // {
+  inherit data; # for debugging
+
   evalTests = haumea.lib.loadEvalTests {
     src = ./tests;
     inputs = args // {

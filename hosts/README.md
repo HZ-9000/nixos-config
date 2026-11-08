@@ -43,19 +43,7 @@ darwin-rebuild switch --flake .#tempest
 
 ## Secure Boot keys (storm and stormlight)
 
-Lanzaboote keys are machine-local and must not be committed. Put Storm's MSI
-firmware in Custom/setup mode by clearing its Secure Boot variables. Put
-Stormlight's Framework firmware in setup mode through its Secure Boot menu.
-Then boot with Secure Boot disabled and run the following only after the first
-successful boot of the main flake:
-
-```bash
-nix shell nixpkgs#sbctl
-sudo sbctl create-keys
-sudo sbctl enroll-keys --microsoft
-sudo nixos-rebuild switch --flake .#<hostname>
-sudo sbctl verify
-```
-
-Both hosts preserve `/var/lib/sbctl`. Enable Secure Boot only after `sbctl
-verify` reports the expected signed EFI files.
+Lanzaboote keys are machine-local and must not be committed. Both hosts preserve
+`/var/lib/sbctl`. See
+[Set up Secure Boot](../nixos-installer/README.md#3-set-up-secure-boot) in the
+installer guide for the full walkthrough, including firmware Setup Mode on each machine.
