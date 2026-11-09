@@ -92,6 +92,12 @@ After the first boot:
 The main flake pulls the private `nixos-secrets` repo over SSH, so the machine needs a key
 GitHub accepts. `~/.ssh` is preserved, so the key survives reboots.
 
+The login shell is nushell and these commands use bash syntax (`$(hostname)`), so run `bash`
+first. `programs.ssh.startAgent` runs the agent; nushell gets `SSH_AUTH_SOCK` from the autoload
+file in [../modules/nixos/base/ssh.nix](../modules/nixos/base/ssh.nix). On an install made
+before that file existed, set it by hand in nushell with
+`$env.SSH_AUTH_SOCK = $"($env.XDG_RUNTIME_DIR)/ssh-agent"`.
+
 ```bash
 sudo chown -R hz-9000:users ~/nixos-config
 
