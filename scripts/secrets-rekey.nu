@@ -31,12 +31,21 @@ def main [host?: string, pubkey?: string] {
   let recipients = ^nix eval --json --file ($repo | path join secrets.nix) --apply 's: builtins.concatMap (v: v.publicKeys) (builtins.attrValues s)'
     | from json | each { normalize-pubkey } | uniq
   let candidates = [$host_key $legacy_age_key] | append ($env.AGENIX_KEY? | default [])
-  let identities = $candidates
-    | where {|p| (do { ^sudo test -f $p } | complete).exit_code == 0 }
-    | where {|p| (identity-pubkey $p $agekeygen) in $recipients }
+
+  # Prompt for the sudo password here: the checks below capture output with `complete`,
+  # where a password prompt can't be answered and sudo just fails.
+  ^sudo -v
+  let checked = $candidates | each {|p|
+    let exists = (do { ^sudo test -f $p } | complete).exit_code == 0
+    let pub = if $exists { identity-pubkey $p $agekeygen } else { null }
+    { path: $p, exists: $exists, pubkey: $pub, recipient: ($pub != null and $pub in $recipients) }
+  }
+  let identities = $checked | where recipient | get path
   if ($identities | is-empty) {
+    print -e ($checked | table)
+    print -e $"Recipients in secrets.nix:\n($recipients | str join "\n")"
     error make { msg: ([
-      $"None of ($candidates | str join ', ') is a recipient in secrets.nix, so nothing here can decrypt."
+      "None of the identities above is a recipient in secrets.nix, so nothing here can decrypt."
       "Run this on a host that already decrypts the secrets (e.g. stormlight), or set AGENIX_KEY to the deploy key."
     ] | str join "\n") }
   }
