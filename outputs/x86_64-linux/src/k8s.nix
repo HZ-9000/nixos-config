@@ -24,6 +24,7 @@
         (map mylib.relativeToRoot [
           "hosts/k8s"
           "modules/nixos/k8s"
+          "secrets/k8s.nix"
         ])
         ++ [
           inputs.disko.nixosModules.disko

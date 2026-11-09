@@ -15,7 +15,7 @@ in
   services.k3s = {
     enable = true;
     role = if isMaster then "server" else "agent";
-    tokenFile = cluster.tokenFile;
+    # tokenFile comes from agenix: secrets/k8s.nix.
 
     # HA: the init master bootstraps embedded etcd, every other server and
     # every agent joins an existing master.

@@ -2,8 +2,8 @@
 # outputs/x86_64-linux/src/k8s.nix (one nixosConfiguration per node) and
 # modules/nixos/k8s/ (role, networking, k3s settings).
 #
-# NOTE: the addresses below are PLACEHOLDERS. Set them to match your Proxmox
-# network (and DHCP reservations) before deploying.
+# Check every address below against your Proxmox network (and keep them out of
+# the DHCP range) before deploying.
 let
   nodes = {
     k8s-master-1 = {
@@ -39,12 +39,23 @@ in
 {
   inherit nodes initNode;
 
-  # Address workers and the other masters use to reach the API server. Points
-  # at the init master for now; swap in a virtual IP (kube-vip / keepalived)
-  # or a DNS name once one exists, and it also becomes an API server TLS SAN.
+  # Floating API server address held by one master at a time via keepalived
+  # (modules/nixos/k8s/vip.nix). Workers join through it; it is also a TLS SAN.
+  # Must be an unused address on the node subnet.
   apiEndpoint = "192.168.6.32";
 
+  vip = {
+    # VRRP router ID (1-255); must be unique among VRRP users on this LAN.
+    routerId = 51;
+  };
+
+  # Addresses MetalLB hands out to LoadBalancer services (traefik gets the
+  # first). Must be unused and outside the DHCP range.
+  loadBalancerRange = "192.168.6.200-192.168.6.220";
+
   network = {
+    # Proxmox's first virtio NIC; keepalived binds the API address to it.
+    interface = "ens18";
     prefixLength = 24;
     gateway = "192.168.6.1";
     nameservers = [
@@ -55,8 +66,4 @@ in
   # Block device of the VM's system disk, as seen inside the guest (the first
   # virtio-scsi disk, `scsi0`, in Proxmox).
   diskDevice = "/dev/sda";
-
-  # Root-only file on every node holding the shared k3s cluster token. It is
-  # not in the Nix store: copy it in at install time (see hosts/k8s/README.md).
-  tokenFile = "/etc/k3s/token";
 }

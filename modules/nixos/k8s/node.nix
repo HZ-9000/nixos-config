@@ -42,8 +42,7 @@ in
       networkmanager.enable = false;
     };
     systemd.network.networks."10-lan" = {
-      # Proxmox virtio NICs are ens18, ens19, ...; CNI/flannel interfaces don't match.
-      matchConfig.Name = "en*";
+      matchConfig.Name = myvars.k8s.network.interface;
       address = [ "${cfg.address}/${toString myvars.k8s.network.prefixLength}" ];
       gateway = [ myvars.k8s.network.gateway ];
       dns = myvars.k8s.network.nameservers;

@@ -78,13 +78,30 @@ darwin-bootstrap flake_name:
 # Kubernetes nodes (Proxmox VMs)
 # ==============================================================================
 
+# Generate an age identity per k8s node in extra/<node>/ (kept if present) and print the public keys
+[linux]
+[group('k8s')]
+k8s-keys:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  cd "{{ justfile_directory() }}"
+  nodes=$(nix eval --raw --file vars/k8s.nix nodes --apply 'n: toString (builtins.attrNames n)')
+  for node in $nodes; do
+    dir="extra/$node/etc/age"
+    if [ ! -f "$dir/keys.txt" ]; then
+      mkdir -p "$dir" && chmod 700 "$dir"
+      (umask 077 && nix shell nixpkgs#age -c age-keygen -o "$dir/keys.txt" 2>/dev/null)
+    fi
+    printf '%s = "%s";\n' "$node" "$(nix shell nixpkgs#age -c age-keygen -y "$dir/keys.txt")"
+  done
+
 # First install of a k8s node onto a VM booted from the NixOS ISO (see hosts/k8s/README.md)
 [linux]
 [group('k8s')]
 k8s-install node installer_ip:
   nix run github:nix-community/nixos-anywhere -- \
     --flake "{{ justfile_directory() }}#{{ node }}" \
-    --extra-files "{{ justfile_directory() }}/extra" \
+    --extra-files "{{ justfile_directory() }}/extra/{{ node }}" \
     --target-host "root@{{ installer_ip }}"
 
 # Deploy config to an installed k8s node; address is read from vars/k8s.nix
@@ -93,3 +110,11 @@ k8s-switch node:
   nixos-rebuild switch --flake "{{ justfile_directory() }}#{{ node }}" \
     --target-host "root@$(nix eval --raw --file {{ justfile_directory() }}/vars/k8s.nix 'nodes.{{ node }}.address')" \
     --build-host localhost
+
+# Deploy installed k8s nodes with colmena: `just k8s-col master`, `just k8s-col worker`,
+# or a single node with `just k8s-col k8s-worker-2`
+[group('k8s')]
+k8s-col target mode="switch":
+  nix run --inputs-from "{{ justfile_directory() }}" colmena -- apply \
+    --on "{{ if target == "master" { "@master" } else if target == "worker" { "@worker" } else { target } }}" \
+    {{ mode }}

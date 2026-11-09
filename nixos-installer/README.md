@@ -90,25 +90,34 @@ After the first boot:
 ### 1. Set up the GitHub SSH key
 
 The main flake pulls the private `nixos-secrets` repo over SSH, so the machine needs a key
-GitHub accepts. The [gh](https://cli.github.com/) CLI is installed by this flake; let it
-generate the key and upload it in one step:
+GitHub accepts. `~/.ssh` is preserved, so the key survives reboots.
 
 ```bash
 sudo chown -R hz-9000:users ~/nixos-config
 
-# Choose SSH as the git protocol and accept "Generate a new SSH key".
-# This creates ~/.ssh/id_ed25519 (preserved across reboots) and adds it to your account.
-gh auth login --git-protocol ssh --web
+# Generate a key named after the host (use a passphrase) and load it into the agent.
+ssh-keygen -t ed25519 -a 256 -C "hz-9000@$(hostname)" -f ~/.ssh/$(hostname)
+ssh-add ~/.ssh/$(hostname)
+
+# Upload it with the gh CLI (installed by this flake). The admin:public_key scope
+# is what lets gh add SSH keys; --skip-ssh-key stops gh offering to make its own.
+# --web needs no local browser: gh prints a one-time code; enter it at
+# https://github.com/login/device on your phone or another computer.
+gh auth login --git-protocol ssh --skip-ssh-key --web --scopes admin:public_key
+gh ssh-key add ~/.ssh/$(hostname).pub --title "$(hostname)"
 
 # `just switch` runs nixos-rebuild through sudo, so root fetches over your agent.
-ssh-add ~/.ssh/id_ed25519
 ssh -T git@github.com        # should greet you by username
 sudo ssh -T git@github.com   # accept GitHub's host key for root
 ```
 
-The default key name is used on purpose: [../home/base/tui/ssh.nix](../home/base/tui/ssh.nix)
-sets `IdentitiesOnly` for `github.com`, and with no `IdentityFile` ssh falls back to
-`~/.ssh/id_ed25519`, so no per-host Home Manager change is needed.
+[../home/base/tui/ssh.nix](../home/base/tui/ssh.nix) sets `IdentitiesOnly` for `github.com`,
+so the host's Home Manager file must name the key, as
+[../home/hosts/linux/storm.nix](../home/hosts/linux/storm.nix) does:
+
+```nix
+programs.ssh.settings."github.com".IdentityFile = "~/.ssh/${hostName}";
+```
 
 To allow SSH logins into this machine with the key, add the `.pub` line to
 `mainSshAuthorizedKeys` or `secondaryAuthorizedKeys` in [../vars/default.nix](../vars/default.nix).
