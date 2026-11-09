@@ -122,14 +122,32 @@ programs.ssh.settings."github.com".IdentityFile = "~/.ssh/${hostName}";
 To allow SSH logins into this machine with the key, add the `.pub` line to
 `mainSshAuthorizedKeys` or `secondaryAuthorizedKeys` in [../vars/default.nix](../vars/default.nix).
 
-### 2. Deploy the main config
+### 2. Add the host to the agenix secrets
+
+Hosts decrypt secrets with their SSH host key, `/persistent/etc/ssh/ssh_host_ed25519_key`,
+which sshd creates on first boot. The new host can't decrypt anything until an existing host
+re-encrypts the secrets for it. On a machine that can already decrypt (e.g. stormlight):
+
+```bash
+cd ~/nixos-config
+just secrets-rekey storm     # fetches storm's key with ssh-keyscan and asks you to confirm
+# or: just secrets-rekey storm "$(ssh storm cat /etc/ssh/ssh_host_ed25519_key.pub)"
+git -C nixos-secrets push
+```
+
+Then, on the new host, `nix flake update nixos-secrets` before switching.
+
+If no machine can decrypt (all hosts lost, no deploy key), run `just secrets-regen storm` on the
+new host instead. It enters fresh passwords and a GitHub token, so every host's values change.
+
+### 3. Deploy the main config
 
 ```bash
 cd ~/nixos-config
 just switch storm
 ```
 
-### 3. Set up Secure Boot
+### 4. Set up Secure Boot
 
 [../hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix) replaces
 systemd-boot with [lanzaboote](https://github.com/nix-community/lanzaboote),

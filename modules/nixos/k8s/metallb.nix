@@ -14,13 +14,14 @@ let
 in
 {
   services.k3s = {
-    disable = [ "servicelb" ];
+    # Server-only flag: `k3s agent` refuses to start with --disable.
+    disable = lib.mkIf isMaster [ "servicelb" ];
 
     autoDeployCharts.metallb = lib.mkIf isMaster {
       repo = "https://metallb.github.io/metallb";
       name = "metallb";
       version = "0.16.2";
-      hash = "";
+      hash = "sha256-lmZ6gQvfm50ebTIK8WpOZsY7pWMBvCEAXmRc16HCmKQ=";
       targetNamespace = "metallb-system";
       createNamespace = true;
       # Applied with the chart; k3s retries them until MetalLB's CRDs exist.

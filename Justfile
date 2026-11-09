@@ -75,6 +75,16 @@ darwin-bootstrap flake_name:
     -- switch --flake "{{ justfile_directory() }}#{{ flake_name }}" --accept-flake-config
 
 # ==============================================================================
+# Secrets (agenix, ./nixos-secrets)
+# ==============================================================================
+
+# Fresh host: create its age key, add it to nixos-secrets, re-encrypt all secrets from new values
+[linux]
+[group('secrets')]
+secrets-regen host=`hostname`:
+  @"{{ justfile_directory() }}/scripts/secrets-regen.nu" "{{ host }}"
+
+# ==============================================================================
 # Kubernetes nodes (Proxmox VMs)
 # ==============================================================================
 

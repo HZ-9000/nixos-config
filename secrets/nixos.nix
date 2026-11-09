@@ -10,9 +10,10 @@
 {
   imports = [ agenix.nixosModules.default ];
 
-  # Read the key from /persistent directly: with systemd initrd, activation (and
-  # agenix) runs before preservation bind-mounts /etc/age.
-  age.identityPaths = [ "/persistent/etc/age/keys.txt" ];
+  # Decrypt with the SSH host key (its public half is the host's recipient in
+  # nixos-secrets/secrets.nix). Read it from /persistent directly: with systemd initrd,
+  # activation (and agenix) runs before preservation bind-mounts /etc/ssh.
+  age.identityPaths = [ "/persistent/etc/ssh/ssh_host_ed25519_key" ];
 
   # agenix orders its own activation script before the users activation script
   # (system.activationScripts.users.deps), so these are decrypted in time for
@@ -25,7 +26,6 @@
   users.users.${myvars.username}.hashedPasswordFile = config.age.secrets.user-password.path;
   users.users.root.hashedPasswordFile = config.age.secrets.root-password.path;
 
-  # `age-keygen` (and `age`), e.g. to print the public key of the host identity:
-  #   sudo age-keygen -y /persistent/etc/age/keys.txt
+  # `age`, e.g. to test decryption: sudo age -d -i /persistent/etc/ssh/ssh_host_ed25519_key <file>
   environment.systemPackages = [ pkgs.age ];
 }
