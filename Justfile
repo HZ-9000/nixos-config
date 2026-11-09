@@ -78,7 +78,14 @@ darwin-bootstrap flake_name:
 # Secrets (agenix, ./nixos-secrets)
 # ==============================================================================
 
-# Fresh host: create its age key, add it to nixos-secrets, re-encrypt all secrets from new values
+# Re-encrypt all secrets, keeping values; with a host, add it first (`just secrets-rekey storm`)
+[linux]
+[group('secrets')]
+[positional-arguments]
+secrets-rekey *args:
+  @"{{ justfile_directory() }}/scripts/secrets-rekey.nu" "$@"
+
+# Fallback when nothing can decrypt: add this host's SSH key, re-encrypt all secrets from new values
 [linux]
 [group('secrets')]
 secrets-regen host=`hostname`:
