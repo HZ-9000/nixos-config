@@ -41,9 +41,7 @@ Subsequent rebuilds (activation needs root, so this runs `sudo darwin-rebuild`):
 just darwin-switch tempest
 ```
 
-## Secure Boot keys (storm and stormlight)
+## Secure Boot
 
-Lanzaboote keys are machine-local and must not be committed. Both hosts preserve
-`/var/lib/sbctl`. See
-[Set up Secure Boot](../nixos-installer/README.md#5-set-up-secure-boot) in the
-installer guide for the full walkthrough, including firmware Setup Mode on each machine.
+Opt-in per host with `modules.secureBoot.enable` (storm and stormlight have it on). Keys,
+firmware Setup Mode and enrollment: [../docs/secure-boot.md](../docs/secure-boot.md).

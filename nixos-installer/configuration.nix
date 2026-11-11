@@ -1,4 +1,4 @@
-{ pkgs, myvars, ... }:
+{ lib, pkgs, myvars, ... }:
 let
   # No agenix here: the host's age identity doesn't exist yet on a fresh install.
   # Both accounts read a hash written by hand during install (/ is tmpfs, so it
@@ -10,6 +10,10 @@ in
   users.users.root.hashedPasswordFile = passwordFile;
   users.users.${myvars.username}.hashedPasswordFile = passwordFile;
 
+  # Lanzaboote refuses to install without signing keys, which can only be created once the
+  # machine runs (docs/secure-boot.md). Install with systemd-boot; the main flake switches over.
+  modules.secureBoot.enable = lib.mkForce false;
+
   # ssh-agent is used to pull my private secrets repo from github when deploying my nixos config.
   programs.ssh.startAgent = true;
 
@@ -17,7 +21,7 @@ in
     neovim
     git
     gh # generate and upload the host's GitHub SSH key
-    sbctl # create the Secure Boot keys lanzaboote needs on the first switch to the main config
+    sbctl # create the Secure Boot keys before the first switch to the main config
     just
     curl
     wget

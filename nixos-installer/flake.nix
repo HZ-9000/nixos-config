@@ -10,6 +10,12 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Keep on the same version as the main flake. Only for the modules.secureBoot option,
+    # which hosts/<host> sets; configuration.nix turns it off.
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.2.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -35,6 +41,7 @@
             ../modules/base
             ../modules/nixos/base/i18n.nix
             ../modules/nixos/base/nushell.nix
+            ../modules/nixos/base/secure-boot.nix
             ../modules/nixos/base/ssh.nix
             ../modules/nixos/base/user-group.nix
           ];

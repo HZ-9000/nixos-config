@@ -15,6 +15,9 @@
   systemd.settings.Manager.RebootWatchdogSec = "off";
   boot.kernelParams = [ "nowatchdog" ];
 
+  # Keys and firmware enrollment: docs/secure-boot.md.
+  modules.secureBoot.enable = true;
+
   networking.hostName = "stormlight";
 
   system.stateVersion = "26.05";

@@ -3,8 +3,8 @@
 A minimal flake for the first install of [storm](../hosts/storm) and
 [stormlight](../hosts/stormlight). It imports the same `hosts/<host>` module as the main flake
 (hardware, disk layout, preservation) plus the base modules, but skips the desktop, agenix and
-lanzaboote. It includes `sbctl`, so the Secure Boot keys exist before the first switch to the
-main config.
+lanzaboote. It includes `sbctl`, so the [Secure Boot](../docs/secure-boot.md) keys can be
+created before the first switch to the main config.
 
 ## Why this flake exists
 
@@ -166,29 +166,16 @@ nix flake update nixos-secrets
 If no machine can decrypt (all hosts lost, no deploy key), run `just secrets-regen storm` on the
 new host instead. It enters fresh passwords and a GitHub token, so every host's values change.
 
-### 3. Create the Secure Boot signing keys
+### 3. Deploy the main config
 
-[../hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix) replaces
-systemd-boot with [lanzaboote](https://github.com/nix-community/lanzaboote),
-which signs the kernel and boot files with keys stored in `/var/lib/sbctl`.
-Lanzaboote won't install unsigned files, so without keys the first switch fails at
-the bootloader step. Create them now with `sbctl` (installed by this flake). They are
-local to this machine; never commit them. `/var/lib/sbctl` is preserved, so they
-survive reboots.
+Hosts with `modules.secureBoot.enable` (storm and stormlight) need their signing keys before
+this first switch, or it fails at the bootloader step:
 
 ```bash
 sudo sbctl create-keys
-```
-
-### 4. Deploy the main config
-
-```bash
 cd ~/nixos-config
 just switch storm
 ```
-
-If it fails while installing the bootloader, check that `sudo sbctl status` shows the keys
-as installed (step 3), then switch again.
 
 From now on the agenix passwords apply; `/persistent/etc/installer-password` is no longer read
 and can be deleted.
@@ -199,62 +186,8 @@ Join the tailnet; SSH between the machines only works over it:
 sudo tailscale up
 ```
 
-### 5. Set up Secure Boot
-
-Keep Secure Boot **disabled** in firmware until the end of this step.
-
-1. **Check that lanzaboote is active.** It should now be the bootloader:
-
-    ```bash
-    bootctl status   # "Product" should mention lanzaboote
-    ```
-
-2. **Confirm that everything is signed:**
-
-    ```bash
-    sudo sbctl verify   # every lanzaboote/kernel EFI file should be "signed"
-    ```
-
-    The unsigned `systemd-bootx64.efi` / `BOOTX64.EFI` files that lanzaboote
-    doesn't use can be ignored.
-
-3. **Put the firmware in Setup Mode.** Reboot into the firmware settings:
-    - **storm** (MSI): Secure Boot → set mode to *Custom*, then delete or clear all
-      Secure Boot keys.
-    - **stormlight** (Framework): Secure Boot → *Erase all Secure Boot Settings*
-      (puts it in Setup Mode).
-
-    Save, boot back into NixOS, and confirm:
-
-    ```bash
-    sudo sbctl status   # "Setup Mode: Enabled"
-    ```
-
-4. **Enroll the keys.** `--microsoft` also enrolls Microsoft's certificates.
-   Keep that flag: without it, firmware option ROMs (e.g. the GPU) may fail to load
-   and the machine may not boot.
-
-    ```bash
-    sudo sbctl enroll-keys --microsoft
-    ```
-
-5. **Enable Secure Boot.** Reboot into the firmware, turn Secure Boot on, and boot
-   NixOS. Then check:
-
-    ```bash
-    sudo sbctl status   # "Secure Boot: Enabled", "Setup Mode: Disabled"
-    ```
-
-6. **Re-enroll TPM unlocking.** Enabling Secure Boot changes PCR 7, so the LUKS
-   TPM slot made during install stops matching and you will get a passphrase
-   prompt. Replace the slot:
-
-    ```bash
-    sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 /dev/<encrypted-disk-part-path>
-    ```
-
-If the machine doesn't boot after enabling Secure Boot, disable it in the firmware,
-boot, and check `sudo sbctl verify` again.
+Then finish the firmware side (Setup Mode, enrolling the keys, TPM re-enrollment) with
+[../docs/secure-boot.md](../docs/secure-boot.md#3-enroll-the-keys-and-turn-secure-boot-on).
 
 ## Changing the LUKS2 Passphrase
 

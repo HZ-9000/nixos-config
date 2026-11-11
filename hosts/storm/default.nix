@@ -10,6 +10,9 @@
     ../common/preservation.nix
   ];
 
+  # Keys and firmware enrollment: docs/secure-boot.md.
+  modules.secureBoot.enable = true;
+
   networking.hostName = "storm";
 
   system.stateVersion = "26.05";
