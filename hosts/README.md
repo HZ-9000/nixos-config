@@ -12,10 +12,10 @@ Reusable policy and opt-in capabilities live under `modules/`.
 | `k8s-master-{1,2,3}` | x86_64-linux | k3s servers (HA etcd), Proxmox VMs; see [k8s/](./k8s/README.md) |
 | `k8s-worker-{1,2,3}` | x86_64-linux | k3s agents, Proxmox VMs; see [k8s/](./k8s/README.md) |
 
-Deploy a NixOS host:
+Deploy a desktop (k8s nodes: see [k8s/](./k8s/README.md)):
 
 ```bash
-sudo nixos-rebuild switch --flake .#<hostname>
+just switch <hostname>
 ```
 
 For a fresh installation of `storm` or `stormlight`, follow the
@@ -29,16 +29,16 @@ provisioning step.
 |------|--------------|-------|
 | `tempest` | aarch64-darwin | Apple Silicon Mac |
 
-First-time install (requires root for system activation):
+First-time install, before `darwin-rebuild` exists:
 
 ```bash
-sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake .#tempest
+just darwin-bootstrap tempest
 ```
 
-Subsequent rebuilds:
+Subsequent rebuilds (activation needs root, so this runs `sudo darwin-rebuild`):
 
 ```bash
-darwin-rebuild switch --flake .#tempest
+just darwin-switch tempest
 ```
 
 ## Secure Boot keys (storm and stormlight)

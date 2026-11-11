@@ -3,8 +3,8 @@
 A minimal flake for the first install of [storm](../hosts/storm) and
 [stormlight](../hosts/stormlight). It imports the same `hosts/<host>` module as the main flake
 (hardware, disk layout, preservation) plus the base modules, but skips the desktop, agenix and
-lanzaboote. It includes
-`sbctl`, so the Secure Boot keys exist before the first switch to the main config.
+lanzaboote. It includes `sbctl`, so the Secure Boot keys exist before the first switch to the
+main config.
 
 ## Why this flake exists
 
@@ -68,19 +68,15 @@ chmod 600 /mnt/persistent/etc/installer-password
 nixos-install --root /mnt --flake .#storm --no-root-password
 ```
 
-### 3. Copy data into /persistent and reboot
+### 3. Keep the checkout and reboot
+
+`/` is tmpfs, so anything written outside `/mnt/persistent` is gone after the reboot. A fresh
+install needs nothing else copied: preservation commits the machine ID to
+`/persistent/etc/machine-id` on first boot, and sshd creates its host keys in the preserved
+`/etc/ssh`. When migrating from an old disk, copy its data into `/mnt/persistent` now.
 
 ```bash
-nixos-enter
-
-# Copy/migrate into /persistent as needed (e.g. from an old disk).
-# At minimum for a fresh install:
-#   mkdir -p /persistent/etc
-#   mv /etc/machine-id /persistent/etc/
-#   mv /etc/ssh /persistent/etc/
-exit
-
-# Keep this checkout: / is tmpfs, so put it where preservation mounts ~/nixos-config from.
+# Put the checkout where preservation mounts ~/nixos-config from.
 mkdir -p /mnt/persistent/home/hz-9000
 cp -r .. /mnt/persistent/home/hz-9000/nixos-config
 umount -R /mnt
@@ -105,6 +101,8 @@ install made before that file existed, set it by hand with
 
 ```nu
 sudo chown -R hz-9000:users ~/nixos-config
+# It was cloned over HTTPS; push over SSH from now on.
+git -C ~/nixos-config remote set-url origin git@github.com:HZ-9000/nixos-config.git
 
 # Generate a key named after the host (use a passphrase) and load it into the agent.
 # The agent forgets it on reboot; `AddKeysToAgent yes` re-adds it the first time ssh uses it.
@@ -131,23 +129,39 @@ sudo ssh -T git@github.com   # same greeting: root uses your agent
 [../home/linux/default.nix](../home/linux/default.nix) points it at `~/.ssh/<hostname>`, so keep
 the key named after the host.
 
-To allow SSH logins into this machine with the key, add the `.pub` line to
-`mainSshAuthorizedKeys` or `secondaryAuthorizedKeys` in [../vars/default.nix](../vars/default.nix).
+To let this host log in as root on the other machines (desktops over the tailnet, and the k8s
+nodes), add the `.pub` line to `mainSshAuthorizedKeys` or `secondaryAuthorizedKeys` in
+[../vars/default.nix](../vars/default.nix); it takes effect on each machine's next switch.
 
 ### 2. Add the host to the agenix secrets
 
 Hosts decrypt secrets with their SSH host key, `/persistent/etc/ssh/ssh_host_ed25519_key`,
 which sshd creates on first boot. The new host can't decrypt anything until an existing host
-re-encrypts the secrets for it. On a machine that can already decrypt (e.g. stormlight):
+re-encrypts the secrets for it.
 
-```bash
+The other machine can't reach the new host yet: the installer system's firewall keeps port 22
+closed and it isn't on the tailnet. So `ssh-keyscan` won't work; copy the key over instead.
+On the new host:
+
+```nu
+open /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+On a machine that can already decrypt (e.g. stormlight), pass that line as the second
+argument (quoted: it contains spaces):
+
+```nu
 cd ~/nixos-config
-just secrets-rekey storm     # fetches storm's key with ssh-keyscan and asks you to confirm
-# or: just secrets-rekey storm "$(ssh storm cat /etc/ssh/ssh_host_ed25519_key.pub)"
+just secrets-rekey storm "ssh-ed25519 AAAA..."
 git -C nixos-secrets push
 ```
 
-Then, on the new host, `nix flake update nixos-secrets` before switching.
+Then, on the new host:
+
+```nu
+cd ~/nixos-config
+nix flake update nixos-secrets
+```
 
 If no machine can decrypt (all hosts lost, no deploy key), run `just secrets-regen storm` on the
 new host instead. It enters fresh passwords and a GitHub token, so every host's values change.
@@ -175,6 +189,15 @@ just switch storm
 
 If it fails while installing the bootloader, check that `sudo sbctl status` shows the keys
 as installed (step 3), then switch again.
+
+From now on the agenix passwords apply; `/persistent/etc/installer-password` is no longer read
+and can be deleted.
+
+Join the tailnet; SSH between the machines only works over it:
+
+```nu
+sudo tailscale up
+```
 
 ### 5. Set up Secure Boot
 
