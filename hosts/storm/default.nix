@@ -1,16 +1,16 @@
-{ ... }:
+# Machine-level settings only (hardware, disk, preservation). The installer flake imports
+# this file too, so desktop policy belongs in modules/nixos/desktop.nix.
+{ disko, ... }:
 {
   imports = [
+    disko.nixosModules.disko
     ./hardware-configuration.nix
     ./amd-hardware.nix
     ./disko-fs.nix
     ../common/preservation.nix
-    ../common/secure-boot.nix
   ];
 
   networking.hostName = "storm";
-
-  modules.desktop.gaming.enable = true;
 
   system.stateVersion = "26.05";
 }

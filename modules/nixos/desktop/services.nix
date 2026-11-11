@@ -5,10 +5,8 @@
     tumbler.enable = true; # thumbnail generation for file managers
     upower.enable = true;
 
-    gnome = {
-      tinysparql.enable = true;
-      gnome-keyring.enable = true;
-    };
+    # gnome-keyring is enabled in ./security.nix.
+    gnome.tinysparql.enable = true;
 
     dbus = {
       enable = true;

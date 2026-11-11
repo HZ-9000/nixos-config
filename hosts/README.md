@@ -45,5 +45,5 @@ darwin-rebuild switch --flake .#tempest
 
 Lanzaboote keys are machine-local and must not be committed. Both hosts preserve
 `/var/lib/sbctl`. See
-[Set up Secure Boot](../nixos-installer/README.md#3-set-up-secure-boot) in the
+[Set up Secure Boot](../nixos-installer/README.md#5-set-up-secure-boot) in the
 installer guide for the full walkthrough, including firmware Setup Mode on each machine.

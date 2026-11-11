@@ -16,13 +16,30 @@
     openFirewall = lib.mkDefault false;
   };
 
-  # programs.ssh.startAgent exports SSH_AUTH_SOCK from environment.extraInit, which only
-  # POSIX shells source. The login shell is nushell, so a TTY or SSH login (e.g. on a fresh
-  # install) has no socket: `ssh-add` fails with "Could not open a connection to your
-  # authentication agent". Nushell loads vendor autoload files from the system profile.
-  environment.pathsToLink = lib.mkIf config.programs.ssh.startAgent [
-    "/share/nushell/vendor/autoload"
-  ];
+  # GitHub's host key (https://api.github.com/meta), so neither the user (ssh.github.com:443,
+  # see home/base/tui/ssh.nix) nor root (`sudo nixos-rebuild` fetching nixos-secrets) stops
+  # at a trust-on-first-use prompt, and a spoofed key fails instead of being accepted.
+  programs.ssh.knownHosts.github = {
+    hostNames = [
+      "github.com"
+      "[ssh.github.com]:443"
+    ];
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+  };
+
+  # Load keys into the agent on first use. Home Manager sets this for the user too, but the
+  # installer system has no Home Manager.
+  programs.ssh.extraConfig = lib.mkIf config.programs.ssh.startAgent ''
+    AddKeysToAgent yes
+  '';
+
+  # sudo resets the environment, so `sudo nixos-rebuild` (`just switch`) would fetch the
+  # private nixos-secrets repo as root without the user's agent. Root can read the socket.
+  security.sudo.extraConfig = lib.mkIf config.programs.ssh.startAgent ''
+    Defaults env_keep += "SSH_AUTH_SOCK"
+  '';
+
+  # Nushell gets SSH_AUTH_SOCK from modules/nixos/base/nushell.nix.
 
   # Add terminfo entries for the terminals actually used in this flake.
   # https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/modules/config/terminfo.nix
@@ -33,12 +50,5 @@
         ghostty
         kitty
       ]
-    )
-    ++ lib.optional config.programs.ssh.startAgent (
-      pkgs.writeTextDir "share/nushell/vendor/autoload/ssh-agent.nu" ''
-        if ($env.SSH_AUTH_SOCK? | is-empty) and ($env.XDG_RUNTIME_DIR? | is-not-empty) {
-          $env.SSH_AUTH_SOCK = $"($env.XDG_RUNTIME_DIR)/ssh-agent"
-        }
-      ''
     );
 }

@@ -1,8 +1,10 @@
 # NixOS installer
 
 A minimal flake for the first install of [storm](../hosts/storm) and
-[stormlight](../hosts/stormlight). It reuses the main flake's disk layout, hardware config,
-preservation and base modules, but skips the desktop, agenix and lanzaboote.
+[stormlight](../hosts/stormlight). It imports the same `hosts/<host>` module as the main flake
+(hardware, disk layout, preservation) plus the base modules, but skips the desktop, agenix and
+lanzaboote. It includes
+`sbctl`, so the Secure Boot keys exist before the first switch to the main config.
 
 ## Why this flake exists
 
@@ -22,13 +24,15 @@ Check that it still evaluates with `just test storm` (or `just test stormlight`)
 The examples use `storm`; substitute `stormlight` as needed.
 
 1. Create a USB install medium from the official NixOS ISO and boot from it.
-2. Review `../hosts/<host>/hardware-configuration.nix` against the target machine; after
-   the disk is mounted, regenerate it with `nixos-generate-config --root /mnt` if the hardware
-   differs.
+2. Review `../hosts/<host>/hardware-configuration.nix` against the target machine. If the
+   hardware differs, print a fresh one after the disk is mounted with
+   `nixos-generate-config --root /mnt --no-filesystems --show-hardware-config` (disko owns the
+   file systems) and merge it in.
 
 ### 1. Partition and mount with disko
 
-The layout is defined in [../hosts/storm/disko-fs.nix](../hosts/storm/disko-fs.nix): a 600 MiB ESP,
+The layout is defined in [../hosts/common/disko-fs.nix](../hosts/common/disko-fs.nix), with the
+disk set per host in [../hosts/storm/disko-fs.nix](../hosts/storm/disko-fs.nix): a 600 MiB ESP,
 LUKS, and Btrfs subvolumes. Root is tmpfs; [preservation](https://github.com/nix-community/preservation)
 uses `/persistent`.
 
@@ -92,38 +96,40 @@ After the first boot:
 The main flake pulls the private `nixos-secrets` repo over SSH, so the machine needs a key
 GitHub accepts. `~/.ssh` is preserved, so the key survives reboots.
 
-The login shell is nushell and these commands use bash syntax (`$(hostname)`), so run `bash`
-first. `programs.ssh.startAgent` runs the agent; nushell gets `SSH_AUTH_SOCK` from the autoload
-file in [../modules/nixos/base/ssh.nix](../modules/nixos/base/ssh.nix). On an install made
-before that file existed, set it by hand in nushell with
-`$env.SSH_AUTH_SOCK = $"($env.XDG_RUNTIME_DIR)/ssh-agent"`.
+These commands are nushell, the login shell. `programs.ssh.startAgent` runs the agent, and
+[../modules/nixos/base/nushell.nix](../modules/nixos/base/nushell.nix) loads the NixOS login
+environment (including `SSH_AUTH_SOCK`) into nushell. Check with `ssh-add -l`: "The agent has
+no identities" is fine; "Could not open a connection" means the variable is missing (on an
+install made before that file existed, set it by hand with
+`$env.SSH_AUTH_SOCK = $"($env.XDG_RUNTIME_DIR)/ssh-agent"`).
 
-```bash
+```nu
 sudo chown -R hz-9000:users ~/nixos-config
 
 # Generate a key named after the host (use a passphrase) and load it into the agent.
-ssh-keygen -t ed25519 -a 256 -C "hz-9000@$(hostname)" -f ~/.ssh/$(hostname)
-ssh-add ~/.ssh/$(hostname)
+# The agent forgets it on reboot; `AddKeysToAgent yes` re-adds it the first time ssh uses it.
+let host = (sys host).hostname
+let key = $"($env.HOME)/.ssh/($host)"
+ssh-keygen -t ed25519 -a 256 -C $"hz-9000@($host)" -f $key
+ssh-add $key
 
 # Upload it with the gh CLI (installed by this flake). The admin:public_key scope
 # is what lets gh add SSH keys; --skip-ssh-key stops gh offering to make its own.
 # --web needs no local browser: gh prints a one-time code; enter it at
 # https://github.com/login/device on your phone or another computer.
 gh auth login --git-protocol ssh --skip-ssh-key --web --scopes admin:public_key
-gh ssh-key add ~/.ssh/$(hostname).pub --title "$(hostname)"
+gh ssh-key add $"($key).pub" --title $host
 
-# `just switch` runs nixos-rebuild through sudo, so root fetches over your agent.
+# `just switch` runs nixos-rebuild through sudo, which keeps SSH_AUTH_SOCK, so root
+# fetches over your agent.
+# GitHub's host key is preinstalled (modules/nixos/base/ssh.nix), so neither asks to trust it.
 ssh -T git@github.com        # should greet you by username
-sudo ssh -T git@github.com   # accept GitHub's host key for root
+sudo ssh -T git@github.com   # same greeting: root uses your agent
 ```
 
-[../home/base/tui/ssh.nix](../home/base/tui/ssh.nix) sets `IdentitiesOnly` for `github.com`,
-so the host's Home Manager file must name the key, as
-[../home/hosts/linux/storm.nix](../home/hosts/linux/storm.nix) does:
-
-```nix
-programs.ssh.settings."github.com".IdentityFile = "~/.ssh/${hostName}";
-```
+[../home/base/tui/ssh.nix](../home/base/tui/ssh.nix) sets `IdentitiesOnly` for `github.com`;
+[../home/linux/default.nix](../home/linux/default.nix) points it at `~/.ssh/<hostname>`, so keep
+the key named after the host.
 
 To allow SSH logins into this machine with the key, add the `.pub` line to
 `mainSshAuthorizedKeys` or `secondaryAuthorizedKeys` in [../vars/default.nix](../vars/default.nix).
@@ -146,45 +152,50 @@ Then, on the new host, `nix flake update nixos-secrets` before switching.
 If no machine can decrypt (all hosts lost, no deploy key), run `just secrets-regen storm` on the
 new host instead. It enters fresh passwords and a GitHub token, so every host's values change.
 
-### 3. Deploy the main config
+### 3. Create the Secure Boot signing keys
+
+[../hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix) replaces
+systemd-boot with [lanzaboote](https://github.com/nix-community/lanzaboote),
+which signs the kernel and boot files with keys stored in `/var/lib/sbctl`.
+Lanzaboote won't install unsigned files, so without keys the first switch fails at
+the bootloader step. Create them now with `sbctl` (installed by this flake). They are
+local to this machine; never commit them. `/var/lib/sbctl` is preserved, so they
+survive reboots.
+
+```bash
+sudo sbctl create-keys
+```
+
+### 4. Deploy the main config
 
 ```bash
 cd ~/nixos-config
 just switch storm
 ```
 
-### 4. Set up Secure Boot
+If it fails while installing the bootloader, check that `sudo sbctl status` shows the keys
+as installed (step 3), then switch again.
 
-[../hosts/common/secure-boot.nix](../hosts/common/secure-boot.nix) replaces
-systemd-boot with [lanzaboote](https://github.com/nix-community/lanzaboote),
-which signs the kernel and boot files with keys stored in `/var/lib/sbctl`. That
-directory is preserved. Keep Secure Boot **disabled** in firmware until the end
-of this step.
+### 5. Set up Secure Boot
 
-1. **Check that lanzaboote is active.** After the main config is deployed, it
-   should be the bootloader:
+Keep Secure Boot **disabled** in firmware until the end of this step.
+
+1. **Check that lanzaboote is active.** It should now be the bootloader:
 
     ```bash
     bootctl status   # "Product" should mention lanzaboote
     ```
 
-2. **Create the signing keys.** They are local to this machine; never commit them.
+2. **Confirm that everything is signed:**
 
     ```bash
-    sudo sbctl create-keys
-    ```
-
-3. **Rebuild so lanzaboote signs everything with the new keys**, then confirm:
-
-    ```bash
-    just switch storm
     sudo sbctl verify   # every lanzaboote/kernel EFI file should be "signed"
     ```
 
     The unsigned `systemd-bootx64.efi` / `BOOTX64.EFI` files that lanzaboote
     doesn't use can be ignored.
 
-4. **Put the firmware in Setup Mode.** Reboot into the firmware settings:
+3. **Put the firmware in Setup Mode.** Reboot into the firmware settings:
     - **storm** (MSI): Secure Boot → set mode to *Custom*, then delete or clear all
       Secure Boot keys.
     - **stormlight** (Framework): Secure Boot → *Erase all Secure Boot Settings*
@@ -196,7 +207,7 @@ of this step.
     sudo sbctl status   # "Setup Mode: Enabled"
     ```
 
-5. **Enroll the keys.** `--microsoft` also enrolls Microsoft's certificates.
+4. **Enroll the keys.** `--microsoft` also enrolls Microsoft's certificates.
    Keep that flag: without it, firmware option ROMs (e.g. the GPU) may fail to load
    and the machine may not boot.
 
@@ -204,14 +215,14 @@ of this step.
     sudo sbctl enroll-keys --microsoft
     ```
 
-6. **Enable Secure Boot.** Reboot into the firmware, turn Secure Boot on, and boot
+5. **Enable Secure Boot.** Reboot into the firmware, turn Secure Boot on, and boot
    NixOS. Then check:
 
     ```bash
     sudo sbctl status   # "Secure Boot: Enabled", "Setup Mode: Disabled"
     ```
 
-7. **Re-enroll TPM unlocking.** Enabling Secure Boot changes PCR 7, so the LUKS
+6. **Re-enroll TPM unlocking.** Enabling Secure Boot changes PCR 7, so the LUKS
    TPM slot made during install stops matching and you will get a passphrase
    prompt. Replace the slot:
 

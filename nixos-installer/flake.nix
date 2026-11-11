@@ -13,44 +13,34 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, disko, ... }:
+    inputs@{ nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
       mylib = import ../lib { inherit lib; };
       myvars = import ../vars { inherit lib; };
 
+      # The host's own machine settings (hardware, disk, preservation, hostname), so the
+      # installed system matches what the main flake builds; only the desktop is left out.
       mkInstaller =
-        hostName: extraModules:
+        hostName:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = inputs // {
             inherit inputs mylib myvars;
           };
           modules = [
-            { networking.hostName = hostName; }
-
             ./configuration.nix
+            ../hosts/${hostName}
 
             ../modules/base
             ../modules/nixos/base/i18n.nix
-            ../modules/nixos/base/user-group.nix
+            ../modules/nixos/base/nushell.nix
             ../modules/nixos/base/ssh.nix
-
-            disko.nixosModules.default
-            ../hosts/${hostName}/disko-fs.nix
-            ../hosts/${hostName}/hardware-configuration.nix
-            ../hosts/${hostName}/amd-hardware.nix
-            ../hosts/common/preservation.nix
-          ]
-          ++ extraModules;
+            ../modules/nixos/base/user-group.nix
+          ];
         };
     in
     {
-      nixosConfigurations = {
-        storm = mkInstaller "storm" [ ];
-        stormlight = mkInstaller "stormlight" [
-          inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-        ];
-      };
+      nixosConfigurations = lib.genAttrs [ "storm" "stormlight" ] mkInstaller;
     };
 }

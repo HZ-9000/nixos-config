@@ -6,10 +6,7 @@
   hardware = {
     cpu.amd.updateMicrocode = true;
     amdgpu.initrd.enable = true;
-    graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
+    graphics.enable32Bit = true; # graphics.enable is set in modules/base/hardware.nix
   };
 
   environment.systemPackages = with pkgs; [

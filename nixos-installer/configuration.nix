@@ -17,6 +17,7 @@ in
     neovim
     git
     gh # generate and upload the host's GitHub SSH key
+    sbctl # create the Secure Boot keys lanzaboote needs on the first switch to the main config
     just
     curl
     wget
