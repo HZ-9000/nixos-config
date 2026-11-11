@@ -53,7 +53,7 @@ in
       }
 
       # containers
-      # "/var/lib/docker"
+      "/var/lib/docker"
       "/var/lib/cni"
       "/var/lib/containers"
 

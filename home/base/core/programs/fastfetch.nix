@@ -1,8 +1,13 @@
-_:
+{ myvars, ... }:
 let
+  inherit (myvars) theme;
 
   branch = {
-    keyColor = "38;5;240";
+    keyColor = theme.palette.mPrimary;
+  };
+  frame = {
+    type = "custom";
+    outputColor = theme.palette.mPrimary;
   };
 in
 {
@@ -10,6 +15,15 @@ in
     enable = true;
     settings = {
       display.separator = " ";
+
+      logo.color = {
+        "1" = theme.palette.mPrimary;
+        "2" = theme.palette.mSecondary;
+        "3" = theme.palette.mPrimary;
+        "4" = theme.palette.mSecondary;
+        "5" = theme.palette.mPrimary;
+        "6" = theme.palette.mSecondary;
+      };
 
       modules = [
         {
@@ -20,10 +34,12 @@ in
           type = "custom";
           format = "";
         }
-        {
-          type = "custom";
-          format = "┌──────────────── Hardware ────────────────┐";
-        }
+        (
+          frame
+          // {
+            format = "┌──────────────── Hardware ────────────────┐";
+          }
+        )
         (
           branch
           // {
@@ -45,14 +61,18 @@ in
             key = " └─ 󰘚 ";
           }
         )
-        {
-          type = "custom";
-          format = "└──────────────────────────────────────────┘";
-        }
-        {
-          type = "custom";
-          format = "┌──────────────── Software ────────────────┐";
-        }
+        (
+          frame
+          // {
+            format = "└──────────────────────────────────────────┘";
+          }
+        )
+        (
+          frame
+          // {
+            format = "┌──────────────── Software ────────────────┐";
+          }
+        )
         (
           branch
           // {
@@ -109,10 +129,12 @@ in
             key = " └─ 󰞷 ";
           }
         )
-        {
-          type = "custom";
-          format = "└──────────────────────────────────────────┘";
-        }
+        (
+          frame
+          // {
+            format = "└──────────────────────────────────────────┘";
+          }
+        )
       ];
     };
   };
