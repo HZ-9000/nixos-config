@@ -6,7 +6,7 @@
   ...
 }:
 let
-  wallpapers = ../../../../wallpapers;
+  wallpapers = ../../../../images/wallpapers;
   inherit (myvars) theme;
 in
 {

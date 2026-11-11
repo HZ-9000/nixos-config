@@ -1,7 +1,7 @@
 <h2 align="center">NixOS Config</h2>
 
 <p align="center">
-  <img src="./assets/osaka-jade.svg" width="160" />
+  <img src="./images/readme/osaka-jade.svg" width="160" />
 </p>
 
 This repository contains a NixOS configuration that builds the following:
@@ -55,7 +55,7 @@ See [./hosts](./hosts) for details of each host.
 
 ## Screenshots
 
-![Niri desktop with Osaka Jade theme](./assets/screenshot_01.png)
+![Niri desktop with Osaka Jade theme](./images/readme/screenshot_01.png)
 
 ## Deployment
 

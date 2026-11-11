@@ -18,4 +18,5 @@
 
   # Lets liquidctl talk to the AIO's USB HID interface without sudo.
   services.udev.packages = [ pkgs.liquidctl ];
+  programs.coolercontrol.enable = true;
 }
