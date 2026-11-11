@@ -13,5 +13,9 @@
     amdgpu_top
     nvtopPackages.amd
     radeontop
+    liquidctl # NZXT Kraken Elite AIO
   ];
+
+  # Lets liquidctl talk to the AIO's USB HID interface without sudo.
+  services.udev.packages = [ pkgs.liquidctl ];
 }
