@@ -26,7 +26,7 @@
         inherit (myvars.theme.font) size;
         family = myvars.theme.font.mono;
       };
-      launcher_window.opacity = 0.98;
+      launcher_window.opacity = 0.85;
     };
   };
 }

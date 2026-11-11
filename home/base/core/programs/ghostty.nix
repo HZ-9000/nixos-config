@@ -19,7 +19,7 @@ in
     settings = {
       font-family = [ theme.font.mono ];
       theme = theme.name;
-      background-opacity = 0.55;
+      background-opacity = 0.4;
       background-opacity-cells = true;
       window-decoration = false;
       gtk-titlebar = false;

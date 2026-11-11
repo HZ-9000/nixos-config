@@ -12,7 +12,7 @@ builtin_ids = ["gtk3", "gtk4"]
 [bar.main]
 position = "top"
 thickness = 28
-background_opacity = 0.2
+background_opacity = 0.1
 margin_ends = 6
 margin_edge = 2
 widget_spacing = 4
@@ -28,9 +28,9 @@ id = "system"
 members = ["workspaces"]
 fill = "#141414"
 foreground = "#ffffff"
-opacity = 0.5
+opacity = 0.3
 padding = 10
-radius = 10
+radius = 0
 widget_spacing = 4
 
 [[bar.main.capsule_group]]
@@ -38,18 +38,18 @@ id = "clock"
 members = ["clock"]
 fill = "#141414"
 foreground = "#ffffff"
-opacity = 0.5
+opacity = 0.3
 padding = 10
-radius = 10
+radius = 0
 
 [[bar.main.capsule_group]]
 id = "controls"
 members = ["media", "volume", "battery", "session"]
 fill = "#141414"
 foreground = "#ffffff"
-opacity = 0.5
+opacity = 0.3
 padding = 10
-radius = 10
+radius = 0
 widget_spacing = 4
 
 [wallpaper]

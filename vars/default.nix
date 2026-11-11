@@ -5,7 +5,7 @@ _: {
   configDirectoryName = "nixos-config";
 
   # Desktop theme (colours, fonts, cursor); see ./themes/.
-  theme = import ./themes/osaka-jade.nix;
+  theme = import ./themes/cyberpunk-red.nix;
 
   # Kubernetes cluster (Proxmox VMs); see ./k8s.nix.
   k8s = import ./k8s.nix;
