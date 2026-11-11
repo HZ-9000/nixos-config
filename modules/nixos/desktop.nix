@@ -8,7 +8,6 @@
     ./base # modules/nixos/base/ — core NixOS settings (bootloader, i18n, ssh, users)
     ../base # modules/base/ — shared base (fonts, hardware, nix cachix, packages, user account)
     ./desktop # modules/nixos/desktop/ — full desktop environment (Niri, audio, etc.)
-    ../../hosts/common/secure-boot.nix # lanzaboote; the installer flake keeps systemd-boot
   ];
 
   services = {
