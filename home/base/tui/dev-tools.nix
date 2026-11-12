@@ -14,6 +14,9 @@
     colmena
     devbox
 
+    # Infrastructure
+    opentofu
+
     # Python
     uv
   ];
