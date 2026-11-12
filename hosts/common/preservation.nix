@@ -138,6 +138,10 @@ in
         ".config/cursor"
         ".config/Cursor"
 
+        # vscode
+        ".vscode"
+        ".config/Code"
+
         # ai agents
         ".agents" # skills for all agents
         ".config/agents"
