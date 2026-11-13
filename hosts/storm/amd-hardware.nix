@@ -18,5 +18,7 @@
 
   # Lets liquidctl talk to the AIO's USB HID interface without sudo.
   services.udev.packages = [ pkgs.liquidctl ];
+  # Daemon state lives in /etc/coolercontrol and /var/lib/coolercontrol,
+  # both persisted across reboots via preservation (hosts/storm/preservation.nix).
   programs.coolercontrol.enable = true;
 }

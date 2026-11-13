@@ -8,7 +8,7 @@
     ./hardware-configuration.nix
     ./amd-hardware.nix
     ./disko-fs.nix
-    ../common/preservation.nix
+    ./preservation.nix
   ];
 
   boot.blacklistedKernelModules = [ "sp5100_tco" ];
