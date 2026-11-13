@@ -1,3 +1,10 @@
+# What storm keeps across reboots. / is tmpfs, so anything not listed here is
+# gone on the next boot.
+#
+# This list is host-owned: it includes the CoolerControl state that
+# only this machine's NZXT Kraken Elite needs.
+# The other hosts have their own preservation.nix; the lists overlap heavily by
+# design, so when you change something generic here, check the siblings too.
 {
   preservation,
   lib,
@@ -59,6 +66,15 @@ in
 
       # other data
       "/var/lib/flatpak"
+
+      # hardware control
+      # CoolerControl daemon state: fan/pump curves, modes, alerts, and the
+      # LCD image for the NZXT Kraken Elite. / is tmpfs, so without this the
+      # cooler re-detects from scratch and the LCD reverts to its stock screen
+      # on every boot.
+      "/etc/coolercontrol"
+      # Plugins and daemon data; /etc/coolercontrol/plugins is a symlink here.
+      "/var/lib/coolercontrol"
 
       # virtualisation
       "/var/lib/libvirt"
